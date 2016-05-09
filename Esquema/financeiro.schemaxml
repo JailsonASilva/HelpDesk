@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="utf8" collation="utf8_general_ci">optimun_clinica</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="financeiro_caixa" view="colnames">
+<left>295</left>
+<top>13</top>
+<width>153</width>
+<height>146</height>
+<sql_create_table>CREATE TABLE `financeiro_caixa` (
+  `idcaixa` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `idlocal_pagamento` int(11) NOT NULL,
+  `idcaixa_principal` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idcaixa`),
+  KEY `FK_Caixa_local_pagamento` (`idlocal_pagamento`),
+  KEY `FK_Caixa_caixa` (`idcaixa_principal`),
+  CONSTRAINT `FK_Caixa_caixa` FOREIGN KEY (`idcaixa_principal`) REFERENCES `financeiro_caixa` (`idcaixa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_Caixa_local_pagamento` FOREIGN KEY (`idlocal_pagamento`) REFERENCES `financeiro_local_pagamento` (`idlocal_pagamento`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_caixa_usuario" view="colnames">
+<left>31</left>
+<top>237</top>
+<width>135</width>
+<height>152</height>
+<sql_create_table>CREATE TABLE `financeiro_caixa_usuario` (
+  `idcaixa_usuario` int(11) NOT NULL AUTO_INCREMENT,
+  `idcaixa` int(11) NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  PRIMARY KEY (`idcaixa_usuario`),
+  KEY `FK_caixa_usuario` (`idusuario`),
+  KEY `FK_caixa_usuario_caixa` (`idcaixa`),
+  CONSTRAINT `FK_caixa_usuario` FOREIGN KEY (`idusuario`) REFERENCES `sistema_usuario` (`idusuario`),
+  CONSTRAINT `FK_caixa_usuario_caixa` FOREIGN KEY (`idcaixa`) REFERENCES `financeiro_caixa` (`idcaixa`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_conta_estorno" view="colnames">
+<left>41</left>
+<top>453</top>
+<width>157</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `financeiro_conta_estorno` (
+  `idestorno` int(11) NOT NULL AUTO_INCREMENT,
+  `idconta` int(11) NOT NULL,
+  `idcaixa_movimento` int(11) DEFAULT NULL,
+  `valor_principal` double DEFAULT NULL,
+  `valor_pago` double DEFAULT NULL,
+  `prestacao` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`idestorno`),
+  KEY `FK_estorno_caixa_moviemnto` (`idcaixa_movimento`),
+  KEY `FK_estorno_conta` (`idconta`),
+  CONSTRAINT `FK_estorno_caixa_moviemnto` FOREIGN KEY (`idcaixa_movimento`) REFERENCES `financeiro_movimento_caixa` (`idcaixa_movimento`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_estorno_conta` FOREIGN KEY (`idconta`) REFERENCES `financeiro_contas` (`idconta`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_contas" view="colnames">
+<left>777</left>
+<top>117</top>
+<width>202</width>
+<height>692</height>
+<sql_create_table>CREATE TABLE `financeiro_contas` (
+  `idconta` int(11) NOT NULL,
+  `idempresa` int(11) NOT NULL,
+  `idpaciente` int(11) DEFAULT NULL,
+  `idfornecedor` int(11) DEFAULT NULL,
+  `iddocumento` int(11) NOT NULL,
+  `idbanco` int(11) DEFAULT NULL,
+  `idusuario` int(11) NOT NULL,
+  `idplano_conta` int(11) NOT NULL,
+  `historico` varchar(500) NOT NULL,
+  `tipo` varchar(30) NOT NULL,
+  `numero_parcela` varchar(20) DEFAULT NULL,
+  `data_emissao` date NOT NULL,
+  `data_lancamento` date NOT NULL,
+  `contrato` varchar(50) NOT NULL,
+  `data_vencimento` date NOT NULL,
+  `hora_lancamento` time NOT NULL,
+  `valor_documento` double DEFAULT '0',
+  `valor_principal` double DEFAULT '0',
+  `valor_juros` double DEFAULT '0',
+  `valor_multa` double DEFAULT '0',
+  `valor_desconto_antecipado` double DEFAULT '0',
+  `valor_pago` double DEFAULT '0',
+  `data_pagamento` date DEFAULT NULL,
+  `prioridade` varchar(30) DEFAULT 'NORMAL',
+  `observacao` mediumtext,
+  `baixa` tinyint(1) DEFAULT '0',
+  `carencia_desconto` int(11) DEFAULT '0',
+  `carencia_juros` int(11) DEFAULT '0',
+  `cancelada` tinyint(1) DEFAULT '0',
+  `data_cancelamento` date DEFAULT NULL,
+  `idusuario_cancelamento` int(11) DEFAULT NULL,
+  `avista` tinyint(1) DEFAULT '0',
+  `hora_cancelamento` time DEFAULT NULL,
+  `manual` tinyint(1) DEFAULT '0',
+  `convenio` tinyint(1) DEFAULT '0',
+  `idagenda` int(11) DEFAULT NULL,
+  `cartao` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`idconta`),
+  KEY `FK_conta_empresa` (`idempresa`),
+  KEY `FK_conta_fornecedor` (`idfornecedor`),
+  KEY `FK_conta_documento` (`iddocumento`),
+  KEY `FK_conta_banco` (`idbanco`),
+  KEY `FK_conta_usuario` (`idusuario`),
+  KEY `FK_conta_plano_conta` (`idplano_conta`),
+  KEY `FK_conta_paciente` (`idpaciente`),
+  KEY `FK_conta_agenda` (`idagenda`),
+  CONSTRAINT `FK_conta_agenda` FOREIGN KEY (`idagenda`) REFERENCES `clinica_agenda` (`idagenda`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_conta_banco` FOREIGN KEY (`idbanco`) REFERENCES `administrativo_banco` (`idbanco`),
+  CONSTRAINT `FK_conta_documento` FOREIGN KEY (`iddocumento`) REFERENCES `financeiro_documento` (`iddocumento`),
+  CONSTRAINT `FK_conta_empresa` FOREIGN KEY (`idempresa`) REFERENCES `administrativo_empresa` (`idempresa`),
+  CONSTRAINT `FK_conta_fornecedor` FOREIGN KEY (`idfornecedor`) REFERENCES `administrativo_fornecedor` (`idfornecedor`),
+  CONSTRAINT `FK_conta_paciente` FOREIGN KEY (`idpaciente`) REFERENCES `clinica_paciente` (`idpaciente`),
+  CONSTRAINT `FK_conta_plano_conta` FOREIGN KEY (`idplano_conta`) REFERENCES `financeiro_plano_conta` (`idplano_conta`),
+  CONSTRAINT `FK_conta_usuario` FOREIGN KEY (`idusuario`) REFERENCES `sistema_usuario` (`idusuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_contas_centro_custo" view="colnames">
+<left>527</left>
+<top>11</top>
+<width>167</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `financeiro_contas_centro_custo` (
+  `idcentro_custo_conta` int(11) NOT NULL AUTO_INCREMENT,
+  `idconta` int(11) DEFAULT NULL,
+  `idcentro_custo` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idcentro_custo_conta`),
+  KEY `FK_conta_ctcusto` (`idcentro_custo`),
+  KEY `FK_conta_ctcusto_conta` (`idconta`),
+  CONSTRAINT `FK_conta_ctcusto` FOREIGN KEY (`idcentro_custo`) REFERENCES `administrativo_centro_custo` (`idcentro_custo`),
+  CONSTRAINT `FK_conta_ctcusto_conta` FOREIGN KEY (`idconta`) REFERENCES `financeiro_contas` (`idconta`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_documento" view="colnames">
+<left>768</left>
+<top>5</top>
+<width>119</width>
+<height>107</height>
+<sql_create_table>CREATE TABLE `financeiro_documento` (
+  `iddocumento` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `sigla` varchar(10) NOT NULL,
+  PRIMARY KEY (`iddocumento`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_emissao_recibo" view="colnames">
+<left>1176</left>
+<top>65</top>
+<width>134</width>
+<height>282</height>
+<sql_create_table>CREATE TABLE `financeiro_emissao_recibo` (
+  `idrecibo` int(11) NOT NULL,
+  `idempresa` int(11) NOT NULL,
+  `valor` double NOT NULL,
+  `recebemos_de` varchar(300) NOT NULL,
+  `importancia_de` varchar(300) NOT NULL,
+  `referente` varchar(300) NOT NULL,
+  `data` date NOT NULL,
+  `hora` time NOT NULL,
+  `idusuario` int(11) NOT NULL,
+  `gerado` varchar(40) DEFAULT 'SISTEMA',
+  `idfornecedor` int(11) DEFAULT NULL,
+  `idpaciente` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idrecibo`),
+  KEY `FK_recibo_empresa` (`idempresa`),
+  KEY `FK_recibo_usuario` (`idusuario`),
+  KEY `FK_recibo_fornecedor` (`idfornecedor`),
+  KEY `FK_recibo_cliente` (`idpaciente`),
+  CONSTRAINT `FK_recibo_cliente` FOREIGN KEY (`idpaciente`) REFERENCES `clinica_paciente` (`idpaciente`),
+  CONSTRAINT `FK_recibo_empresa` FOREIGN KEY (`idempresa`) REFERENCES `administrativo_empresa` (`idempresa`),
+  CONSTRAINT `FK_recibo_fornecedor` FOREIGN KEY (`idfornecedor`) REFERENCES `administrativo_fornecedor` (`idfornecedor`),
+  CONSTRAINT `FK_recibo_usuario` FOREIGN KEY (`idusuario`) REFERENCES `sistema_usuario` (`idusuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_finalizadora" view="colnames">
+<left>999</left>
+<top>-1</top>
+<width>130</width>
+<height>180</height>
+<sql_create_table>CREATE TABLE `financeiro_finalizadora` (
+  `idfinalizadora` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `tipo` varchar(40) NOT NULL,
+  `valor_sangria` double DEFAULT '0',
+  `avisar_sangria` tinyint(1) DEFAULT NULL,
+  `inativo` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`idfinalizadora`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_local_pagamento" view="colnames">
+<left>79</left>
+<top>46</top>
+<width>153</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `financeiro_local_pagamento` (
+  `idlocal_pagamento` int(11) NOT NULL,
+  `nome` varchar(100) DEFAULT NULL,
+  `idbanco` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idlocal_pagamento`),
+  KEY `FK_local_banco` (`idbanco`),
+  CONSTRAINT `FK_local_banco` FOREIGN KEY (`idbanco`) REFERENCES `administrativo_banco` (`idbanco`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_movimento_abertura" view="colnames">
+<left>460</left>
+<top>182</top>
+<width>172</width>
+<height>379</height>
+<sql_create_table>CREATE TABLE `financeiro_movimento_abertura` (
+  `idabertura` int(11) NOT NULL,
+  `idcaixa` int(11) NOT NULL,
+  `valor_abertura` double DEFAULT '0',
+  `valor_fechamento` double DEFAULT '0',
+  `data_abertura` date NOT NULL,
+  `data_fechamento` date DEFAULT NULL,
+  `hora_abertura` time DEFAULT NULL,
+  `hora_fechamento` time DEFAULT NULL,
+  `idempresa` int(11) DEFAULT NULL,
+  `idusuario` int(11) NOT NULL,
+  `fechado` tinyint(1) DEFAULT '0',
+  `idusuario_fechamento` int(11) DEFAULT NULL,
+  `reaberto` tinyint(1) DEFAULT '0',
+  `impressao` tinyint(1) DEFAULT '0',
+  `data_reabertura` date DEFAULT NULL,
+  `hora_reabertura` time DEFAULT NULL,
+  `idusuario_reabertura` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idabertura`),
+  KEY `FK_abertura_caixa` (`idcaixa`),
+  KEY `FK_abertura_emprea` (`idempresa`),
+  KEY `FK_abertura_usuario` (`idusuario`),
+  KEY `FK_abertura_usuario_fech` (`idusuario_fechamento`),
+  KEY `FK_abertura_usuario_reabertura` (`idusuario_reabertura`),
+  CONSTRAINT `FK_abertura_caixa` FOREIGN KEY (`idcaixa`) REFERENCES `financeiro_caixa` (`idcaixa`),
+  CONSTRAINT `FK_abertura_emprea` FOREIGN KEY (`idempresa`) REFERENCES `administrativo_empresa` (`idempresa`),
+  CONSTRAINT `FK_abertura_usuario` FOREIGN KEY (`idusuario`) REFERENCES `sistema_usuario` (`idusuario`),
+  CONSTRAINT `FK_abertura_usuario_fechado` FOREIGN KEY (`idusuario_fechamento`) REFERENCES `sistema_usuario` (`idusuario`),
+  CONSTRAINT `FK_abertura_usuario_reabertura` FOREIGN KEY (`idusuario_reabertura`) REFERENCES `sistema_usuario` (`idusuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_movimento_caixa" view="colnames">
+<left>239</left>
+<top>448</top>
+<width>165</width>
+<height>366</height>
+<sql_create_table>CREATE TABLE `financeiro_movimento_caixa` (
+  `idcaixa_movimento` int(11) NOT NULL,
+  `data_caixa` date NOT NULL,
+  `data_lancamento` date NOT NULL,
+  `hora_lancamento` time NOT NULL,
+  `idcaixa` int(11) NOT NULL,
+  `idtipo_lancamento` int(11) NOT NULL,
+  `idabertura` int(11) NOT NULL,
+  `idplano_conta` int(11) NOT NULL,
+  `historico` varchar(500) NOT NULL,
+  `valor` double NOT NULL,
+  `idempresa` int(11) NOT NULL,
+  `idctcusto` int(11) NOT NULL,
+  `idusuario` int(11) DEFAULT NULL,
+  `movimento_principal` tinyint(1) DEFAULT '1',
+  `idconta` int(11) DEFAULT NULL,
+  `idagenda` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idcaixa_movimento`),
+  KEY `FK_movimento_caixa` (`idcaixa`),
+  KEY `FK_movimento_caixa_tipo_lanc` (`idtipo_lancamento`),
+  KEY `FK_movimento_caixa_plano_conta` (`idplano_conta`),
+  KEY `FK_movimento_caixa_empresa` (`idempresa`),
+  KEY `FK_movimento_caixa_ctcusto` (`idctcusto`),
+  KEY `FK_movimento_caixa_abetura` (`idabertura`),
+  KEY `FK_movimento_caixa_usuario` (`idusuario`),
+  KEY `FK_movimento_conta` (`idconta`),
+  KEY `FK_movimento_agenda` (`idagenda`),
+  CONSTRAINT `FK_movimento_agenda` FOREIGN KEY (`idagenda`) REFERENCES `clinica_agenda` (`idagenda`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_movimento_caixa` FOREIGN KEY (`idcaixa`) REFERENCES `financeiro_caixa` (`idcaixa`),
+  CONSTRAINT `FK_movimento_caixa_abetura` FOREIGN KEY (`idabertura`) REFERENCES `financeiro_movimento_abertura` (`idabertura`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_movimento_caixa_ctcusto` FOREIGN KEY (`idctcusto`) REFERENCES `administrativo_centro_custo` (`idcentro_custo`),
+  CONSTRAINT `FK_movimento_caixa_empresa` FOREIGN KEY (`idempresa`) REFERENCES `administrativo_empresa` (`idempresa`),
+  CONSTRAINT `FK_movimento_caixa_plano_conta` FOREIGN KEY (`idplano_conta`) REFERENCES `financeiro_plano_conta` (`idplano_conta`),
+  CONSTRAINT `FK_movimento_caixa_tipo_lanc` FOREIGN KEY (`idtipo_lancamento`) REFERENCES `financeiro_tipo_lancamento` (`idtipo_lancamento`),
+  CONSTRAINT `FK_movimento_caixa_usuario` FOREIGN KEY (`idusuario`) REFERENCES `sistema_usuario` (`idusuario`),
+  CONSTRAINT `FK_movimento_conta` FOREIGN KEY (`idconta`) REFERENCES `financeiro_contas` (`idconta`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_movimento_finalizadora" view="colnames">
+<left>571</left>
+<top>637</top>
+<width>157</width>
+<height>146</height>
+<sql_create_table>CREATE TABLE `financeiro_movimento_finalizadora` (
+  `idcaixa_finalizador` int(11) NOT NULL AUTO_INCREMENT,
+  `idcaixa_movimento` int(11) NOT NULL,
+  `idfinalizadora` int(11) NOT NULL,
+  `valor` double NOT NULL DEFAULT '0',
+  PRIMARY KEY (`idcaixa_finalizador`),
+  KEY `FK_movimento_caixa_caixa` (`idcaixa_movimento`),
+  KEY `FK_movimento_caixa_finalizadora` (`idfinalizadora`),
+  CONSTRAINT `FK_movimento_caixa_caixa` FOREIGN KEY (`idcaixa_movimento`) REFERENCES `financeiro_movimento_caixa` (`idcaixa_movimento`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_movimento_caixa_finalizadora` FOREIGN KEY (`idfinalizadora`) REFERENCES `financeiro_finalizadora` (`idfinalizadora`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_plano_conta" view="colnames">
+<left>1063</left>
+<top>444</top>
+<width>156</width>
+<height>231</height>
+<sql_create_table>CREATE TABLE `financeiro_plano_conta` (
+  `idplano_conta` int(11) NOT NULL,
+  `nome` varchar(100) DEFAULT NULL,
+  `idplano_conta_rel` int(11) DEFAULT NULL,
+  `idnivel1` int(11) DEFAULT NULL,
+  `idnivel2` int(11) DEFAULT NULL,
+  `idnivel3` int(11) DEFAULT NULL,
+  `idnivel4` int(11) DEFAULT NULL,
+  `idnivel5` int(11) DEFAULT NULL,
+  `codigo_estruturado` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`idplano_conta`),
+  KEY `FK_plano_conta_n1` (`idnivel1`),
+  KEY `FK_plano_conta_n2` (`idnivel2`),
+  KEY `FK_plano_conta_n3` (`idnivel3`),
+  KEY `FK_plano_conta_n4` (`idnivel4`),
+  KEY `FK_plano_conta_n5` (`idnivel5`),
+  KEY `FK_plano_conta` (`idplano_conta_rel`),
+  CONSTRAINT `FK_plano_conta` FOREIGN KEY (`idplano_conta_rel`) REFERENCES `financeiro_plano_conta` (`idplano_conta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_plano_conta_n1` FOREIGN KEY (`idnivel1`) REFERENCES `financeiro_plano_conta` (`idplano_conta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_plano_conta_n2` FOREIGN KEY (`idnivel2`) REFERENCES `financeiro_plano_conta` (`idplano_conta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_plano_conta_n3` FOREIGN KEY (`idnivel3`) REFERENCES `financeiro_plano_conta` (`idplano_conta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_plano_conta_n4` FOREIGN KEY (`idnivel4`) REFERENCES `financeiro_plano_conta` (`idplano_conta`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_plano_conta_n5` FOREIGN KEY (`idnivel5`) REFERENCES `financeiro_plano_conta` (`idplano_conta`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="financeiro_tipo_lancamento" view="colnames">
+<left>1310</left>
+<top>432</top>
+<width>150</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `financeiro_tipo_lancamento` (
+  `idtipo_lancamento` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `tipo` varchar(30) NOT NULL,
+  `idplano_conta` int(11) DEFAULT NULL,
+  `valor_fixo` double DEFAULT '0',
+  PRIMARY KEY (`idtipo_lancamento`),
+  KEY `FK_financeiro_tipo_lancamento_plano_Conta` (`idplano_conta`),
+  CONSTRAINT `FK_financeiro_tipo_lancamento_plano_Conta` FOREIGN KEY (`idplano_conta`) REFERENCES `financeiro_plano_conta` (`idplano_conta`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>
