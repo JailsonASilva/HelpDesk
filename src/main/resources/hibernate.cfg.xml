@@ -49,6 +49,8 @@
 		<mapping class="br.clinica.domain.Ramo" />
 		<mapping class="br.clinica.domain.TipoEndereco" />
 		<mapping class="br.clinica.domain.TipoContato" />
+		<mapping class="br.clinica.domain.EstadoCivil" />
+		<mapping class="br.clinica.domain.Banco" />
 
 	</session-factory>
 
