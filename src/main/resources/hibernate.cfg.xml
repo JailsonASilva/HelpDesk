@@ -42,6 +42,7 @@
 
 		<!-- Mapeamento das entidades -->
 		<mapping class="br.clinica.domain.Pais" />
+		<mapping class="br.clinica.domain.Estado" />
 
 	</session-factory>
 
