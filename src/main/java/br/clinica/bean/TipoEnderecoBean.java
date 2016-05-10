@@ -3,7 +3,6 @@ package br.clinica.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -11,45 +10,32 @@ import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
 
-import br.clinica.dao.EstadoDAO;
-import br.clinica.dao.PaisDAO;
-import br.clinica.domain.Estado;
-import br.clinica.domain.Pais;
+import br.clinica.dao.TipoEnderecoDAO;
+import br.clinica.domain.TipoEndereco;
 
 @SuppressWarnings("serial")
-@ManagedBean
 @ViewScoped
-public class EstadoBean implements Serializable {
-	private Estado estado;
-	private List<Estado> estados;
-
-	private List<Pais> paises;
-
+@ManagedBean
+public class TipoEnderecoBean implements Serializable {
+	private TipoEndereco tipoEndereco;
+	private List<TipoEndereco> tipoEnderecos;
 	private FacesMessage message;
 	private String busca;
 
-	public Estado getEstado() {
-		return estado;
+	public TipoEndereco getTipoEndereco() {
+		return tipoEndereco;
 	}
 
-	public void setEstado(Estado estado) {
-		this.estado = estado;
+	public void setTipoEndereco(TipoEndereco tipoEndereco) {
+		this.tipoEndereco = tipoEndereco;
 	}
 
-	public List<Estado> getEstados() {
-		return estados;
+	public List<TipoEndereco> getTipoEnderecos() {
+		return tipoEnderecos;
 	}
 
-	public void setEstados(List<Estado> estados) {
-		this.estados = estados;
-	}
-
-	public List<Pais> getPaises() {
-		return paises;
-	}
-
-	public void setPaises(List<Pais> paises) {
-		this.paises = paises;
+	public void setTipoEnderecos(List<TipoEndereco> tipoEnderecos) {
+		this.tipoEnderecos = tipoEnderecos;
 	}
 
 	public FacesMessage getMessage() {
@@ -67,29 +53,13 @@ public class EstadoBean implements Serializable {
 	public void setBusca(String busca) {
 		this.busca = busca;
 	}
-
-	@PostConstruct
-	public void carregarTabelas() {
-		try {
-			PaisDAO paisDAO = new PaisDAO();
-			paises = paisDAO.listar("nome");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu ao Tentar Carregar Tabelas.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
+	
 	public void pesquisar() {
 		try {
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estados = estadoDAO.pesquisar(busca);
+			TipoEnderecoDAO tipoEnderecoDAO = new TipoEnderecoDAO();
+			tipoEnderecos = tipoEnderecoDAO.pesquisar(busca);
 
-			if (estados.isEmpty() == true) {
+			if (tipoEnderecos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -107,22 +77,22 @@ public class EstadoBean implements Serializable {
 	}
 
 	public void novo() {
-		estado = new Estado();
+		tipoEndereco = new TipoEndereco();
 	}
 
 	public void salvar() {
 		try {
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estadoDAO.merge(estado);
+			TipoEnderecoDAO tipoEnderecoDAO = new TipoEnderecoDAO();
+			tipoEnderecoDAO.merge(tipoEndereco);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Salvo com Sucesso!",
-					"Registro: " + estado.getNome());
+					"Registro: " + tipoEndereco.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			estado = new Estado();
+			tipoEndereco = new TipoEndereco();
 
-			estados = estadoDAO.listar("nome");
+			tipoEnderecos = tipoEnderecoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -135,7 +105,7 @@ public class EstadoBean implements Serializable {
 
 	public void editar(ActionEvent evento) {
 		try {
-			estado = (Estado) evento.getComponent().getAttributes().get("estadoSelecionado");
+			tipoEndereco = (TipoEndereco) evento.getComponent().getAttributes().get("tipoSelecionado");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -148,17 +118,17 @@ public class EstadoBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			estado = (Estado) evento.getComponent().getAttributes().get("estadoSelecionado");
+			tipoEndereco = (TipoEndereco) evento.getComponent().getAttributes().get("tipoSelecionado");
 
-			EstadoDAO estadoDAO = new EstadoDAO();
-			estadoDAO.excluir(estado);
+			TipoEnderecoDAO tipoEnderecoDAO = new TipoEnderecoDAO();
+			tipoEnderecoDAO.excluir(tipoEndereco);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + estado.getNome());
+					"Registro: " + tipoEndereco.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			estados = estadoDAO.listar("nome");
+			tipoEnderecos = tipoEnderecoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
@@ -167,5 +137,6 @@ public class EstadoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}
+	}	
+
 }

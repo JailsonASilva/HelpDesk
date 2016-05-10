@@ -10,66 +10,61 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Países">
+			<p:panel header="Bairros">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{paisBean.busca}" />
+					value="#{bairroBean.busca}" />
 				<p:commandButton value="Pesquisar" icon="ui-icon-script"
-					actionListener="#{paisBean.pesquisar}" update="formListagem:tabela"
+					actionListener="#{bairroBean.pesquisar}"
+					update="formListagem:tabela"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
 				<br></br>
 				<br></br>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					paginator="true" value="#{paisBean.paises}" var="pais" rows="10"
-					paginatorPosition="top">
+					paginator="true" value="#{bairroBean.bairros}" var="bairro"
+					rows="10" paginatorPosition="top">
 					<f:facet name="footer">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							actionListener="#{paisBean.novo}" update=":formCadastro:painel">
+							actionListener="#{bairroBean.novo}" update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 					</f:facet>
 
-					<p:column headerText="Nome" sortBy="#{pais.nome}"
-						filterBy="#{pais.nome}">
-						<h:outputText value="#{pais.nome}" />
+					<p:column headerText="Nome" sortBy="#{bairro.nome}"
+						filterBy="#{bairro.nome}">
+						<h:outputText value="#{bairro.nome}" />
 					</p:column>
 
-					<p:column headerText="Sigla" sortBy="#{pais.sigla}" width="120"
-						filterBy="#{pais.sigla}">
-						<h:outputText value="#{pais.sigla}" />
+					<p:column headerText="Cidade" sortBy="#{bairro.cidade.nome}"
+						filterBy="#{bairro.cidade.nome}">
+						<h:outputText value="#{bairro.cidade.nome}" />
 					</p:column>
 
-
-					<p:column headerText="Nacionalidade" sortBy="#{pais.nacionalidade}"
-						filterBy="#{pais.nacionalidade}">
-						<h:outputText value="#{pais.nacionalidade}" />
-					</p:column>
-
-					<p:column headerText="Código do País" sortBy="#{pais.codigoPais}"
-						filterBy="#{pais.codigoPais}">
-						<h:outputText value="#{pais.codigoPais}" />
+					<p:column headerText="CEP" sortBy="#{bairro.cep}"
+						filterBy="#{bairro.cep}">
+						<h:outputText value="#{bairro.cep}" />
 					</p:column>
 
 					<p:column headerText="Opções" width="68">
 						<p:commandButton icon="ui-icon-trash"
-							actionListener="#{paisBean.excluir}"
+							actionListener="#{bairroBean.excluir}"
 							update=":formListagem:tabela"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="paisSelecionado" value="#{pais}" />
+							<f:attribute name="bairroSelecionado" value="#{bairro}" />
 
 						</p:commandButton>
 
 						<p:commandButton icon="ui-icon-pencil"
-							actionListener="#{paisBean.editar}" update=":formCadastro:painel"
-							oncomplete="PF('dialogo').show();">
-							<f:attribute name="paisSelecionado" value="#{pais}" />
+							actionListener="#{bairroBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="bairroSelecionado" value="#{bairro}" />
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -93,40 +88,40 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Países" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Bairros" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="true" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório" value="#{paisBean.pais.nome}" />
+						requiredMessage="Campo Obrigatório"
+						value="#{bairroBean.bairro.nome}" />
 					<p:message for="nome" display="Nome" />
 
-					<p:outputLabel for="sigla" value="Sigla:  " />
-					<p:inputText id="sigla" maxlength="3" size="10" required="true"
-						requiredMessage="Campo Obrigatório" value="#{paisBean.pais.sigla}" />
-					<p:message for="sigla" />
+					<p:outputLabel for="cidade" value="Cidade: " />
+					<p:selectOneMenu id="cidade" filter="true"
+						value="#{bairroBean.bairro.cidade}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma Cidade" />
+						<f:selectItems value="#{bairroBean.cidades}" var="cidade"
+							itemValue="#{cidade}" itemLabel="#{cidade.nome}" />
+					</p:selectOneMenu>
+					<p:message for="cidade" />
 
-
-					<p:outputLabel for="nascionalidade" value="Nacionalidade:  " />
-					<p:inputText id="nascionalidade" maxlength="60" size="60"
-						value="#{paisBean.pais.nacionalidade}" />
-					<p:message for="nascionalidade" />
-
-					<p:outputLabel for="codigoPais" value="Código País: " />
-					<p:inputText id="codigoPais" maxlength="10" size="10"
-						value="#{paisBean.pais.codigoPais}"
-						converterMessage="Campo 'Código do País' é Numérico.">
-						<f:convertNumber locale="pt_BR" minFractionDigits="0" />
-					</p:inputText>
-					<p:message for="codigoPais" />
+					<p:outputLabel for="cep" value="CEP:" />
+					<p:inputMask id="cep" mask="99.999-999" size="10"
+						value="#{bairroBean.bairro.cep}" />
+					<p:message for="cep" />
 				</h:panelGrid>
 
 				<br></br>
 				<p:separator />
 
 				<h:panelGrid columns="2">
-					<p:commandButton value="Salvar" actionListener="#{paisBean.salvar}"
+					<p:commandButton value="Salvar"
+						actionListener="#{bairroBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />

@@ -8,17 +8,17 @@ import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="administrativo_estado")
-public class Estado extends GenericDomain {
+@Table(name = "administrativo_bairro")
+public class Bairro extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String nome;
 
-	@Column(length = 2, nullable = false)
-	private String sigla;
+	@Column(length = 15, nullable = true)
+	private String cep;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private Pais pais;
+	private Cidade cidade;
 
 	public String getNome() {
 		return nome;
@@ -28,20 +28,20 @@ public class Estado extends GenericDomain {
 		this.nome = nome;
 	}
 
-	public String getSigla() {
-		return sigla;
+	public String getCep() {
+		return cep;
 	}
 
-	public void setSigla(String sigla) {
-		this.sigla = sigla;
+	public void setCep(String cep) {
+		this.cep = cep;
 	}
 
-	public Pais getPais() {
-		return pais;
+	public Cidade getCidade() {
+		return cidade;
 	}
 
-	public void setPais(Pais pais) {
-		this.pais = pais;
+	public void setCidade(Cidade cidade) {
+		this.cidade = cidade;
 	}
 
 }

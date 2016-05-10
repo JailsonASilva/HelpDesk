@@ -67,7 +67,7 @@ public class PaisBean implements Serializable {
 			}
 
 		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisa Registro.",
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
 					"Erro Inesperado!");
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
