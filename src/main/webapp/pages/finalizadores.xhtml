@@ -46,6 +46,12 @@
 						<h:outputText value="#{finalizadora.tipo}" />
 					</p:column>
 
+					<p:column headerText="Inativo" sortBy="#{finalizadora.inativo}"
+						width="68">
+						<p:selectBooleanCheckbox value="#{finalizadora.inativo}"
+							disabled="true" />
+					</p:column>
+
 					<p:column headerText="Opções" width="68">
 						<p:commandButton icon="ui-icon-trash"
 							actionListener="#{finalizadoraBean.excluir}"
@@ -99,6 +105,7 @@
 
 					<p:outputLabel for="tipo" value="Tipo:  " />
 					<p:selectOneMenu id="tipo" filter="true" required="true"
+						requiredMessage="Campo Obrigatório"
 						converter="omnifaces.SelectItemsConverter"
 						value="#{finalizadoraBean.finalizadora.tipo}">
 						<f:selectItem noSelectionOption="true"
