@@ -78,6 +78,7 @@ public class FinalizadoraBean implements Serializable {
 
 	public void novo() {
 		finalizadora = new Finalizadora();
+		finalizadora.setValorSangria(0.00);
 	}
 
 	public void salvar() {

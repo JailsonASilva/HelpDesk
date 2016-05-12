@@ -14,15 +14,15 @@ public class Finalizadora extends GenericDomain{
 	@Column(length = 100, nullable = false)
 	private String tipo;
 	
-	@Column(length = 100, nullable = false)
+	@Column(length = 100, nullable = true)
 	private Double valorSangria;
 	
 
-	@Column(length = 100, nullable = false)
+	@Column(length = 100, nullable = true)
 	private Boolean avisarSangria;
 	
 
-	@Column(length = 100, nullable = false)
+	@Column(length = 100, nullable = true)
 	private Boolean inativo;
 
 

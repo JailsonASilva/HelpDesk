@@ -41,6 +41,10 @@
 						<h:outputText value="#{finalizadora.nome}" />
 					</p:column>
 
+					<p:column headerText="Tipo" sortBy="#{finalizadora.tipo}"
+						filterBy="#{finalizadora.tipo}">
+						<h:outputText value="#{finalizadora.tipo}" />
+					</p:column>
 
 					<p:column headerText="Opções" width="68">
 						<p:commandButton icon="ui-icon-trash"
@@ -60,7 +64,7 @@
 							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
 							<f:attribute name="finalizadoraSelecionada"
 								value="#{finalizadora}" />
-								<f:actionListener
+							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 					</p:column>
@@ -106,20 +110,20 @@
 					</p:selectOneMenu>
 					<p:message for="tipo" />
 
-					<p:outputLabel for="valorSangria" value="Valor Sangria:  " />
-					<pe:inputNumber id="valorSangria" value="#{finalizadoraBean.finalizadora.valorSangria}"
-						symbol=" R$" symbolPosition="s" decimalSeparator=","
-						thousandSeparator="."/>
-					
+					<p:outputLabel value="Valor Sangria:  " />
+					<pe:inputNumber id="valorSangria"
+						value="#{finalizadoraBean.finalizadora.valorSangria}" symbol=" R$"
+						symbolPosition="s" decimalSeparator="," thousandSeparator="." />
+
 					<p:message for="valorSangria" />
 
-					<p:outputLabel for="avisarSangria" value="Avisar Sangria:" />
+					<p:outputLabel value="Avisar Sangria:" />
 					<p:selectBooleanCheckbox id="avisarSangria"
 						value="#{finalizadoraBean.finalizadora.avisarSangria}"
 						required="true" requiredMessage="Campo Obrigatório" />
 					<p:message for="avisarSangria" />
 
-					<p:outputLabel for="inativo" value="Inativo:" />
+					<p:outputLabel value="Inativo:" />
 					<p:selectBooleanCheckbox id="inativo"
 						value="#{finalizadoraBean.finalizadora.inativo}" required="true"
 						requiredMessage="Campo Obrigatório" />
