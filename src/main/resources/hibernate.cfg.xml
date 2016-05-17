@@ -52,6 +52,9 @@
 		<mapping class="br.clinica.domain.TipoContato" />
 		<mapping class="br.clinica.domain.EstadoCivil" />
 		<mapping class="br.clinica.domain.Banco" />
+		<mapping class="br.clinica.domain.Pessoa" />
+		<mapping class="br.clinica.domain.PessoaFisica" />
+		<mapping class="br.clinica.domain.PessoaJuridica" />
 
 	</session-factory>
 
