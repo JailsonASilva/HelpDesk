@@ -10,32 +10,32 @@ import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
 
-import br.com.projeto.dao.DepartamentoDAO;
-import br.com.projeto.domain.Departamento;
+import br.com.projeto.dao.MarcaDAO;
+import br.com.projeto.domain.Marca;
 
 @SuppressWarnings("serial")
 @ViewScoped
 @ManagedBean
-public class DepartamentoBean implements Serializable {
-	private Departamento departamento;
-	private List<Departamento> departamentos;
+public class MarcaBean implements Serializable {
+	private Marca marca;
+	private List<Marca> marcas;
 	private FacesMessage message;
 	private String busca;
 
-	public Departamento getDepartamento() {
-		return departamento;
+	public Marca getMarca() {
+		return marca;
 	}
 
-	public void setDepartamento(Departamento departamento) {
-		this.departamento = departamento;
+	public void setMarca(Marca marca) {
+		this.marca = marca;
 	}
 
-	public List<Departamento> getDepartamentos() {
-		return departamentos;
+	public List<Marca> getMarcas() {
+		return marcas;
 	}
 
-	public void setDepartamentos(List<Departamento> departamentos) {
-		this.departamentos = departamentos;
+	public void setMarcas(List<Marca> marcas) {
+		this.marcas = marcas;
 	}
 
 	public FacesMessage getMessage() {
@@ -56,10 +56,10 @@ public class DepartamentoBean implements Serializable {
 
 	public void pesquisar() {
 		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.pesquisar(busca);
+			MarcaDAO marcaDAO = new MarcaDAO();
+			marcas = marcaDAO.pesquisar(busca);
 
-			if (departamentos.isEmpty() == true) {
+			if (marcas.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -77,22 +77,22 @@ public class DepartamentoBean implements Serializable {
 	}
 
 	public void novo() {
-		departamento = new Departamento();
+		marca = new Marca();
 	}
 
 	public void salvar() {
 		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentoDAO.merge(departamento);
+			MarcaDAO marcaDAO = new MarcaDAO();
+			marcaDAO.merge(marca);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Salvo com Sucesso!",
-					"Registro: " + departamento.getNome());
+					"Registro: " + marca.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			departamento = new Departamento();
+			marca = new Marca();
 
-			departamentos = departamentoDAO.listar("nome");
+			marcas = marcaDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -103,32 +103,19 @@ public class DepartamentoBean implements Serializable {
 		}
 	}
 
-	public void editar(ActionEvent evento) {
-		try {
-			departamento = (Departamento) evento.getComponent().getAttributes().get("departamentoSelecionado");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
 	public void excluir(ActionEvent evento) {
 		try {
-			departamento = (Departamento) evento.getComponent().getAttributes().get("departamentoSelecionado");
+			marca = (Marca) evento.getComponent().getAttributes().get("marcaSelecionado");
 
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentoDAO.excluir(departamento);
+			MarcaDAO marcaDAO = new MarcaDAO();
+			marcaDAO.excluir(marca);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + departamento.getNome());
+					"Registro: " + marca.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			departamentos = departamentoDAO.listar("nome");
+			marcas = marcaDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
@@ -138,5 +125,5 @@ public class DepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-
+	
 }

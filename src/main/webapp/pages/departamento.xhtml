@@ -46,14 +46,14 @@
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="ramoSelecionado" value="#{departamento}" />
+							<f:attribute name="departamentoSelecionado" value="#{departamento}" />
 
 						</p:commandButton>
 
 						<p:commandButton icon="ui-icon-pencil"
 							actionListener="#{departamentoBean.editar}" update=":formCadastro:painel"
 							oncomplete="PF('dialogo').show();">
-							<f:attribute name="ramoSelecionado" value="#{departamento}" />
+							<f:attribute name="departamentoSelecionado" value="#{departamento}" />
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>

@@ -12,11 +12,17 @@
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
+	
+	<!-- Icones -->
+	<context-param>
+		<param-name>primefaces.FONT_AWESOME</param-name>
+		<param-value>true</param-value>
+	</context-param>	
 
 	<!-- Tema do PrimeFaces -->
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
-		<param-value>bootstrap</param-value>
+		<param-value>redmond</param-value>
 	</context-param>
 
 	<!-- Definição do Mecanismo de Upload -->
