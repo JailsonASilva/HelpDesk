@@ -26,7 +26,6 @@
 				<p:growl id="messages" showDetail="true" />
 				<p:toolbar>
 					<f:facet name="left">
-
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{marcaBean.novo}"
 							update=":formCadastro:painel">
@@ -93,8 +92,7 @@
 					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					paginatorPosition="bottom">
 
-					<p:column headerText="Nome" sortBy="#{marca.nome}"
-						filterBy="#{marca.nome}">
+					<p:column headerText="Nome" sortBy="#{marca.nome}">
 						<h:outputText value="#{marca.nome}" />
 					</p:column>
 				</p:dataTable>
