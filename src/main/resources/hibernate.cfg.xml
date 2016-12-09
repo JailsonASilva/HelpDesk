@@ -10,7 +10,7 @@
 
 		<!-- Configurações de Conexão com o Banco de Dados -->
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://127.0.0.1:3306/clinica</property>
+		<property name="connection.url">jdbc:mysql://127.0.0.1:3306/helpdesk</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">tec2013</property>
 
@@ -41,20 +41,8 @@
 		<property name="hbm2ddl.auto">update</property>
 
 		<!-- Mapeamento das entidades -->
-		<mapping class="br.clinica.domain.Pais" />
-		<mapping class="br.clinica.domain.Finalizadora" />
-		<mapping class="br.clinica.domain.Estado" />
-		<mapping class="br.clinica.domain.Cidade" />
-		<mapping class="br.clinica.domain.Bairro" />
-		<mapping class="br.clinica.domain.Profissao" />
-		<mapping class="br.clinica.domain.Ramo" />
-		<mapping class="br.clinica.domain.TipoEndereco" />
-		<mapping class="br.clinica.domain.TipoContato" />
-		<mapping class="br.clinica.domain.EstadoCivil" />
-		<mapping class="br.clinica.domain.Banco" />
-		<mapping class="br.clinica.domain.Pessoa" />
-		<mapping class="br.clinica.domain.PessoaFisica" />
-		<mapping class="br.clinica.domain.PessoaJuridica" />
+		<mapping class="br.com.projeto.domain.Departamanento" />
+
 
 	</session-factory>
 

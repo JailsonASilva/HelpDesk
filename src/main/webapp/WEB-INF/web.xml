@@ -5,7 +5,7 @@
 	id="WebApp_ID" version="3.1">
 
 	<!-- Nome da Aplicação -->
-	<display-name>Clínica</display-name>
+	<display-name>HelpDesk</display-name>
 
 	<!-- Estágio do Projeto -->
 	<context-param>
@@ -38,6 +38,6 @@
 
 	<!-- Carregamento do Hibernate -->
 	<listener>
-		<listener-class>br.clinica.util.HibernateContexto</listener-class>
+		<listener-class>br.com.projeto.util.HibernateContexto</listener-class>
 	</listener>
 </web-app>

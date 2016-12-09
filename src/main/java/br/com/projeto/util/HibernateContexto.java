@@ -1,4 +1,4 @@
-package br.clinica.util;
+package br.com.projeto.util;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

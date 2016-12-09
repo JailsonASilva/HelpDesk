@@ -1,4 +1,4 @@
-package br.clinica.domain;
+package br.com.projeto.domain;
 
 import java.io.Serializable;
 

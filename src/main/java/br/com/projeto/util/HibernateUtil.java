@@ -1,4 +1,4 @@
-package br.clinica.util;
+package br.com.projeto.util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
