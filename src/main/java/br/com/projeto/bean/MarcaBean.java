@@ -105,8 +105,6 @@ public class MarcaBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			marca = (Marca) evento.getComponent().getAttributes().get("marcaSelecionado");
-
 			MarcaDAO marcaDAO = new MarcaDAO();
 			marcaDAO.excluir(marca);
 
@@ -125,5 +123,14 @@ public class MarcaBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
+	public void editar(ActionEvent evento) {
+		if (marca == null) {
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operação não Permitida",
+					"Nenhum Registro foi Selecionado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+		}
+	}
+
 }
