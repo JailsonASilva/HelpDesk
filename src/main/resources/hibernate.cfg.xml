@@ -43,6 +43,7 @@
 		<!-- Mapeamento das entidades -->
 		<mapping class="br.com.projeto.domain.Departamento" />
 		<mapping class="br.com.projeto.domain.Marca" />
+		<mapping class="br.com.projeto.domain.Equipamento" />
 
 
 	</session-factory>

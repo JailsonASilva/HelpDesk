@@ -66,14 +66,17 @@ public class DepartamentoBean implements Serializable {
 				RequestContext.getCurrentInstance().showMessageInDialog(message);
 			}
 
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
+		}catch(
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+	RuntimeException erro)
+	{
+		message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+				"Erro: " + erro.getMessage());
 
-			erro.printStackTrace();
-		}
+		RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+		erro.printStackTrace();
+	}
 	}
 
 	public void novo() {
@@ -103,23 +106,8 @@ public class DepartamentoBean implements Serializable {
 		}
 	}
 
-	public void editar(ActionEvent evento) {
-		try {
-			departamento = (Departamento) evento.getComponent().getAttributes().get("departamentoSelecionado");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
 	public void excluir(ActionEvent evento) {
 		try {
-			departamento = (Departamento) evento.getComponent().getAttributes().get("departamentoSelecionado");
-
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentoDAO.excluir(departamento);
 
@@ -136,6 +124,15 @@ public class DepartamentoBean implements Serializable {
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
+		}
+	}
+
+	public void editar(ActionEvent evento) {
+		if (departamento == null) {
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operação não Permitida",
+					"Nenhum Registro foi Selecionado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
 		}
 	}
 

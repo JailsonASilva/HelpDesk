@@ -3,6 +3,7 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -10,32 +11,38 @@ import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
 
+import br.com.projeto.dao.DepartamentoDAO;
+import br.com.projeto.dao.EquipamentoDAO;
 import br.com.projeto.dao.MarcaDAO;
+import br.com.projeto.domain.Departamento;
+import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Marca;
 
 @SuppressWarnings("serial")
-@ViewScoped
 @ManagedBean
-public class MarcaBean implements Serializable {
-	private Marca marca;
-	private List<Marca> marcas;
+@ViewScoped
+public class EquipamentoBean implements Serializable {
+	private Equipamento equipamento;
+	private List<Equipamento> equipamentos;
 	private FacesMessage message;
 	private String busca;
+	private List<Marca> marcas;
+	private List<Departamento> departamentos;
 
-	public Marca getMarca() {
-		return marca;
+	public Equipamento getEquipamento() {
+		return equipamento;
 	}
 
-	public void setMarca(Marca marca) {
-		this.marca = marca;
+	public void setEquipamento(Equipamento equipamento) {
+		this.equipamento = equipamento;
 	}
 
-	public List<Marca> getMarcas() {
-		return marcas;
+	public List<Equipamento> getEquipamentos() {
+		return equipamentos;
 	}
 
-	public void setMarcas(List<Marca> marcas) {
-		this.marcas = marcas;
+	public void setEquipamentos(List<Equipamento> equipamentos) {
+		this.equipamentos = equipamentos;
 	}
 
 	public FacesMessage getMessage() {
@@ -54,12 +61,49 @@ public class MarcaBean implements Serializable {
 		this.busca = busca;
 	}
 
-	public void pesquisar() {
+	public List<Marca> getMarcas() {
+		return marcas;
+	}
+
+	public void setMarcas(List<Marca> marcas) {
+		this.marcas = marcas;
+	}
+
+	public List<Departamento> getDepartamentos() {
+		return departamentos;
+	}
+
+	public void setDepartamentos(List<Departamento> departamentos) {
+		this.departamentos = departamentos;
+	}
+
+	@PostConstruct
+	public void carregarTabelas() {
 		try {
 			MarcaDAO marcaDAO = new MarcaDAO();
-			marcas = marcaDAO.pesquisar(busca);
+			marcas = marcaDAO.listar("nome");
 
-			if (marcas.isEmpty() == true) {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.listar("nome");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+	
+	public void pesquisar() {
+		try {
+			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
+			equipamentos = equipamentoDAO.pesquisar(busca);
+
+			if (equipamentos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -76,25 +120,25 @@ public class MarcaBean implements Serializable {
 
 			erro.printStackTrace();
 		}
-	}
+	}	
 
 	public void novo() {
-		marca = new Marca();
+		equipamento = new Equipamento();
 	}
 
 	public void salvar() {
 		try {
-			MarcaDAO marcaDAO = new MarcaDAO();
-			marcaDAO.merge(marca);
+			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
+			equipamentoDAO.merge(equipamento);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Salvo com Sucesso!",
-					"Registro: " + marca.getNome());
+					"Registro: " + equipamento.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			marca = new Marca();
+			equipamento = new Equipamento();
 
-			marcas = marcaDAO.listar("nome");
+			equipamentos = equipamentoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -107,15 +151,15 @@ public class MarcaBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			MarcaDAO marcaDAO = new MarcaDAO();
-			marcaDAO.excluir(marca);
+			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
+			equipamentoDAO.excluir(equipamento);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + marca.getNome());
+					"Registro: " + equipamento.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			marcas = marcaDAO.listar("nome");
+			equipamentos = equipamentoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",

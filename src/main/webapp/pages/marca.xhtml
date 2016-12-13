@@ -10,7 +10,7 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Marca">
+			<p:panel header="Cadastro de Marcas">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
@@ -22,6 +22,7 @@
 					update="formListagem:tabela"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
+
 				<br></br>
 				<br></br>
 
@@ -56,11 +57,8 @@
 							<f:attribute name="marcaSelecionado" value="#{marca}" />
 						</p:commandButton>
 
-						<p:commandButton title="Imprimir" icon="ui-icon-print" />
-
-						<p:commandButton title="Download" icon="fa fa-fw fa-download">
-							<p:dataExporter type="xls" target="tbl" fileName="cars"
-								pageOnly="true" />
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
 						</p:commandButton>
 					</f:facet>
 
@@ -90,39 +88,38 @@
 								<f:attribute name="marcaSelecionado" value="#{marca}" />
 							</p:menuitem>
 
-							<p:menuitem value="Imprimir" icon="ui-icon-print">
-
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="marca" />
 							</p:menuitem>
 
-							<p:menuitem value="Download" icon="fa fa-fw fa-download">
-
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="marca" />
 							</p:menuitem>
 
-							<p:menuitem value="Página Inicial" url="http://www.facema.edu.br"
-								icon="ui-icon-extlink" />
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="marca" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
 						</p:menuButton>
 
-						<p:commandButton id="colunas" value="Colunas" style="float:right"
-							icon="ui-icon-calculator" />
-						<p:columnToggler datasource="tabela" trigger="colunas" />
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
 					</f:facet>
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					filteredValue="#{marcaBean.marcas}" selectionMode="single"
-					selection="#{marcaBean.marca}" draggableColumns="true"
-					resizableColumns="true" rowKey="#{marca.codigo}" paginator="true"
+					selectionMode="single" selection="#{marcaBean.marca}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{marca.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50" value="#{marcaBean.marcas}"
-					var="marca" rows="10"
-					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
-					paginatorPosition="bottom">
-
-
-					<f:facet name="{Exporters}">
-						<p:commandButton value="xls" ajax="false">
-							<p:dataExporter type="xls" target="tabela" fileName="marcas" />
-						</p:commandButton>
-					</f:facet>
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					var="marca" rows="10" paginatorPosition="bottom">
 
 					<p:column headerText="Nome" sortBy="#{marca.nome}">
 						<h:outputText value="#{marca.nome}" />
@@ -136,6 +133,7 @@
 						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 				</p:confirmDialog>
 			</p:panel>
+
 		</h:form>
 
 		<p:dialog widgetVar="iconeDeProcessamento">
@@ -172,5 +170,6 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
+
 	</ui:define>
 </ui:composition>

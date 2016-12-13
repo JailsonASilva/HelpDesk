@@ -5,23 +5,23 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
-	<meta charset="UTF-8"/>
-	<title><ui:insert name="titulo">Help Desk Facema</ui:insert></title>	
+	<meta charset="UTF-8" />
+	<title><ui:insert name="titulo">Help Desk Facema</ui:insert></title>
 	<h:outputStylesheet library="algaworks" name="estilo.css" />
 	<h:outputStylesheet library="webjars" name="/css/font-awesome.min.css" />
 	<h:outputScript library="js" name="scripts.js" />
 </h:head>
 <h:body>
-	<header>
-		
-	</header>
+	<header> </header>
 
 	<h:form>
 		<p:menubar style="margin-top: -20px; margin-bottom: 20px">
 			<p:submenu label="Sistema">
 			</p:submenu>
-			<p:submenu label="Administrativo">
-				<p:menuitem value="Pessoas" />
+			<p:submenu label="Cadastros">
+				<p:menuitem value="Marcas" url="/pages/marca.xhtml"/>
+				<p:menuitem value="Departamentos" url="/pages/departamento.xhtml"/>
+				<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml"/>
 			</p:submenu>
 			<p:submenu label="Minha conta">
 				<p:menuitem value="Sair" />
