@@ -9,34 +9,21 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.MarcaDAO;
 import br.com.projeto.domain.Marca;
 
 @SuppressWarnings("serial")
-@ViewScoped
 @ManagedBean
+@ViewScoped
 public class MarcaBean implements Serializable {
 	private Marca marca;
 	private List<Marca> marcas;
+
 	private FacesMessage message;
 	private String busca;
-
-	public Marca getMarca() {
-		return marca;
-	}
-
-	public void setMarca(Marca marca) {
-		this.marca = marca;
-	}
-
-	public List<Marca> getMarcas() {
-		return marcas;
-	}
-
-	public void setMarcas(List<Marca> marcas) {
-		this.marcas = marcas;
-	}
 
 	public FacesMessage getMessage() {
 		return message;
@@ -54,10 +41,28 @@ public class MarcaBean implements Serializable {
 		this.busca = busca;
 	}
 
+	public List<Marca> getMarcas() {
+		return marcas;
+	}
+
+	public void setMarcas(List<Marca> marcas) {
+		this.marcas = marcas;
+	}
+
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
+
 	public void pesquisar() {
 		try {
 			MarcaDAO marcaDAO = new MarcaDAO();
 			marcas = marcaDAO.pesquisar(busca);
+
+			marca = null;
 
 			if (marcas.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -87,14 +92,11 @@ public class MarcaBean implements Serializable {
 			MarcaDAO marcaDAO = new MarcaDAO();
 			marcaDAO.merge(marca);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Salvo com Sucesso!",
-					"Registro: " + marca.getNome());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			marca = new Marca();
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			marcas = marcaDAO.listar("nome");
+
+			marca = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -117,6 +119,8 @@ public class MarcaBean implements Serializable {
 
 			marcas = marcaDAO.listar("nome");
 
+			marca = null;
+
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
 					"Erro: " + erro.getMessage());
@@ -126,4 +130,11 @@ public class MarcaBean implements Serializable {
 		}
 	}
 
+	public void onRowSelect(SelectEvent event) {
+
+	}
+
+	public void onRowUnselect(UnselectEvent event) {
+		marca = null;
+	}
 }

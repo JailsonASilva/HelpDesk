@@ -44,7 +44,8 @@
 		<mapping class="br.com.projeto.domain.Departamento" />
 		<mapping class="br.com.projeto.domain.Marca" />
 		<mapping class="br.com.projeto.domain.Equipamento" />
-
+		<mapping class="br.com.projeto.domain.Cliente" />
+		<mapping class="br.com.projeto.domain.Usuario" />
 
 	</session-factory>
 

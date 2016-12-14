@@ -3,6 +3,7 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -12,18 +13,39 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.dao.DepartamentoDAO;
+import br.com.projeto.domain.Usuario;
 import br.com.projeto.domain.Departamento;
 
 @SuppressWarnings("serial")
-@ManagedBean
 @ViewScoped
-public class DepartamentoBean implements Serializable {
+@ManagedBean
+public class UsuarioBean implements Serializable {
+	private Usuario usuario;
+	private List<Usuario> usuarios;
+
 	private Departamento departamento;
 	private List<Departamento> departamentos;
 
 	private FacesMessage message;
 	private String busca;
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public List<Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
 
 	public FacesMessage getMessage() {
 		return message;
@@ -57,14 +79,34 @@ public class DepartamentoBean implements Serializable {
 		this.departamento = departamento;
 	}
 
-	public void pesquisar() {
+	@PostConstruct
+	public void carregarTabelas() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.pesquisar(busca);
+			departamentos = departamentoDAO.listar("nome");
 
-			departamento = null;
+		} catch (
 
-			if (departamentos.isEmpty() == true) {
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisar() {
+		try {
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.pesquisar(busca);
+
+			departamento = new Departamento();
+
+			usuario = null;
+
+			if (usuarios.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -84,19 +126,20 @@ public class DepartamentoBean implements Serializable {
 	}
 
 	public void novo() {
+		usuario = new Usuario();
 		departamento = new Departamento();
 	}
 
 	public void salvar() {
 		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentoDAO.merge(departamento);
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarioDAO.merge(usuario);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
+			
+			usuarios = usuarioDAO.listar("nome");
 
-			departamentos = departamentoDAO.listar("nome");
-
-			departamento = null;
+			usuario = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -109,20 +152,40 @@ public class DepartamentoBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentoDAO.excluir(departamento);
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarioDAO.excluir(usuario);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + departamento.getNome());
+					"Registro: " + usuario.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			departamentos = departamentoDAO.listar("nome");
+			usuarios = usuarioDAO.listar("nome");
 
-			departamento = null;
+			usuario = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+	
+	public void salvarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentoDAO.merge(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
+
+			departamento = new Departamento();
+
+			departamentos = departamentoDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
@@ -135,6 +198,7 @@ public class DepartamentoBean implements Serializable {
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
-		departamento = null;
-	}
+		usuario = null;
+	}	
+
 }

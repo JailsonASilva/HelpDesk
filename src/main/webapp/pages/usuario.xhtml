@@ -10,37 +10,35 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de Equipamentos">
+			<p:panel header="Cadastro de Usuarios">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{equipamentoBean.busca}" />
+					value="#{usuarioBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
-					actionListener="#{equipamentoBean.pesquisar}"
+					actionListener="#{usuarioBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
-
 				<br></br>
 				<br></br>
 
 				<p:growl id="messages" showDetail="true" />
-
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{equipamentoBean.novo}"
+							icon="ui-icon-document" actionListener="#{usuarioBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
-						<p:commandButton id="bitEditar" value="Editar"
-							update=":formCadastro:painel"							
-							disabled="#{equipamentoBean.equipamento == null}"
-							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							disabled="#{usuarioBean.usuario == null}"
+							oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -50,14 +48,14 @@
 						</span>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{equipamentoBean.excluir}"
-							disabled="#{equipamentoBean.equipamento == null}"
-							update=":formListagem:tabela :formListagem:tool"
+							actionListener="#{usuarioBean.excluir}"
+							disabled="#{usuarioBean.usuario == null}"
+							update=":formListagem:tabela"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
+							<f:attribute name="usuarioSelecionado" value="#{usuario}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -69,20 +67,17 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela"
-									fileName="equipamento" />
+								<p:dataExporter type="xls" target="tabela" fileName="usuario" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela"
-									fileName="equipamento" />
+								<p:dataExporter type="pdf" target="tabela" fileName="usuario" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela"
-									fileName="equipamento" />
+								<p:dataExporter type="xml" target="tabela" fileName="usuario" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -96,41 +91,39 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{equipamentoBean.equipamento}"
+					selectionMode="single" selection="#{usuarioBean.usuario}"
 					draggableColumns="true" resizableColumns="true"
-					rowKey="#{equipamento.codigo}" paginator="true"
+					rowKey="#{usuario.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{equipamentoBean.equipamentos}"
+					value="#{usuarioBean.usuarios}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="equipamento" rows="10" paginatorPosition="bottom">
+					var="usuario" rows="10" paginatorPosition="bottom">
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{equipamentoBean.onRowUnselect}" />
+						listener="#{usuarioBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{equipamentoBean.onRowSelect}" /> />											
+						listener="#{usuarioBean.onRowSelect}" /> />							
 
-					<p:column headerText="Nome" sortBy="#{equipamento.nome}">
-						<h:outputText value="#{equipamento.nome}" />
+					<p:column headerText="Nome" sortBy="#{usuario.nome}">
+						<h:outputText value="#{usuario.nome}" />
 					</p:column>
 
-					<p:column headerText="Departamento" width="280"
-						sortBy="#{equipamento.departamento.nome}">
-						<h:outputText value="#{equipamento.departamento.nome}" />
+					<p:column headerText="E-mail" sortBy="#{usuario.email}">
+						<h:outputText value="#{usuario.email}" />
 					</p:column>
 
-					<p:column headerText="Marca" width="280"
-						sortBy="#{equipamento.marca.nome}">
-						<h:outputText value="#{equipamento.marca.nome}" />
+					<p:column headerText="Departamento"
+						sortBy="#{usuario.departamento.nome}">
+						<h:outputText value="#{usuario.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Nº Patrimômio" width="280"
-						sortBy="#{equipamento.marca.nome}">
-						<h:outputText value="#{equipamento.marca.nome}" />
+					<p:column headerText="Ativo" sortBy="#{usuario.ativoFormatado}"
+						width="90">
+						<h:outputText value="#{usuario.ativoFormatado}" />
 					</p:column>
-
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -140,6 +133,7 @@
 						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 				</p:confirmDialog>
 			</p:panel>
+
 		</h:form>
 
 		<p:dialog widgetVar="iconeDeProcessamento">
@@ -150,49 +144,41 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Equipamento" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Usuario" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="true" closable="true">
 			<h:form id="formCadastro">
-
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
-					<p:inputText id="nome" maxlength="100" size="50" required="true"
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{equipamentoBean.equipamento.nome}" />
+						value="#{usuarioBean.usuario.nome}" />
+
+					<p:outputLabel for="email" value="E-mail " />
+					<p:inputText id="email" maxlength="100" size="60"
+						value="#{usuarioBean.usuario.email}" />
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<p:selectOneMenu id="departamento"
-						value="#{equipamentoBean.equipamento.departamento}"
+						value="#{usuarioBean.usuario.departamento}"
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Selecione um Departamento" />
-						<f:selectItems value="#{equipamentoBean.departamentos}"
+						<f:selectItems value="#{usuarioBean.departamentos}"
 							var="departamento" itemValue="#{departamento}"
 							itemLabel="#{departamento.nome}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="modelo" value="Modelo " />
-					<p:inputText id="modelo" maxlength="40" size="20"
-						value="#{equipamentoBean.equipamento.modelo}" />
+					<p:outputLabel for="senha" value="Senha:" />
+					<p:password id="senha" maxlength="8" size="10"
+						value="#{usuarioBean.usuario.senha}" required="true"
+						requiredMessage="O campo 'Senha' é obrigatório">
+					</p:password>
 
-					<p:outputLabel for="patrimonio" value="Nº Patrimônio" />
-					<p:inputText id="patrimonio" maxlength="40" size="20"
-						value="#{equipamentoBean.equipamento.patrimonio}" />
-
-					<p:outputLabel for="serie" value="Nº Série" />
-					<p:inputText id="serie" maxlength="40" size="20"
-						value="#{equipamentoBean.equipamento.serie}" />
-
-					<p:outputLabel for="marca" value="Marca " />
-					<p:selectOneMenu id="marca"
-						value="#{equipamentoBean.equipamento.marca}"
-						converter="omnifaces.SelectItemsConverter">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione uma Marca" />
-						<f:selectItems value="#{equipamentoBean.marcas}" var="marca"
-							itemValue="#{marca}" itemLabel="#{marca.nome}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="ativo" value="Ativo:" />
+					<p:selectBooleanCheckbox id="ativo"
+						value="#{usuarioBean.usuario.ativo}" required="true"
+						requiredMessage="O campo 'Ativo' é obrigatório" />
 				</h:panelGrid>
 
 				<br></br>
@@ -200,7 +186,7 @@
 
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{equipamentoBean.salvar}"
+						actionListener="#{usuarioBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -216,14 +202,6 @@
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:menuitem>
-
-						<p:menuitem value="Nova Marca"
-							oncomplete="PF('dialogoMarca').show();"
-							update=":formCadastroMarca:painelMarca">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-
 					</p:menuButton>
 
 				</h:panelGrid>
@@ -238,7 +216,7 @@
 					<p:outputLabel for="nome" value="Nome " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{equipamentoBean.departamento.nome}" />
+						value="#{usuarioBean.departamento.nome}" />
 					<p:message for="nome" display="Nome" />
 				</h:panelGrid>
 
@@ -247,39 +225,13 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{equipamentoBean.salvarDepartamento}"
+						actionListener="#{usuarioBean.salvarDepartamento}"
 						update=":formCadastroDepartamento:painelDepartamento :formCadastro:departamento"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoDepartamento').hide();" />
-				</h:panelGrid>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Cadastro de Marca" widgetVar="dialogoMarca"
-			draggable="false" resizable="false" modal="true" closable="true">
-			<h:form id="formCadastroMarca">
-				<h:panelGrid id="painelMarca" columns="3" class="ui-noborder">
-					<p:outputLabel for="nome" value="Nome " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{equipamentoBean.marca.nome}" />
-				</h:panelGrid>
-
-				<br></br>
-				<p:separator />
-
-				<h:panelGrid columns="2">
-					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{equipamentoBean.salvarMarca}"
-						update=":formCadastroMarca:painelMarca :formCadastro:marca"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()" />
-
-					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogoMarca').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

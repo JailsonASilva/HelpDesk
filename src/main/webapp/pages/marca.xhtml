@@ -19,7 +19,7 @@
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
 					actionListener="#{marcaBean.pesquisar}"
-					update="formListagem:tabela"
+					update="formListagem:tabela :formListagem:tool"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -27,7 +27,7 @@
 				<br></br>
 
 				<p:growl id="messages" showDetail="true" />
-				<p:toolbar>
+				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{marcaBean.novo}"
@@ -37,6 +37,7 @@
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{marcaBean.marca == null}"
 							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
 							oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -49,7 +50,8 @@
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
 							actionListener="#{marcaBean.excluir}"
-							update=":formListagem:tabela"
+							disabled="#{marcaBean.marca == null}"
+							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
@@ -64,30 +66,6 @@
 
 					<f:facet name="right">
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
-							<p:menuitem value="Novo" oncomplete="PF('dialogo').show();"
-								icon="ui-icon-document" actionListener="#{marcaBean.novo}"
-								update=":formCadastro:painel">
-								<f:actionListener
-									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-							</p:menuitem>
-
-							<p:menuitem value="Editar" process=":formListagem:tabela"
-								update=":formCadastro:painel" icon="fa fa-fw fa-edit"
-								oncomplete="PF('dialogo').show();">
-								<f:actionListener
-									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-							</p:menuitem>
-
-							<p:menuitem value="Excluir" icon="ui-icon-trash"
-								actionListener="#{marcaBean.excluir}"
-								update=":formListagem:tabela"
-								onstart="PF('iconeDeProcessamento').show()"
-								onsuccess="PF('iconeDeProcessamento').hide()">
-								<p:confirm header="Confirmação"
-									message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-								<f:attribute name="marcaSelecionado" value="#{marca}" />
-							</p:menuitem>
-
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
 								<p:dataExporter type="xls" target="tabela" fileName="marca" />
@@ -117,9 +95,18 @@
 					selectionMode="single" selection="#{marcaBean.marca}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{marca.codigo}" paginator="true"
-					rowsPerPageTemplate="5,10,20,30,40,50" value="#{marcaBean.marcas}"
-					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{marcaBean.marcas}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="marca" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{marcaBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{marcaBean.onRowSelect}" /> />							
 
 					<p:column headerText="Nome" sortBy="#{marca.nome}">
 						<h:outputText value="#{marca.nome}" />
@@ -161,7 +148,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{marcaBean.salvar}"
-						update=":formCadastro:painel :formListagem:tabela"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

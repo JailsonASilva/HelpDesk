@@ -19,7 +19,7 @@
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
 					actionListener="#{departamentoBean.pesquisar}"
-					update="formListagem:tabela"
+					update="formListagem:tabela :formListagem:tool"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -27,7 +27,7 @@
 				<br></br>
 
 				<p:growl id="messages" showDetail="true" />
-				<p:toolbar>
+				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{departamentoBean.novo}"
@@ -37,6 +37,7 @@
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{departamentoBean.departamento == null}"
 							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
 							oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -49,13 +50,13 @@
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
 							actionListener="#{departamentoBean.excluir}"
-							update=":formListagem:tabela"
+							disabled="#{departamentoBean.departamento == null}"
+							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
+							<f:attribute name="departamentoSelecionado" value="#{departamento}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -65,48 +66,19 @@
 
 					<f:facet name="right">
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
-							<p:menuitem value="Novo" oncomplete="PF('dialogo').show();"
-								icon="ui-icon-document"
-								actionListener="#{departamentoBean.novo}"
-								update=":formCadastro:painel">
-								<f:actionListener
-									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-							</p:menuitem>
-
-							<p:menuitem value="Editar" process=":formListagem:tabela"
-								update=":formCadastro:painel" icon="fa fa-fw fa-edit"
-								oncomplete="PF('dialogo').show();">
-								<f:actionListener
-									type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-							</p:menuitem>
-
-							<p:menuitem value="Excluir" icon="ui-icon-trash"
-								actionListener="#{departamentoBean.excluir}"
-								update=":formListagem:tabela"
-								onstart="PF('iconeDeProcessamento').show()"
-								onsuccess="PF('iconeDeProcessamento').hide()">
-								<p:confirm header="Confirmação"
-									message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-								<f:attribute name="departamentoSelecionado"
-									value="#{departamento}" />
-							</p:menuitem>
-
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="xls" target="tabela" fileName="departamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="pdf" target="tabela" fileName="departamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="xml" target="tabela" fileName="departamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -123,10 +95,18 @@
 					selectionMode="single" selection="#{departamentoBean.departamento}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{departamento.codigo}" paginator="true"
-					rowsPerPageTemplate="5,10,20,30,40,50"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
 					value="#{departamentoBean.departamentos}"
-					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="departamento" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{departamentoBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{departamentoBean.onRowSelect}" /> />							
 
 					<p:column headerText="Nome" sortBy="#{departamento.nome}">
 						<h:outputText value="#{departamento.nome}" />
@@ -168,7 +148,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{departamentoBean.salvar}"
-						update=":formCadastro:painel :formListagem:tabela"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

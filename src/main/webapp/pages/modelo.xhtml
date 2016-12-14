@@ -10,6 +10,7 @@
 	<h:outputStylesheet library="algaworks" name="estilo.css" />
 	<h:outputStylesheet library="webjars" name="/css/font-awesome.min.css" />
 	<h:outputScript library="js" name="scripts.js" />
+	<h:outputScript library="js" name="fecharDialogo.js" />
 </h:head>
 <h:body>
 	<header> </header>
@@ -17,15 +18,27 @@
 	<h:form>
 		<p:menubar style="margin-top: -20px; margin-bottom: 20px">
 			<p:submenu label="Sistema">
+				<p:menuitem value="Departamentos" url="/pages/departamento.xhtml" />
+				<p:menuitem value="Usuários" url="/pages/usuario.xhtml" />
 			</p:submenu>
-			<p:submenu label="Cadastros">
-				<p:menuitem value="Marcas" url="/pages/marca.xhtml"/>
-				<p:menuitem value="Departamentos" url="/pages/departamento.xhtml"/>
-				<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml"/>
+
+			<p:submenu label="Equipamento">
+				<p:submenu label="Cadastros">
+					<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml" />
+					<p:menuitem value="Marcas" url="/pages/marca.xhtml" />
+				</p:submenu>
 			</p:submenu>
+
+			<p:submenu label="Ticket">
+				<p:submenu label="Cadastros">
+					<p:menuitem value="Clientes" url="/pages/cliente.xhtml" />
+				</p:submenu>
+			</p:submenu>
+
 			<p:submenu label="Minha conta">
 				<p:menuitem value="Sair" />
 			</p:submenu>
+
 		</p:menubar>
 	</h:form>
 

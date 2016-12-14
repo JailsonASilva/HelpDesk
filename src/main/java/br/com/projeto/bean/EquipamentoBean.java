@@ -10,6 +10,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
@@ -24,10 +26,15 @@ import br.com.projeto.domain.Marca;
 public class EquipamentoBean implements Serializable {
 	private Equipamento equipamento;
 	private List<Equipamento> equipamentos;
+
+	private Marca marca;
+	private List<Marca> marcas;
+
+	private Departamento departamento;
+	private List<Departamento> departamentos;
+
 	private FacesMessage message;
 	private String busca;
-	private List<Marca> marcas;
-	private List<Departamento> departamentos;
 
 	public Equipamento getEquipamento() {
 		return equipamento;
@@ -77,6 +84,22 @@ public class EquipamentoBean implements Serializable {
 		this.departamentos = departamentos;
 	}
 
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
+
+	public Departamento getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(Departamento departamento) {
+		this.departamento = departamento;
+	}
+
 	@PostConstruct
 	public void carregarTabelas() {
 		try {
@@ -97,11 +120,16 @@ public class EquipamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void pesquisar() {
 		try {
 			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
 			equipamentos = equipamentoDAO.pesquisar(busca);
+
+			departamento = new Departamento();
+			marca = new Marca();
+
+			equipamento = null;
 
 			if (equipamentos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -120,10 +148,12 @@ public class EquipamentoBean implements Serializable {
 
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void novo() {
 		equipamento = new Equipamento();
+		departamento = new Departamento();
+		marca = new Marca();
 	}
 
 	public void salvar() {
@@ -131,14 +161,11 @@ public class EquipamentoBean implements Serializable {
 			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
 			equipamentoDAO.merge(equipamento);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Salvo com Sucesso!",
-					"Registro: " + equipamento.getNome());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			equipamento = new Equipamento();
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			equipamentos = equipamentoDAO.listar("nome");
+
+			equipamento = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -161,6 +188,8 @@ public class EquipamentoBean implements Serializable {
 
 			equipamentos = equipamentoDAO.listar("nome");
 
+			equipamento = null;
+
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
 					"Erro: " + erro.getMessage());
@@ -168,6 +197,54 @@ public class EquipamentoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
+	}
+
+	public void salvarMarca() {
+		try {
+			MarcaDAO marcaDAO = new MarcaDAO();
+			marcaDAO.merge(marca);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoMarca').hide();");
+			
+			marca = new Marca();			
+
+			marcas = marcaDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentoDAO.merge(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
+
+			departamento = new Departamento();
+
+			departamentos = departamentoDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void onRowSelect(SelectEvent event) {
+
+	}
+
+	public void onRowUnselect(UnselectEvent event) {
+		equipamento = null;
 	}
 
 }
