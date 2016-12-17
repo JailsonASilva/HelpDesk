@@ -1,17 +1,22 @@
 package br.com.projeto.domain;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "equipamento")
 public class Equipamento extends GenericDomain {
-	@Column(length = 100, nullable = false)
-	private String nome;
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private TipoEquipamento tipoEquipamento;
 
 	@Column(length = 40, nullable = true)
 	private String serie;
@@ -27,15 +32,53 @@ public class Equipamento extends GenericDomain {
 	private Departamento departamento;
 
 	@ManyToOne
-	@JoinColumn(nullable = true)
+	@JoinColumn(nullable = false)
 	private Marca marca;
 
-	public String getNome() {
-		return nome;
+	@Column(length = 40, nullable = false)
+	private String situacao;
+
+	@Column(nullable = true)
+	@Temporal(TemporalType.DATE)
+	private Date garantia_inicial;
+
+	@Column(nullable = true)
+	@Temporal(TemporalType.DATE)
+	private Date garantia_final;
+
+	@Column(length = 500, nullable = true)
+	private String dadosAdicionais;
+
+	public String getDadosAdicionais() {
+		return dadosAdicionais;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setDadosAdicionais(String dadosAdicionais) {
+		this.dadosAdicionais = dadosAdicionais;
+	}
+
+	public String getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
+	}
+
+	public Date getGarantia_inicial() {
+		return garantia_inicial;
+	}
+
+	public void setGarantia_inicial(Date garantia_inicial) {
+		this.garantia_inicial = garantia_inicial;
+	}
+
+	public Date getGarantia_final() {
+		return garantia_final;
+	}
+
+	public void setGarantia_final(Date garantia_final) {
+		this.garantia_final = garantia_final;
 	}
 
 	public String getSerie() {
@@ -76,6 +119,14 @@ public class Equipamento extends GenericDomain {
 
 	public void setMarca(Marca marca) {
 		this.marca = marca;
+	}
+
+	public void setTipoEquipamento(TipoEquipamento tipoEquipamento) {
+		this.tipoEquipamento = tipoEquipamento;
+	}
+
+	public TipoEquipamento getTipoEquipamento() {
+		return tipoEquipamento;
 	}
 
 }

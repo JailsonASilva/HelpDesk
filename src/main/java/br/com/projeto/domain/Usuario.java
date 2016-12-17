@@ -17,7 +17,7 @@ public class Usuario extends GenericDomain {
 	@Column(length = 100, nullable = true)
 	private String email;
 
-	@Column(length = 32, nullable = false)
+	@Column(length = 32, nullable = true)
 	private String senha;
 
 	@ManyToOne

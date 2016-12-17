@@ -38,7 +38,7 @@
 						</p:commandButton>
 
 						<p:commandButton id="bitEditar" value="Editar"
-							update=":formCadastro:painel"							
+							update=":formCadastro:painel"
 							disabled="#{equipamentoBean.equipamento == null}"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -96,9 +96,10 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{equipamentoBean.equipamento}"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{equipamento.codigo}" paginator="true"
+					selectionMode="single" widgetVar="tabelaFiltro"
+					selection="#{equipamentoBean.equipamento}" draggableColumns="true"
+					resizableColumns="true" rowKey="#{equipamento.codigo}"
+					paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
 					value="#{equipamentoBean.equipamentos}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -111,24 +112,82 @@
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{equipamentoBean.onRowSelect}" /> />											
+					
+					<p:column headerText="Tipo" width="280"
+						filterBy="#{equipamento.tipoEquipamento.nome}"
+						filterMatchMode="in" sortBy="#{equipamento.tipoEquipamento.nome}">
 
-					<p:column headerText="Nome" sortBy="#{equipamento.nome}">
-						<h:outputText value="#{equipamento.nome}" />
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems value="#{equipamentoBean.tipoEquipamentos}"
+										var="tipoEquipamentoFiltro"
+										itemValue="#{tipoEquipamentoFiltro.nome}"
+										itemLabel="#{tipoEquipamentoFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+
+						<h:outputText value="#{equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Departamento" width="280"
+					<p:column headerText="Departamento" width="120"
+						filterBy="#{equipamento.departamento.nome}" filterMatchMode="in"
 						sortBy="#{equipamento.departamento.nome}">
+
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems value="#{equipamentoBean.departamentos}"
+										var="departamentoFiltro"
+										itemValue="#{departamentoFiltro.nome}"
+										itemLabel="#{departamentoFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+
 						<h:outputText value="#{equipamento.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Marca" width="280"
+					<p:column headerText="Marca" width="120"
+						filterBy="#{equipamento.marca.nome}" filterMatchMode="in"
 						sortBy="#{equipamento.marca.nome}">
+
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems value="#{equipamentoBean.marcas}"
+										var="marcaFiltro" itemValue="#{marcaFiltro.nome}"
+										itemLabel="#{marcaFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+
 						<h:outputText value="#{equipamento.marca.nome}" />
 					</p:column>
 
-					<p:column headerText="Nº Patrimômio" width="280"
-						sortBy="#{equipamento.marca.nome}">
-						<h:outputText value="#{equipamento.marca.nome}" />
+					<p:column headerText="Modelo" width="120"
+						sortBy="#{equipamento.modelo}">
+						<h:outputText value="#{equipamento.modelo}" />
+					</p:column>
+
+					<p:column headerText="Nº Patrimômio" width="120"
+						sortBy="#{equipamento.patrimonio}">
+						<h:outputText value="#{equipamento.patrimonio}" />
+					</p:column>
+
+					<p:column headerText="Situação" width="100"
+						sortBy="#{equipamento.situacao}">
+						<h:outputText value="#{equipamento.situacao}" />
 					</p:column>
 
 				</p:dataTable>
@@ -155,13 +214,37 @@
 			<h:form id="formCadastro">
 
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
-					<p:outputLabel for="nome" value="Nome " />
-					<p:inputText id="nome" maxlength="100" size="50" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{equipamentoBean.equipamento.nome}" />
+
+					<p:outputLabel for="tipo" value="Tipo" />
+					<p:selectOneMenu id="tipo" filter="true"
+						filterMatchMode="startsWith"
+						value="#{equipamentoBean.equipamento.tipoEquipamento}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione um Tipo de Equipamento" />
+						<f:selectItems value="#{equipamentoBean.tipoEquipamentos}"
+							var="tipoEquipamento" itemValue="#{tipoEquipamento}"
+							itemLabel="#{tipoEquipamento.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="situacao" value="Situação" />
+					<p:selectOneMenu id="situacao" filter="true" required="true"
+						requiredMessage="Campo Obrigatório!"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{equipamentoBean.equipamento.situacao}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma Situação" />
+						<f:selectItem itemValue="Ativo" itemLabel="Ativo" />
+						<f:selectItem itemValue="Inativo" itemLabel="Inativo" />
+						<f:selectItem itemValue="Modificado" itemLabel="Modificado" />
+						<f:selectItem itemValue="Ocioso" itemLabel="Ocioso" />
+						<f:selectItems />
+					</p:selectOneMenu>
 
 					<p:outputLabel for="departamento" value="Departamento " />
-					<p:selectOneMenu id="departamento"
+					<p:selectOneMenu id="departamento" filter="true"
+						filterMatchMode="startsWith"
 						value="#{equipamentoBean.equipamento.departamento}"
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
@@ -172,27 +255,49 @@
 							itemLabel="#{departamento.nome}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="modelo" value="Modelo " />
-					<p:inputText id="modelo" maxlength="40" size="20"
-						value="#{equipamentoBean.equipamento.modelo}" />
-
-					<p:outputLabel for="patrimonio" value="Nº Patrimônio" />
-					<p:inputText id="patrimonio" maxlength="40" size="20"
-						value="#{equipamentoBean.equipamento.patrimonio}" />
-
-					<p:outputLabel for="serie" value="Nº Série" />
-					<p:inputText id="serie" maxlength="40" size="20"
-						value="#{equipamentoBean.equipamento.serie}" />
-
 					<p:outputLabel for="marca" value="Marca " />
-					<p:selectOneMenu id="marca"
+					<p:selectOneMenu id="marca" filter="true"
+						filterMatchMode="startsWith"
 						value="#{equipamentoBean.equipamento.marca}"
-						converter="omnifaces.SelectItemsConverter">
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">>
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Selecione uma Marca" />
 						<f:selectItems value="#{equipamentoBean.marcas}" var="marca"
 							itemValue="#{marca}" itemLabel="#{marca.nome}" />
 					</p:selectOneMenu>
+
+					<p:outputLabel for="modelo" value="Modelo " />
+					<p:inputText id="modelo" maxlength="40" size="25"
+						value="#{equipamentoBean.equipamento.modelo}" />
+
+					<p:outputLabel for="patrimonio" value="Nº Patrimônio" />
+					<p:inputText id="patrimonio" maxlength="40" size="25"
+						value="#{equipamentoBean.equipamento.patrimonio}" />
+
+					<p:outputLabel for="serie" value="Nº Série" />
+					<p:inputText id="serie" maxlength="40" size="25"
+						value="#{equipamentoBean.equipamento.serie}" />
+
+					<p:outputLabel for="garantiaInicio" value="Data Garantia Início" />
+					<p:calendar id="garantiaInicio" mask="99/99/99"
+						yearRange="1900:2222"
+						value="#{equipamentoBean.equipamento.garantia_inicial}" size="12"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="garantiaFinal" value="Data Garantia Final" />
+					<p:calendar id="garantiaFinal" mask="99/99/99"
+						yearRange="1900:2222"
+						value="#{equipamentoBean.equipamento.garantia_final}" size="12"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dadosAdicionais" value="Dados Adicionais" />
+					<p:inputTextarea id="dadosAdicionais" rows="4" cols="50"
+						counter="display" maxlength="500"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{equipamentoBean.equipamento.dadosAdicionais}" />
+					<br></br>
+					<h:outputText id="display" />
 				</h:panelGrid>
 
 				<br></br>
@@ -210,6 +315,13 @@
 
 					<p:menuButton value="Opções" style="margin:0 50px 0 50px">
 
+						<p:menuitem value="Novo Tipo de Equipamento"
+							oncomplete="PF('dialogoTipo').show();"
+							update=":formCadastroTipo:painelTipo">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:menuitem>
+
 						<p:menuitem value="Novo Departamento"
 							oncomplete="PF('dialogoDepartamento').show();"
 							update=":formCadastroDepartamento:painelDepartamento">
@@ -223,7 +335,6 @@
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:menuitem>
-
 					</p:menuButton>
 
 				</h:panelGrid>
@@ -275,6 +386,34 @@
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{equipamentoBean.salvarMarca}"
 						update=":formCadastroMarca:painelMarca :formCadastro:marca"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoMarca').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Tipos de Equipamento"
+			widgetVar="dialogoTipo" draggable="false" resizable="false"
+			modal="true" closable="true">
+			<h:form id="formCadastroTipo">
+				<h:panelGrid id="painelTipo" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{equipamentoBean.tipoEquipamento.nome}" />
+					<p:message for="nome" display="Nome" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{equipamentoBean.salvarTipo}"
+						update=":formCadastroTipo:painelTipo :formCadastro:tipo"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

@@ -9,14 +9,15 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.apache.shiro.crypto.hash.SimpleHash;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
-import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.dao.DepartamentoDAO;
-import br.com.projeto.domain.Usuario;
+import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Departamento;
+import br.com.projeto.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ViewScoped
@@ -127,6 +128,8 @@ public class UsuarioBean implements Serializable {
 
 	public void novo() {
 		usuario = new Usuario();
+		usuario.setAtivo(true);
+		
 		departamento = new Departamento();
 	}
 
@@ -136,7 +139,8 @@ public class UsuarioBean implements Serializable {
 			usuarioDAO.merge(usuario);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
-			
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoSenha').hide();");
+
 			usuarios = usuarioDAO.listar("nome");
 
 			usuario = null;
@@ -172,7 +176,7 @@ public class UsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarDepartamento() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
@@ -193,12 +197,48 @@ public class UsuarioBean implements Serializable {
 		}
 	}
 
+	public void editarSenha(ActionEvent evento) {
+		try {
+			usuario = (Usuario) evento.getComponent().getAttributes().get("usuarioSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Senha.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarSenha() {
+		try {
+			SimpleHash hash = new SimpleHash("md5", usuario.getSenhaSemCriptografia());
+			usuario.setSenha(hash.toHex());					
+			
+			UsuarioDAO usuarioDAO = new UsuarioDAO();			
+			usuarioDAO.merge(usuario);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoSenha').hide();");
+
+			usuarios = usuarioDAO.listar("nome");
+
+			usuario = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void onRowSelect(SelectEvent event) {
 
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
 		usuario = null;
-	}	
+	}
 
 }

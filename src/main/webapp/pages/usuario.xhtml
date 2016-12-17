@@ -124,6 +124,17 @@
 						width="90">
 						<h:outputText value="#{usuario.ativoFormatado}" />
 					</p:column>
+
+					<p:column headerText="Senha" width="35">
+						<p:commandButton icon="fa fa-fw fa-key"
+							actionListener="#{usuarioBean.editarSenha}"
+							update=":formSenha:painelSenha"
+							oncomplete="PF('dialogoSenha').show();">
+							<f:attribute name="usuarioSelecionado" value="#{usuario}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -158,7 +169,8 @@
 						value="#{usuarioBean.usuario.email}" />
 
 					<p:outputLabel for="departamento" value="Departamento " />
-					<p:selectOneMenu id="departamento"
+					<p:selectOneMenu id="departamento" filter="true"
+						filterMatchMode="startsWith"
 						value="#{usuarioBean.usuario.departamento}"
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
@@ -168,12 +180,6 @@
 							var="departamento" itemValue="#{departamento}"
 							itemLabel="#{departamento.nome}" />
 					</p:selectOneMenu>
-
-					<p:outputLabel for="senha" value="Senha:" />
-					<p:password id="senha" maxlength="8" size="10"
-						value="#{usuarioBean.usuario.senha}" required="true"
-						requiredMessage="O campo 'Senha' é obrigatório">
-					</p:password>
 
 					<p:outputLabel for="ativo" value="Ativo:" />
 					<p:selectBooleanCheckbox id="ativo"
@@ -232,6 +238,33 @@
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoDepartamento').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Senha" widgetVar="dialogoSenha" draggable="false"
+			resizable="false" modal="true" closable="true">
+			<h:form id="formSenha">
+				<h:panelGrid id="painelSenha" columns="3" class="ui-noborder">
+					<p:outputLabel for="senha" value="Senha:" />
+					<p:password id="senha" maxlength="32" size="25"
+						value="#{usuarioBean.usuario.senhaSemCriptografia}"
+						required="true" requiredMessage="O campo 'Senha' é obrigatório">
+					</p:password>
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{usuarioBean.salvarSenha}"
+						update=":formSenha:painelSenha"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoSenha').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
