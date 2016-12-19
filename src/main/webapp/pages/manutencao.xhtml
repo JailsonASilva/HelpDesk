@@ -12,36 +12,23 @@
 		<p:panel header="Controle de Manutenção de Equipamentos">
 			<h:form id="formPesquisa">
 				<h:panelGrid id="painelBusca" columns="2" class="ui-noborder">
-
 					<p:outputLabel for="dataInicial" value="Data Inicial" />
 					<p:calendar id="dataInicial" mask="99/99/99" yearRange="1900:2222"
 						required="true" requiredMessage="Campo Obrigatório!"
-						style="margin:14px" value="#{manutencaoBean.dataInicial}" size="9"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-					<p:outputLabel for="dataFinal" value="Data Final" />
-					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
-						required="true" requiredMessage="Campo Obrigatório!"
-						style="margin:14px" value="#{manutencaoBean.dataFinal}" size="9"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
+						value="#{manutencaoBean.dataInicial}" size="9" locale="pt_BR"
+						showButtonPanel="true" navigator="true" />
 				</h:panelGrid>
 
 				<h:panelGrid columns="3" class="ui-noborder">
-					<p:outputLabel for="tipo" value="Equipamento" />
-					<p:selectOneMenu id="tipo"
-						value="#{manutencaoBean.tipoEquipamento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório!">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Equipamento" />
-						<f:selectItems value="#{manutencaoBean.tipoEquipamentos}"
-							var="tipoEquipamento" itemValue="#{tipoEquipamento}"
-							itemLabel="#{tipoEquipamento.nome}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="dataFinal" value="Data Final" />
+					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
+						required="true" requiredMessage="Campo Obrigatório!"
+						style="margin:5px" value="#{manutencaoBean.dataFinal}" size="9"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
 						icon="ui-icon-script" actionListener="#{manutencaoBean.pesquisar}"
-						update="formListagem:tabela :formPesquisa:painelBusca :formPesquisa:tipo"
+						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -136,7 +123,24 @@
 						listener="#{manutencaoBean.onRowSelect}" />
 
 					<p:column headerText="Equipamento" width="120"
+						filterBy="#{manutencao.equipamento.tipoEquipamento.nome}"
+						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.tipoEquipamento.nome}">
+						
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems value="#{manutencaoBean.tipoEquipamentos}"
+										var="tipoEquipamentoFiltro"
+										itemValue="#{tipoEquipamentoFiltro.nome}"
+										itemLabel="#{tipoEquipamentoFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+												
 						<h:outputText
 							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
 					</p:column>
@@ -218,7 +222,7 @@
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="equipamento" value="Equipamento" />
-					<p:selectOneMenu id="equipamento" filter="true"
+					<p:selectOneMenu id="equipamento" filter="true" 
 						filterMatchMode="startsWith"
 						value="#{manutencaoBean.manutencao.equipamento}"
 						converter="omnifaces.SelectItemsConverter" required="true"

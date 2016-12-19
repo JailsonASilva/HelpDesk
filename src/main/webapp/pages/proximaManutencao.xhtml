@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<p:panel header="Próximas Manutenções">
+			<h:form id="formPesquisa">
+				<h:panelGrid id="painelBusca" columns="2" class="ui-noborder">
+					<p:outputLabel for="dataInicial" value="Data Inicial" />
+					<p:calendar id="dataInicial" mask="99/99/99" yearRange="1900:2222"
+						required="true" requiredMessage="Campo Obrigatório!"
+						value="#{proximaManutencaoBean.dataInicial}" size="9"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" class="ui-noborder">
+					<p:outputLabel for="dataFinal" value="Data Final" />
+					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
+						required="true" requiredMessage="Campo Obrigatório!"
+						style="margin:5px" value="#{proximaManutencaoBean.dataFinal}"
+						size="9" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:commandButton id="bitPesquisar" value="Pesquisar"
+						icon="ui-icon-script"
+						actionListener="#{proximaManutencaoBean.pesquisar}"
+						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+				</h:panelGrid>
+
+				<br></br>
+			</h:form>
+
+
+			<h:form id="formListagem">
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Visualizar" process=":formListagem:tabela"
+							disabled="#{proximaManutencaoBean.manutencao == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-search"
+							oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Imprimir" icon="ui-icon-print"
+							style="margin:0 10px 0 10px">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="manutencao" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="manutencao" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="manutencao" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					widgetVar="tabelaFiltro" selectionMode="single"
+					selection="#{proximaManutencaoBean.manutencao}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{manutencao.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{proximaManutencaoBean.manutencoes}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="manutencao" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{proximaManutencaoBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{proximaManutencaoBean.onRowSelect}" />
+
+					<p:column headerText="Equipamento" width="120"
+						filterBy="#{manutencao.equipamento.tipoEquipamento.nome}"
+						filterMatchMode="in"
+						sortBy="#{manutencao.equipamento.tipoEquipamento.nome}">
+
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems
+										value="#{proximaManutencaoBean.tipoEquipamentos}"
+										var="tipoEquipamentoFiltro"
+										itemValue="#{tipoEquipamentoFiltro.nome}"
+										itemLabel="#{tipoEquipamentoFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+
+						<h:outputText
+							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
+					</p:column>
+
+					<p:column headerText="Departamento" width="120"
+						filterBy="#{manutencao.equipamento.departamento.nome}"
+						filterMatchMode="in"
+						sortBy="#{manutencao.equipamento.departamento.nome}">
+
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems value="#{proximaManutencaoBean.departamentos}"
+										var="departamentoFiltro"
+										itemValue="#{departamentoFiltro.nome}"
+										itemLabel="#{departamentoFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+
+						<h:outputText value="#{manutencao.equipamento.departamento.nome}" />
+					</p:column>
+
+					<p:column headerText="Marca" width="120"
+						sortBy="#{manutencao.equipamento.marca.nome}">
+						<h:outputText value="#{manutencao.equipamento.marca.nome}" />
+					</p:column>
+
+					<p:column headerText="Tipo" width="50" sortBy="#{manutencao.tipo}">
+						<h:outputText value="#{manutencao.tipo}" />
+					</p:column>
+
+					<p:column headerText="Responsável" width="90"
+						sortBy="#{manutencao.usuario.nome}">
+						<h:outputText value="#{manutencao.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Manutenção" width="55"
+						sortBy="#{manutencao.dataManutencao}">
+						<h:outputText value="#{manutencao.dataManutencao}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Próxima Manutenção" width="65"
+						sortBy="#{manutencao.dataProxima}">
+						<h:outputText value="#{manutencao.dataProxima}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+
+
+			</h:form>
+		</p:panel>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Detalhes da Manutenção" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel value="Equipamento" />
+					<p:inputText maxlength="40" size="53" readonly="true"
+						value="#{proximaManutencaoBean.manutencao.equipamento.tipoEquipamento.nome}" />
+
+					<p:outputLabel value="Departamento" />
+					<p:inputText maxlength="40" size="53" readonly="true"
+						value="#{proximaManutencaoBean.manutencao.equipamento.departamento.nome}" />
+
+					<p:outputLabel value="Marca" />
+					<p:inputText maxlength="40" size="53" readonly="true"
+						value="#{proximaManutencaoBean.manutencao.equipamento.marca.nome}" />
+
+					<p:outputLabel value="Modelo" />
+					<p:inputText maxlength="40" size="53" readonly="true"
+						value="#{proximaManutencaoBean.manutencao.equipamento.modelo}" />
+
+					<p:outputLabel value="Tipo" />
+					<p:inputText maxlength="40" size="53" readonly="true"
+						value="#{proximaManutencaoBean.manutencao.tipo}" />
+
+					<p:outputLabel value="Problema Detectado" />
+					<p:inputTextarea rows="4" cols="50" readonly="true"
+						autoResize="false"
+						value="#{proximaManutencaoBean.manutencao.problema}" />
+
+					<p:outputLabel value="Serviço Executado" />
+					<p:inputTextarea rows="4" cols="50" readonly="true"
+						autoResize="false"
+						value="#{proximaManutencaoBean.manutencao.servico}" />
+
+					<p:outputLabel value="Responsável" />
+					<p:inputText maxlength="40" size="53" readonly="true"
+						value="#{proximaManutencaoBean.manutencao.usuario.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

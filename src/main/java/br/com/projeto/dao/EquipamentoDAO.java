@@ -31,5 +31,22 @@ public class EquipamentoDAO extends GenericDAO<Equipamento> {
 			sessao.close();
 		}
 	}
+	
+	@SuppressWarnings({ "unchecked"})	
+	public List<Equipamento> pesquisarEquipamentoCodigo(Long codigo) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Equipamento.class);
+			consulta.add(Restrictions.eq("codigo", codigo));
+
+			List<Equipamento> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}	
 
 }

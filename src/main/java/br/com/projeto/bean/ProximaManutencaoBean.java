@@ -1,6 +1,5 @@
 package br.com.projeto.bean;
 
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -28,9 +27,9 @@ import br.com.projeto.domain.TipoEquipamento;
 import br.com.projeto.domain.Usuario;
 
 @SuppressWarnings("serial")
-@ViewScoped
 @ManagedBean
-public class ManutencaoBean implements Serializable {
+@ViewScoped
+public class ProximaManutencaoBean implements Serializable {
 	private Manutencao manutencao;
 	private List<Manutencao> manutencoes;
 
@@ -51,44 +50,12 @@ public class ManutencaoBean implements Serializable {
 	private Date dataInicial;
 	private Date dataFinal;
 
-	public Manutencao getManutencao() {
-		return manutencao;
-	}
-
-	public void setManutencao(Manutencao manutencao) {
-		this.manutencao = manutencao;
-	}
-
 	public List<Manutencao> getManutencoes() {
 		return manutencoes;
 	}
 
 	public void setManutencoes(List<Manutencao> manutencoes) {
 		this.manutencoes = manutencoes;
-	}
-
-	public Equipamento getEquipamento() {
-		return equipamento;
-	}
-
-	public void setEquipamento(Equipamento equipamento) {
-		this.equipamento = equipamento;
-	}
-
-	public List<Equipamento> getEquipamentos() {
-		return equipamentos;
-	}
-
-	public void setEquipamentos(List<Equipamento> equipamentos) {
-		this.equipamentos = equipamentos;
-	}
-
-	public TipoEquipamento getTipoEquipamento() {
-		return tipoEquipamento;
-	}
-
-	public void setTipoEquipamento(TipoEquipamento tipoEquipamento) {
-		this.tipoEquipamento = tipoEquipamento;
 	}
 
 	public List<TipoEquipamento> getTipoEquipamentos() {
@@ -105,14 +72,6 @@ public class ManutencaoBean implements Serializable {
 
 	public void setDepartamentos(List<Departamento> departamentos) {
 		this.departamentos = departamentos;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 	public List<Usuario> getUsuarios() {
@@ -155,6 +114,46 @@ public class ManutencaoBean implements Serializable {
 		this.marcas = marcas;
 	}
 
+	public Manutencao getManutencao() {
+		return manutencao;
+	}
+
+	public void setManutencao(Manutencao manutencao) {
+		this.manutencao = manutencao;
+	}
+
+	public Equipamento getEquipamento() {
+		return equipamento;
+	}
+
+	public void setEquipamento(Equipamento equipamento) {
+		this.equipamento = equipamento;
+	}
+
+	public List<Equipamento> getEquipamentos() {
+		return equipamentos;
+	}
+
+	public void setEquipamentos(List<Equipamento> equipamentos) {
+		this.equipamentos = equipamentos;
+	}
+
+	public TipoEquipamento getTipoEquipamento() {
+		return tipoEquipamento;
+	}
+
+	public void setTipoEquipamento(TipoEquipamento tipoEquipamento) {
+		this.tipoEquipamento = tipoEquipamento;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
 	@PostConstruct
 	public void carregarTabelas() {
 		try {
@@ -192,10 +191,7 @@ public class ManutencaoBean implements Serializable {
 		try {
 			ManutencaoDAO manutencaoEquipamentoDAO = new ManutencaoDAO();
 
-			manutencoes = manutencaoEquipamentoDAO.pesquisarEquipamento(dataInicial, dataFinal);
-
-			equipamento = new Equipamento();
-			usuario = new Usuario();
+			manutencoes = manutencaoEquipamentoDAO.proximaManutencao(dataInicial, dataFinal);
 
 			manutencao = null;
 
@@ -218,101 +214,11 @@ public class ManutencaoBean implements Serializable {
 		}
 	}
 
-	public void novo() {
-		equipamento = new Equipamento();
-		usuario = new Usuario();
-
-		manutencao = new Manutencao();
-	}
-
-	public void salvar() {
-		try {
-			ManutencaoDAO manutencaoEquipamentoDAO = new ManutencaoDAO();
-			manutencaoEquipamentoDAO.merge(manutencao);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
-
-			manutencoes = manutencaoEquipamentoDAO.pesquisarEquipamento(dataInicial, dataFinal);
-
-			manutencao = null;
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
-	public void excluir(ActionEvent evento) {
-		try {
-			ManutencaoDAO manutencaoEquipamentoDAO = new ManutencaoDAO();
-			manutencaoEquipamentoDAO.excluir(manutencao);
-
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + equipamento.getTipoEquipamento().getNome());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			manutencoes = manutencaoEquipamentoDAO.pesquisarEquipamento(dataInicial, dataFinal);
-
-			manutencao = null;
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
 	public void onRowSelect(SelectEvent event) {
 
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
 		manutencao = null;
-	}
-
-	public void salvarEquipamento() {
-		try {
-			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
-			equipamentoDAO.merge(equipamento);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEquipamento').hide();");
-
-			equipamento = new Equipamento();
-
-			equipamentos = equipamentoDAO.pesquisarEquipamento("");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
-	public void salvarUsuario() {
-		try {
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarioDAO.merge(usuario);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoUsuario').hide();");
-
-			usuarios = usuarioDAO.listar("nome");
-
-			usuario = new Usuario();
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
 	}
 }
