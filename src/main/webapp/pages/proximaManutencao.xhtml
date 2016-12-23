@@ -17,17 +17,71 @@
 						required="true" requiredMessage="Campo Obrigatório!"
 						value="#{proximaManutencaoBean.dataInicial}" size="9"
 						locale="pt_BR" showButtonPanel="true" navigator="true" />
-				</h:panelGrid>
 
-				<h:panelGrid columns="3" class="ui-noborder">
 					<p:outputLabel for="dataFinal" value="Data Final" />
 					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
 						required="true" requiredMessage="Campo Obrigatório!"
-						style="margin:5px" value="#{proximaManutencaoBean.dataFinal}"
-						size="9" locale="pt_BR" showButtonPanel="true" navigator="true" />
+						value="#{proximaManutencaoBean.dataFinal}" size="9" locale="pt_BR"
+						showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel value="Tipo" />
+					<p:selectOneMenu id="tipo" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{proximaManutencaoBean.tipoManutencao}">
+						<f:selectItem noSelectionOption="true" itemLabel="Todos os Tipos" />
+						<f:selectItem itemValue="Corretiva" itemLabel="Corretiva" />
+						<f:selectItem itemValue="Emergência" itemLabel="Emergência" />
+						<f:selectItem itemValue="Preventiva" itemLabel="Preventiva" />
+						<f:selectItems />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Equipamento" />
+					<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+						value="#{proximaManutencaoBean.tipoEquipamento}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Equipamentos" />
+						<f:selectItems value="#{proximaManutencaoBean.tipoEquipamentos}"
+							var="tipoEquip" itemValue="#{tipoEquip.nome}"
+							itemLabel="#{tipoEquip.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Departamento" />
+					<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+						value="#{proximaManutencaoBean.departamento}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Departamentos" />
+						<f:selectItems value="#{proximaManutencaoBean.departamentos}"
+							var="departamento" itemValue="#{departamento.nome}"
+							itemLabel="#{departamento.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Marca" />
+					<p:selectOneMenu filter="true" filterMatchMode="startsWith"
+						value="#{proximaManutencaoBean.marca}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Todas as Marcas" />
+						<f:selectItems value="#{proximaManutencaoBean.marcas}" var="marca"
+							itemValue="#{marca.nome}" itemLabel="#{marca.nome}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid columns="3" class="ui-noborder">
+					<p:outputLabel value="Usuário" />
+					<p:selectOneMenu style="margin:0 42px" filter="true"
+						filterMatchMode="startsWith"
+						value="#{proximaManutencaoBean.usuario}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Usuários" />
+						<f:selectItems value="#{proximaManutencaoBean.usuarios}"
+							var="usuario" itemValue="#{usuario.nome}"
+							itemLabel="#{usuario.nome}" />
+					</p:selectOneMenu>
 
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
-						icon="ui-icon-script"
+						icon="ui-icon-script" style="margin:0 -37px"
 						actionListener="#{proximaManutencaoBean.pesquisar}"
 						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
@@ -52,8 +106,10 @@
 						</p:commandButton>
 
 						<p:commandButton value="Imprimir" icon="ui-icon-print"
+							actionListener="#{proximaManutencaoBean.imprimir}"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
 							style="margin:0 10px 0 10px">
-							<p:printer target=":formListagem:tabela" />
 						</p:commandButton>
 					</f:facet>
 
@@ -103,48 +159,13 @@
 						listener="#{proximaManutencaoBean.onRowSelect}" />
 
 					<p:column headerText="Equipamento" width="120"
-						filterBy="#{manutencao.equipamento.tipoEquipamento.nome}"
-						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.tipoEquipamento.nome}">
-
-						<f:facet name="filter">
-							<f:facet name="filter">
-								<p:selectCheckboxMenu label="Filtro"
-									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
-									scrollHeight="150">
-
-									<f:selectItems
-										value="#{proximaManutencaoBean.tipoEquipamentos}"
-										var="tipoEquipamentoFiltro"
-										itemValue="#{tipoEquipamentoFiltro.nome}"
-										itemLabel="#{tipoEquipamentoFiltro.nome}" />
-								</p:selectCheckboxMenu>
-							</f:facet>
-						</f:facet>
-
 						<h:outputText
 							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
 					<p:column headerText="Departamento" width="120"
-						filterBy="#{manutencao.equipamento.departamento.nome}"
-						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.departamento.nome}">
-
-						<f:facet name="filter">
-							<f:facet name="filter">
-								<p:selectCheckboxMenu label="Filtro"
-									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
-									scrollHeight="150">
-
-									<f:selectItems value="#{proximaManutencaoBean.departamentos}"
-										var="departamentoFiltro"
-										itemValue="#{departamentoFiltro.nome}"
-										itemLabel="#{departamentoFiltro.nome}" />
-								</p:selectCheckboxMenu>
-							</f:facet>
-						</f:facet>
-
 						<h:outputText value="#{manutencao.equipamento.departamento.nome}" />
 					</p:column>
 
@@ -188,7 +209,6 @@
 
 			</h:form>
 		</p:panel>
-
 		<p:dialog widgetVar="iconeDeProcessamento">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />

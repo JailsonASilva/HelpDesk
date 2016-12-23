@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
+<!-- 2016-12-22T18:14:17 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="proximaManutencao" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="0" uuid="e115bc59-fd0f-446b-a585-04725e27d7f0">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Data Adapter - HelpDesk"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="635"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="354"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#FFFFFF" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<parameter name="DEPARTAMENTO" class="java.lang.String"/>
+	<parameter name="EQUIPAMENTO" class="java.lang.String">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<parameter name="MARCA" class="java.lang.String"/>
+	<parameter name="TIPO" class="java.lang.String"/>
+	<parameter name="USUARIO" class="java.lang.String"/>
+	<parameter name="DATAINICIAL" class="java.util.Date"/>
+	<parameter name="DATAFINAL" class="java.util.Date">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[SELECT helpdesk.manutencao.`dataManutencao`,
+	helpdesk.manutencao.`dataProxima`,
+	helpdesk.manutencao.problema,
+	helpdesk.manutencao.servico,
+	helpdesk.manutencao.tipo,
+	helpdesk.equipamento.garantia_final,
+	helpdesk.equipamento.garantia_inicial,
+	helpdesk.equipamento.`dadosAdicionais`,
+	helpdesk.equipamento.modelo,
+	helpdesk.equipamento.patrimonio,
+	helpdesk.equipamento.serie,
+	helpdesk.equipamento.situacao,
+	helpdesk.marca.nome AS NomeMarca,
+	helpdesk.tipo_equipamento.nome AS NomeTipo,
+	helpdesk.departamento.nome AS NomeDepartamento,
+	helpdesk.usuario.nome AS NomeUsuario
+FROM helpdesk.manutencao
+	INNER JOIN helpdesk.equipamento ON 
+	 helpdesk.manutencao.equipamento_codigo = helpdesk.equipamento.codigo 
+	INNER JOIN helpdesk.departamento ON 
+	 helpdesk.equipamento.departamento_codigo = helpdesk.departamento.codigo 
+	INNER JOIN helpdesk.marca ON 
+	 helpdesk.equipamento.marca_codigo = helpdesk.marca.codigo 
+	INNER JOIN helpdesk.usuario ON 
+	 helpdesk.manutencao.usuario_codigo = helpdesk.usuario.codigo 
+	INNER JOIN helpdesk.tipo_equipamento ON 
+	 helpdesk.equipamento.`tipoEquipamento_codigo` = helpdesk.tipo_equipamento.codigo 
+WHERE 
+	 helpdesk.departamento.nome LIKE $P{DEPARTAMENTO} 
+	 AND helpdesk.tipo_equipamento.nome LIKE $P{EQUIPAMENTO} 
+	 AND helpdesk.marca.nome LIKE $P{MARCA} 
+	 AND helpdesk.manutencao.tipo LIKE $P{TIPO} 
+	 AND helpdesk.usuario.nome LIKE $P{USUARIO} 
+	 AND helpdesk.manutencao.`dataProxima` BETWEEN $P{DATAINICIAL} AND $P{DATAFINAL} 
+ORDER BY helpdesk.tipo_equipamento.nome DESC]]>
+	</queryString>
+	<field name="dataManutencao" class="java.sql.Date"/>
+	<field name="dataProxima" class="java.sql.Date"/>
+	<field name="problema" class="java.lang.String"/>
+	<field name="servico" class="java.lang.String"/>
+	<field name="tipo" class="java.lang.String"/>
+	<field name="garantia_final" class="java.sql.Date"/>
+	<field name="garantia_inicial" class="java.sql.Date"/>
+	<field name="dadosAdicionais" class="java.lang.String"/>
+	<field name="modelo" class="java.lang.String"/>
+	<field name="patrimonio" class="java.lang.String"/>
+	<field name="serie" class="java.lang.String"/>
+	<field name="situacao" class="java.lang.String"/>
+	<field name="NomeMarca" class="java.lang.String"/>
+	<field name="NomeTipo" class="java.lang.String"/>
+	<field name="NomeDepartamento" class="java.lang.String"/>
+	<field name="NomeUsuario" class="java.lang.String"/>
+	<background>
+		<band height="575" splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="80" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="97" y="0" width="705" height="40" uuid="1dcadd54-7d50-4470-85ed-189e4d910b25"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="30" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Faculdade de Ciências e Tecnologia do Maranhão]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="SubTitle" x="97" y="41" width="568" height="23" uuid="862cb50c-5a5e-4906-a495-226e25115fb6"/>
+				<textElement textAlignment="Left">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[Relatório de Próximas Manutenções]]></text>
+			</staticText>
+			<image hAlign="Center">
+				<reportElement x="0" y="0" width="90" height="67" uuid="ec916e6b-27dd-449b-a4ad-af101a3d2aa0"/>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<frame>
+				<reportElement mode="Opaque" x="0" y="5" width="802" height="20" backcolor="#666666" uuid="35d90a9b-bb7e-4ec4-bfa2-68be1967d6b2"/>
+				<staticText>
+					<reportElement style="Column header" x="4" y="2" width="90" height="15" uuid="6ec9ca69-e141-4103-a24f-bc7a7d2b0b2f"/>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Equipamento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="115" y="2" width="90" height="15" uuid="d8903326-d7cb-4839-835e-4d428b479e2a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Departamento]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="246" y="2" width="90" height="15" uuid="17cf1480-064d-4214-99af-a721c5cd427a">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Marca]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="363" y="2" width="90" height="15" uuid="7fc12401-104c-48aa-b87b-b3643ce8ce2d">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Modelo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="453" y="2" width="90" height="15" uuid="52d80551-bd72-40c9-bf47-10410190b2f1">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Tipo]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="527" y="3" width="90" height="15" uuid="1a04e17c-1584-4d5b-9dae-b2ffc4a2d87f">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Última Manut.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="Column header" x="630" y="4" width="90" height="15" uuid="484fcf1e-bd12-4ae6-87ac-97bc6089bbf8">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<text><![CDATA[Próxima Manut.]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<frame>
+				<reportElement x="0" y="0" width="705" height="21" uuid="89a3da05-fdde-4ffe-965f-cc476f72e3ab"/>
+				<textField>
+					<reportElement x="3" y="2" width="107" height="15" uuid="ceee5c9b-887c-49c3-b3a6-6902fe28483c"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{NomeTipo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="115" y="3" width="117" height="15" uuid="587d72b4-e88c-493a-bbd0-15a09f3f7d8d"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{NomeDepartamento}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="246" y="3" width="117" height="15" uuid="7f550b87-850d-4011-8fd7-556e12ea8e05"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{NomeMarca}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="363" y="3" width="90" height="15" uuid="fee22292-63af-4ee9-8bff-e8e5816041c4"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{modelo}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="453" y="3" width="90" height="15" uuid="8c3e3a9b-02a6-4108-854e-888e9a53f085"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{tipo}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="527" y="3" width="90" height="15" uuid="2c027195-186c-4728-a66c-b520b8575dcd">
+						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{dataManutencao}]]></textFieldExpression>
+				</textField>
+				<textField pattern="dd/MM/yyyy">
+					<reportElement x="630" y="3" width="70" height="15" uuid="d2dafb5a-7615-435e-83de-4b3afe54e84b"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{dataProxima}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="3" y="20" width="795" height="1" uuid="e5f21b91-7f24-498e-97a1-0e93db9225a4">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+				</reportElement>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="39" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="560" y="0" width="242" height="20" forecolor="#000000" uuid="95484ca0-40b4-4752-95d8-1afbc33c820b"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="0" width="267" height="20" uuid="0ec52099-dcd7-42f4-8baa-f3874f05208a"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Tecnologia da Informação Facema]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

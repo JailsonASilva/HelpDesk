@@ -35,19 +35,29 @@ public class ManutencaoDAO extends GenericDAO<Manutencao> {
 			sessao.close();
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "unused", "deprecation" })
-	public List<Manutencao> proximaManutencao(Date DataInicio, Date DataFinal) {
+	public List<Manutencao> proximaManutencao(Date DataInicio, Date DataFinal, String tipoEquipamento,
+			String departamento, String marca, String usuario, String tipoManutencao) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Manutencao.class);
-			consulta.add(Restrictions.between("dataProxima", DataInicio, DataFinal));
-
 			Criteria consultaEquipamento = consulta.createCriteria("equipamento", "equipamento", Criteria.INNER_JOIN);
-
-			Criteria consultaTipo = consultaEquipamento.createCriteria("tipoEquipamento", "tipoEquipamento",
+			Criteria consultaTipoEquipamento = consultaEquipamento.createCriteria("tipoEquipamento", "tipoEquipamento",
 					Criteria.INNER_JOIN);
+			Criteria consultaDepartamento = consultaEquipamento.createCriteria("departamento", "departamento",
+					Criteria.INNER_JOIN);
+			Criteria consultaMarca = consultaEquipamento.createCriteria("marca", "marca", Criteria.INNER_JOIN);
+			Criteria consultausuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN);
 
+
+			consulta.add(Restrictions.between("dataProxima", DataInicio, DataFinal));
+			consulta.add(Restrictions.like("tipo", "%" + tipoManutencao + "%"));
+			consulta.add(Restrictions.like("tipoEquipamento.nome", "%" + tipoEquipamento + "%"));
+			consulta.add(Restrictions.like("departamento.nome", "%" + departamento + "%"));
+			consulta.add(Restrictions.like("marca.nome", "%" + marca + "%"));
+			consulta.add(Restrictions.like("usuario.nome", "%" + usuario + "%"));			
+			
 			consulta.addOrder(Order.asc("tipoEquipamento.nome"));
 
 			List<Manutencao> resultado = consulta.list();
@@ -58,5 +68,6 @@ public class ManutencaoDAO extends GenericDAO<Manutencao> {
 		} finally {
 			sessao.close();
 		}
-	}	
+	}
 }
+

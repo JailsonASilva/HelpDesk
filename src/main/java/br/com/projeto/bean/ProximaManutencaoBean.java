@@ -1,14 +1,19 @@
 package br.com.projeto.bean;
 
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
+import org.omnifaces.util.Faces;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -25,6 +30,11 @@ import br.com.projeto.domain.Manutencao;
 import br.com.projeto.domain.Marca;
 import br.com.projeto.domain.TipoEquipamento;
 import br.com.projeto.domain.Usuario;
+import br.com.projeto.util.HibernateUtil;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -36,19 +46,20 @@ public class ProximaManutencaoBean implements Serializable {
 	private Equipamento equipamento;
 	private List<Equipamento> equipamentos;
 
-	private TipoEquipamento tipoEquipamento;
 	private List<TipoEquipamento> tipoEquipamentos;
-
 	private List<Departamento> departamentos;
 	private List<Marca> marcas;
-
-	private Usuario usuario;
 	private List<Usuario> usuarios;
 
 	private FacesMessage message;
 
 	private Date dataInicial;
 	private Date dataFinal;
+	private String tipoEquipamento;
+	private String tipoManutencao;
+	private String departamento;
+	private String marca;
+	private String usuario;
 
 	public List<Manutencao> getManutencoes() {
 		return manutencoes;
@@ -138,19 +149,43 @@ public class ProximaManutencaoBean implements Serializable {
 		this.equipamentos = equipamentos;
 	}
 
-	public TipoEquipamento getTipoEquipamento() {
+	public String getTipoEquipamento() {
 		return tipoEquipamento;
 	}
 
-	public void setTipoEquipamento(TipoEquipamento tipoEquipamento) {
+	public void setTipoEquipamento(String tipoEquipamento) {
 		this.tipoEquipamento = tipoEquipamento;
 	}
 
-	public Usuario getUsuario() {
+	public String getTipoManutencao() {
+		return tipoManutencao;
+	}
+
+	public void setTipoManutencao(String tipoManutencao) {
+		this.tipoManutencao = tipoManutencao;
+	}
+
+	public String getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(String departamento) {
+		this.departamento = departamento;
+	}
+
+	public String getMarca() {
+		return marca;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
+	}
+
+	public String getUsuario() {
 		return usuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
+	public void setUsuario(String usuario) {
 		this.usuario = usuario;
 	}
 
@@ -191,7 +226,8 @@ public class ProximaManutencaoBean implements Serializable {
 		try {
 			ManutencaoDAO manutencaoEquipamentoDAO = new ManutencaoDAO();
 
-			manutencoes = manutencaoEquipamentoDAO.proximaManutencao(dataInicial, dataFinal);
+			manutencoes = manutencaoEquipamentoDAO.proximaManutencao(dataInicial, dataFinal, tipoEquipamento,
+					departamento, marca, usuario, tipoManutencao);
 
 			manutencao = null;
 
@@ -206,6 +242,44 @@ public class ProximaManutencaoBean implements Serializable {
 
 		RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	@SuppressWarnings("unused")
+	public void imprimir() {
+		try {
+			DataTable tabela = (DataTable) Faces.getViewRoot().findComponent("formListagem:tabela");
+			Map<String, Object> filtros = tabela.getFilters();
+
+			String caminho = Faces.getRealPath("/relatórios/proximaManutencao.jasper");
+
+			String caminhoBanner = Faces.getRealPath("/relatórios/Logo.png");
+
+			Map<String, Object> parametros = new HashMap<>();
+
+			// parametros.put("CAMINHO_BANNER", caminhoBanner);
+
+			parametros.put("DEPARTAMENTO", "%" + departamento + "%");
+			parametros.put("EQUIPAMENTO", "%" + tipoEquipamento + "%");
+			parametros.put("MARCA", "%" + marca + "%");
+			parametros.put("TIPO", "%" + tipoManutencao + "%");
+			parametros.put("USUARIO", "%" + usuario + "%");
+			parametros.put("DATAINICIAL", dataInicial);
+			parametros.put("DATAFINAL", dataFinal);
+
+			Connection conexao = HibernateUtil.getConexao();
+
+			JasperPrint relatorio = JasperFillManager.fillReport(caminho, parametros, conexao);
+
+			JasperPrintManager.printReport(relatorio, true);
+
+		} catch (JRException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Imprimir Relatório",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
