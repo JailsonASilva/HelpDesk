@@ -50,6 +50,7 @@
 		<mapping class="br.com.projeto.domain.Manutencao" />
 		<mapping class="br.com.projeto.domain.Categoria" />
 		<mapping class="br.com.projeto.domain.Nivel" />
+		<mapping class="br.com.projeto.domain.Ticket" />
 
 	</session-factory>
 

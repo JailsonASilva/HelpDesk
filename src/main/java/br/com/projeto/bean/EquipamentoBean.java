@@ -176,7 +176,7 @@ public class EquipamentoBean implements Serializable {
 	}
 
 	public void novo() {
-		equipamento = new Equipamento();
+		equipamento = new Equipamento();		
 		departamento = new Departamento();
 		marca = new Marca();
 		tipoEquipamento = new TipoEquipamento();

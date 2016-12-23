@@ -175,13 +175,13 @@
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Departamento" />
+							itemLabel="Nenhum Registro Selecionado" />
 						<f:selectItems value="#{usuarioBean.departamentos}"
 							var="departamento" itemValue="#{departamento}"
 							itemLabel="#{departamento.nome}" />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="ativo" value="Ativo:" />
+					<p:outputLabel for="ativo" value="Ativo" />
 					<p:selectBooleanCheckbox id="ativo"
 						value="#{usuarioBean.usuario.ativo}" required="true"
 						requiredMessage="O campo 'Ativo' é obrigatório" />

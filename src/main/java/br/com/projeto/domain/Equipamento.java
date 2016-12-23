@@ -1,5 +1,6 @@
 package br.com.projeto.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -48,6 +49,16 @@ public class Equipamento extends GenericDomain {
 
 	@Column(length = 500, nullable = true)
 	private String dadosAdicionais;
+
+	@Column(length = 40, nullable = true)
+	private String capacidade;
+	
+	@Column(nullable = true)
+	@Temporal(TemporalType.DATE)
+	private Date dataAquisicao;	
+	
+	@Column(nullable = false, precision = 6, scale = 2)
+	private BigDecimal valorHora;	
 
 	public String getDadosAdicionais() {
 		return dadosAdicionais;
@@ -129,4 +140,29 @@ public class Equipamento extends GenericDomain {
 		return tipoEquipamento;
 	}
 
+	public String getCapacidade() {
+		return capacidade;
+	}
+
+	public void setCapacidade(String capacidade) {
+		this.capacidade = capacidade;
+	}
+
+	public Date getDataAquisicao() {
+		return dataAquisicao;
+	}
+
+	public void setDataAquisicao(Date dataAquisicao) {
+		this.dataAquisicao = dataAquisicao;
+	}
+
+	public BigDecimal getValorHora() {
+		return valorHora;
+	}
+
+	public void setValorHora(BigDecimal valorHora) {
+		this.valorHora = valorHora;
+	}
+
+	
 }

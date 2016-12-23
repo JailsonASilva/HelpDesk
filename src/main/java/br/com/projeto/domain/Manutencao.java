@@ -39,6 +39,14 @@ public class Manutencao extends GenericDomain {
 	@Temporal(TemporalType.DATE)
 	private Date dataProxima;
 
+	@Column(nullable = false, columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dataHoraInicial;
+
+	@Column(nullable = false, columnDefinition = "DATETIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date dataHoraFinal;
+
 	public Equipamento getEquipamento() {
 		return equipamento;
 	}
@@ -93,6 +101,22 @@ public class Manutencao extends GenericDomain {
 
 	public void setDataProxima(Date dataProxima) {
 		this.dataProxima = dataProxima;
+	}
+
+	public Date getDataHoraInicial() {
+		return dataHoraInicial;
+	}
+
+	public void setDataHoraInicial(Date dataHoraInicial) {
+		this.dataHoraInicial = dataHoraInicial;
+	}
+
+	public Date getDataHoraFinal() {
+		return dataHoraFinal;
+	}
+
+	public void setDataHoraFinal(Date dataHoraFinal) {
+		this.dataHoraFinal = dataHoraFinal;
 	}
 
 }

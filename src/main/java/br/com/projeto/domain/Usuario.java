@@ -24,30 +24,6 @@ public class Usuario extends GenericDomain {
 	@JoinColumn(nullable = false)
 	private Departamento departamento;
 
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Departamento getDepartamento() {
-		return departamento;
-	}
-
-	public void setDepartamento(Departamento departamento) {
-		this.departamento = departamento;
-	}
-
 	@Transient
 	private String senhaSemCriptografia;
 
@@ -74,6 +50,34 @@ public class Usuario extends GenericDomain {
 		return ativo;
 	}
 
+	public String getNome() {
+		return nome;
+	}
+
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Departamento getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(Departamento departamento) {
+		this.departamento = departamento;
+	}
+
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
+	}
+
 	@Transient
 	public String getAtivoFormatado() {
 		String ativoFormatado = "Não";
@@ -83,10 +87,6 @@ public class Usuario extends GenericDomain {
 		}
 
 		return ativoFormatado;
-	}
-
-	public void setAtivo(Boolean ativo) {
-		this.ativo = ativo;
 	}
 
 }

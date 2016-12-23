@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:dialog widgetVar="iconeDeProcessamento">
+				<f:facet name="header">
+					<h:graphicImage value="/imagens/ampulheta.png" />
+					<h:outputText id="dialogHeader"
+						value="Aguarde... Estamos Processando sua Informação..." />
+				</f:facet>
+			</p:dialog>
+
+			<p:dialog header="Novo Ticket" widgetVar="dialogo" visible="true"
+				draggable="false" resizable="false" modal="false" closable="true">
+				<h:form id="formCadastro">
+					<h:panelGrid id="painel" columns="1" class="ui-noborder">
+					
+						<p:outputLabel for="departamento" value="Departamento " />
+						<p:selectOneMenu id="departamento" filter="true"
+							filterMatchMode="startsWith"
+							value="#{ticketBean.ticket.departamento}"
+							converter="omnifaces.SelectItemsConverter" required="true"
+							requiredMessage="Campo Obrigatório">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{ticketBean.departamentos}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="prioridade" value="Prioridade" />
+						<p:selectOneMenu id="prioridade" filter="true" required="true"
+							requiredMessage="Campo Obrigatório!"
+							converter="omnifaces.SelectItemsConverter"
+							value="#{ticketBean.ticket.prioridade}">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItem itemValue="Baixa" itemLabel="Baixa" />
+							<f:selectItem itemValue="Normal" itemLabel="Normal" />
+							<f:selectItem itemValue="Alta" itemLabel="Alta" />
+							<f:selectItem itemValue="Urgente" itemLabel="Urgente" />
+							<f:selectItems />
+						</p:selectOneMenu>
+
+						<p:outputLabel for="assunto" value="Assunto" />
+						<p:inputText id="assunto" maxlength="40" size="63" required="true"
+							requiredMessage="Campo Obrigatório!"
+							value="#{ticketBean.ticket.assunto}" />
+
+						<p:outputLabel for="solicitacao" value="Solicitação" />
+						<p:inputTextarea id="solicitacao" rows="6" cols="60" required="true"
+							requiredMessage="Campo Obrigatório!"
+							counter="display" maxlength="600"
+							counterTemplate="{0} caracteres restantes." autoResize="false"
+							value="#{ticketBean.ticket.solicitacao}" />
+						<h:outputText id="display" />
+					</h:panelGrid>
+
+					<br></br>
+					<p:separator />
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{ticketBean.salvarExterno}"
+							update=":formListagem:formCadastro:painel"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

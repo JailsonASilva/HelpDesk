@@ -14,7 +14,8 @@
 				<h:panelGrid id="painelBusca" columns="2" class="ui-noborder">
 					<p:outputLabel for="dataInicial" value="Data Inicial" />
 					<p:calendar id="dataInicial" mask="99/99/99" yearRange="1900:2222"
-						required="true" requiredMessage="Campo Obrigatório!"
+						showOn="button" required="true"
+						requiredMessage="Campo Obrigatório!"
 						value="#{manutencaoBean.dataInicial}" size="9" locale="pt_BR"
 						showButtonPanel="true" navigator="true" />
 				</h:panelGrid>
@@ -22,9 +23,10 @@
 				<h:panelGrid columns="3" class="ui-noborder">
 					<p:outputLabel for="dataFinal" value="Data Final" />
 					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
-						required="true" requiredMessage="Campo Obrigatório!"
-						style="margin:5px" value="#{manutencaoBean.dataFinal}" size="9"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
+						showOn="button" required="true"
+						requiredMessage="Campo Obrigatório!" style="margin:5px"
+						value="#{manutencaoBean.dataFinal}" size="9" locale="pt_BR"
+						showButtonPanel="true" navigator="true" />
 
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
 						icon="ui-icon-script" actionListener="#{manutencaoBean.pesquisar}"
@@ -44,15 +46,15 @@
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{manutencaoBean.novo}"
-							update=":formCadastro:painel">
+							update=":formCadastro:painel1 :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
 							disabled="#{manutencaoBean.manutencao == null}"
-							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
-							oncomplete="PF('dialogo').show();">
+							update=":formCadastro:painel1 :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -126,7 +128,7 @@
 						filterBy="#{manutencao.equipamento.tipoEquipamento.nome}"
 						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.tipoEquipamento.nome}">
-						
+
 						<f:facet name="filter">
 							<f:facet name="filter">
 								<p:selectCheckboxMenu label="Filtro"
@@ -140,7 +142,7 @@
 								</p:selectCheckboxMenu>
 							</f:facet>
 						</f:facet>
-												
+
 						<h:outputText
 							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
 					</p:column>
@@ -219,61 +221,38 @@
 		<p:dialog header="Manutenção de Equipamento" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="true" closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+				<h:panelGrid id="painel1" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="equipamento" value="Equipamento" />
-					<p:selectOneMenu id="equipamento" filter="true" 
+					<p:selectOneMenu id="equipamento" filter="true"
 						filterMatchMode="startsWith"
 						value="#{manutencaoBean.manutencao.equipamento}"
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Equipamento" />
+							itemLabel="Nenhum Registro Selecionado" />
 						<f:selectItems value="#{manutencaoBean.equipamentos}"
 							var="equipamento" itemValue="#{equipamento}"
 							itemLabel="#{equipamento.tipoEquipamento.nome} / Departamento: #{equipamento.departamento.nome} / Marca: #{equipamento.marca.nome} / Modelo: #{equipamento.modelo}" />
 					</p:selectOneMenu>
+				</h:panelGrid>
+
+
+				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 					<p:outputLabel for="tipo" value="Tipo" />
 					<p:selectOneMenu id="tipo" filter="true" required="true"
-						requiredMessage="Campo Obrigatório!"
+						style="margin:0 53px" requiredMessage="Campo Obrigatório!"
 						converter="omnifaces.SelectItemsConverter"
 						value="#{manutencaoBean.manutencao.tipo}">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Tipo" />
+							itemLabel="Nenhum Registro Selecionado" />
 						<f:selectItem itemValue="Corretiva" itemLabel="Corretiva" />
 						<f:selectItem itemValue="Emergência" itemLabel="Emergência" />
 						<f:selectItem itemValue="Preventiva" itemLabel="Preventiva" />
 						<f:selectItems />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="problema" value="Problema Detectado" />
-					<p:inputTextarea id="problema" rows="4" cols="50" required="true"
-						requiredMessage="Campo Obrigatório" counter="displayProblema"
-						maxlength="500" counterTemplate="{0} caracteres restantes."
-						autoResize="false" value="#{manutencaoBean.manutencao.problema}" />
-					<br></br>
-					<h:outputText id="displayProblema" />
-
-					<p:outputLabel for="servico" value="Serviço Executado" />
-					<p:inputTextarea id="servico" rows="4" cols="50" required="true"
-						requiredMessage="Campo Obrigatório" counter="displayServico"
-						maxlength="500" counterTemplate="{0} caracteres restantes."
-						autoResize="false" value="#{manutencaoBean.manutencao.servico}" />
-					<br></br>
-					<h:outputText id="displayServico" />
-
-					<p:outputLabel for="dataManutencao" value="Data Manutenção" />
-					<p:calendar id="dataManutencao" mask="99/99/99" required="true"
-						requiredMessage="Campo Obrigatório!" yearRange="1900:2222"
-						value="#{manutencaoBean.manutencao.dataManutencao}" size="12"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-					<p:outputLabel for="dataProxima" value="Próxima Manutenção" />
-					<p:calendar id="dataProxima" mask="99/99/99" required="true"
-						requiredMessage="Campo Obrigatório!" yearRange="1900:2222"
-						value="#{manutencaoBean.manutencao.dataProxima}" size="12"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 					<p:outputLabel for="usuario" value="Responsável" />
 					<p:selectOneMenu id="usuario" filter="true"
@@ -282,10 +261,66 @@
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione o Responsável" />
+							itemLabel="Nenhum Registro Selecionado" />
 						<f:selectItems value="#{manutencaoBean.usuarios}" var="usuario"
 							itemValue="#{usuario}" itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<h:panelGrid id="painel3" columns="1" class="ui-noborder">
+					<p:separator />
+
+					<p:outputLabel for="problema" value="Problema Detectado" />
+					<p:inputTextarea id="problema" rows="4" cols="118" required="true"
+						requiredMessage="Campo Obrigatório" counter="displayProblema"
+						maxlength="500" counterTemplate="{0} caracteres restantes."
+						autoResize="false" value="#{manutencaoBean.manutencao.problema}" />
+					<h:outputText id="displayProblema" />
+					<p:separator />
+					<br></br>
+
+					<p:outputLabel for="servico" value="Serviço Executado" />
+					<p:inputTextarea id="servico" rows="4" cols="118" required="true"
+						requiredMessage="Campo Obrigatório" counter="displayServico"
+						maxlength="500" counterTemplate="{0} caracteres restantes."
+						autoResize="false" value="#{manutencaoBean.manutencao.servico}" />
+					<h:outputText id="displayServico" />
+
+					<p:separator />
+				</h:panelGrid>
+
+				<h:panelGrid id="painel4" columns="4" class="ui-noborder">
+					<p:outputLabel for="dataManutencao" value="Data Manutenção" />
+					<p:calendar id="dataManutencao" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo Obrigatório!"
+						yearRange="1900:2222"
+						value="#{manutencaoBean.manutencao.dataManutencao}" size="12"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início"
+						style="margin:0 68px" />
+					<p:calendar id="dataHoraInicial" size="24" mask="99/99/99 99:99:99"
+						yearRange="1900:2222"
+						value="#{manutencaoBean.manutencao.dataHoraInicial}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" locale="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo Obrigatório!" />
+
+					<p:outputLabel for="dataProxima" value="Próxima Manutenção" />
+					<p:calendar id="dataProxima" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo Obrigatório!"
+						yearRange="1900:2222"
+						value="#{manutencaoBean.manutencao.dataProxima}" size="12"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataHoraFinal" value="Data/Hora Término"
+						style="margin:0 68px" />
+					<p:calendar id="dataHoraFinal" size="24" mask="99/99/99 99:99:99"
+						yearRange="1900:2222"
+						value="#{manutencaoBean.manutencao.dataHoraFinal}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" locale="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo Obrigatório!" />
 				</h:panelGrid>
 
 				<br></br>
@@ -294,7 +329,7 @@
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{manutencaoBean.salvar}"
-						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
+						update=":formCadastro:painel1 :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4 :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

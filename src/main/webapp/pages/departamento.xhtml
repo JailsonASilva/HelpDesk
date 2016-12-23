@@ -56,7 +56,8 @@
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="departamentoSelecionado" value="#{departamento}" />
+							<f:attribute name="departamentoSelecionado"
+								value="#{departamento}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -68,17 +69,20 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="departamento" />
+								<p:dataExporter type="xls" target="tabela"
+									fileName="departamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="departamento" />
+								<p:dataExporter type="pdf" target="tabela"
+									fileName="departamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="departamento" />
+								<p:dataExporter type="xml" target="tabela"
+									fileName="departamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -111,6 +115,11 @@
 					<p:column headerText="Nome" sortBy="#{departamento.nome}">
 						<h:outputText value="#{departamento.nome}" />
 					</p:column>
+
+					<p:column headerText="Atendimento" sortBy="#{departamento.atendimentoFormatado}"
+						width="100">
+						<h:outputText value="#{departamento.atendimentoFormatado}" />
+					</p:column>
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -134,12 +143,18 @@
 		<p:dialog header="Cadastro de Departamento" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="true" closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{departamentoBean.departamento.nome}" />
-					<p:message for="nome" display="Nome" />
+
+					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:selectBooleanCheckbox id="atendimento"
+						value="#{departamentoBean.departamento.atendimento}"
+						required="true"
+						requiredMessage="O campo 'Atendimento' é obrigatório" />
+
 				</h:panelGrid>
 
 				<br></br>

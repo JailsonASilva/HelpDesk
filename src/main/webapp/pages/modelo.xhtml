@@ -14,52 +14,83 @@
 </h:head>
 <h:body>
 	<header> </header>
-
 	<h:form>
-		<p:menubar style="margin-top: -20px; margin-bottom: 20px">
-			<p:submenu label="Sistema">
-				<p:menuitem value="Departamentos" url="/pages/departamento.xhtml" />
-				<p:menuitem value="Usuários" url="/pages/usuario.xhtml" />
+		<p:megaMenu orientation="horizontal" style="margin-top:20px">
+			<p:submenu label="Sistema" icon="fa fa fw fa-user">
+				<p:column>
+					<p:submenu label="Cadastros">
+						<p:menuitem value="Departamentos" url="/pages/departamento.xhtml" />
+						<p:menuitem value="Usuários" url="/pages/usuario.xhtml" />
+					</p:submenu>
+				</p:column>
+
+				<p:column>
+					<p:submenu label="Minha conta">
+						<p:menuitem value="Meus Chamados" />
+						<p:menuitem value="Sair" />
+					</p:submenu>
+				</p:column>
 			</p:submenu>
 
-			<p:submenu label="Equipamento">
-				<p:submenu label="Cadastros">
-					<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml" />
-					<p:menuitem value="Marcas" url="/pages/marca.xhtml" />
-					<p:menuitem value="Tipos de Equipamento"
-						url="/pages/tipoEquipamento.xhtml" />
-				</p:submenu>
+			<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
+				<p:column>
+					<p:submenu label="Cadastros">
+						<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml" />
+						<p:menuitem value="Marcas" url="/pages/marca.xhtml" />
+						<p:menuitem value="Tipos de Equipamento"
+							url="/pages/tipoEquipamento.xhtml" />
+					</p:submenu>
+				</p:column>
 
-				<p:submenu label="Movimento">
-					<p:menuitem value="Manutenção" url="/pages/manutencao.xhtml" />
-				</p:submenu>
+				<p:column>
+					<p:submenu label="Movimento">
+						<p:menuitem value="Manutenção" url="/pages/manutencao.xhtml" />
+					</p:submenu>
+				</p:column>
 
-				<p:submenu label="Consultas">
-					<p:menuitem value="Próximas Manutenções"
-						url="/pages/proximaManutencao.xhtml" />
-				</p:submenu>
+				<p:column>
+					<p:submenu label="Consultas">
+						<p:menuitem value="Próximas Manutenções"
+							url="/pages/proximaManutencao.xhtml" />
+					</p:submenu>
+				</p:column>
 			</p:submenu>
 
-			<p:submenu label="Ticket">
-				<p:submenu label="Cadastros">
-					<p:menuitem value="Clientes" url="/pages/cliente.xhtml" />
-					<p:menuitem value="Categorias" url="/pages/categoria.xhtml" />
-				</p:submenu>
+			<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
+				<p:column>
+					<p:submenu label="Cadastros">
+						<p:menuitem value="Clientes" url="/pages/cliente.xhtml" />
+						<p:menuitem value="Categorias" url="/pages/categoria.xhtml" />
+					</p:submenu>
+				</p:column>
+
+				<p:column>
+					<p:submenu label="Movimento">
+						<p:menuitem value="Novo Ticket (Interno)" url="" />
+						<p:menuitem value="Novo Ticket (Externo)"
+							url="/pages/ticketExterno.xhtml" />
+					</p:submenu>
+				</p:column>
+
+				<p:column>
+					<p:submenu label="Consultas">
+						<p:menuitem value="Chamados por Departamento" url="" />
+						<p:menuitem value="Chamados por Atendente" url="" />
+					</p:submenu>
+				</p:column>
 			</p:submenu>
 
-			<p:submenu label="FAQ">
-				<p:submenu label="Cadastros">
-					<p:menuitem value="Nível" url="/pages/nivel.xhtml" />
-				</p:submenu>
+			<p:submenu label="FAQ" icon="fa fa fw fa-list-ol">
+				<p:column>
+					<p:submenu label="Cadastros">
+						<p:menuitem value="Nível" url="/pages/nivel.xhtml" />
+					</p:submenu>
+				</p:column>
 			</p:submenu>
-
-
-			<p:submenu label="Minha conta">
-				<p:menuitem value="Sair" />
-			</p:submenu>
-
-		</p:menubar>
+		</p:megaMenu>
 	</h:form>
+
+	<br></br>
 
 	<div id="conteudo">
 		<ui:insert name="conteudo"></ui:insert>

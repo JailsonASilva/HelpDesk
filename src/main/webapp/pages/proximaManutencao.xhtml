@@ -14,13 +14,15 @@
 				<h:panelGrid id="painelBusca" columns="2" class="ui-noborder">
 					<p:outputLabel for="dataInicial" value="Data Inicial" />
 					<p:calendar id="dataInicial" mask="99/99/99" yearRange="1900:2222"
-						required="true" requiredMessage="Campo Obrigatório!"
+						showOn="button" required="true"
+						requiredMessage="Campo Obrigatório!"
 						value="#{proximaManutencaoBean.dataInicial}" size="9"
 						locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 					<p:outputLabel for="dataFinal" value="Data Final" />
 					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
-						required="true" requiredMessage="Campo Obrigatório!"
+						showOn="button" required="true"
+						requiredMessage="Campo Obrigatório!"
 						value="#{proximaManutencaoBean.dataFinal}" size="9" locale="pt_BR"
 						showButtonPanel="true" navigator="true" />
 
@@ -28,7 +30,8 @@
 					<p:selectOneMenu id="tipo" filter="true"
 						converter="omnifaces.SelectItemsConverter"
 						value="#{proximaManutencaoBean.tipoManutencao}">
-						<f:selectItem noSelectionOption="true" itemLabel="Todos os Tipos" />
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros" />
 						<f:selectItem itemValue="Corretiva" itemLabel="Corretiva" />
 						<f:selectItem itemValue="Emergência" itemLabel="Emergência" />
 						<f:selectItem itemValue="Preventiva" itemLabel="Preventiva" />
@@ -40,7 +43,7 @@
 						value="#{proximaManutencaoBean.tipoEquipamento}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Todos os Equipamentos" />
+							itemLabel="Todos os Registros" />
 						<f:selectItems value="#{proximaManutencaoBean.tipoEquipamentos}"
 							var="tipoEquip" itemValue="#{tipoEquip.nome}"
 							itemLabel="#{tipoEquip.nome}" />
@@ -51,7 +54,7 @@
 						value="#{proximaManutencaoBean.departamento}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Todos os Departamentos" />
+							itemLabel="Todos os Registros" />
 						<f:selectItems value="#{proximaManutencaoBean.departamentos}"
 							var="departamento" itemValue="#{departamento.nome}"
 							itemLabel="#{departamento.nome}" />
@@ -61,7 +64,8 @@
 					<p:selectOneMenu filter="true" filterMatchMode="startsWith"
 						value="#{proximaManutencaoBean.marca}"
 						converter="omnifaces.SelectItemsConverter">
-						<f:selectItem noSelectionOption="true" itemLabel="Todas as Marcas" />
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros" />
 						<f:selectItems value="#{proximaManutencaoBean.marcas}" var="marca"
 							itemValue="#{marca.nome}" itemLabel="#{marca.nome}" />
 					</p:selectOneMenu>
@@ -74,7 +78,7 @@
 						value="#{proximaManutencaoBean.usuario}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Todos os Usuários" />
+							itemLabel="Todos os Registros" />
 						<f:selectItems value="#{proximaManutencaoBean.usuarios}"
 							var="usuario" itemValue="#{usuario.nome}"
 							itemLabel="#{usuario.nome}" />
