@@ -6,7 +6,7 @@
 	xmlns:p="http://primefaces.org/ui">
 <h:head>
 	<meta charset="UTF-8" />
-	<title><ui:insert name="titulo">Help Desk Facema</ui:insert></title>
+	<title><ui:insert name="titulo">Help Desk</ui:insert></title>
 	<h:outputStylesheet library="algaworks" name="estilo.css" />
 	<h:outputStylesheet library="webjars" name="/css/font-awesome.min.css" />
 	<h:outputScript library="js" name="scripts.js" />
@@ -30,7 +30,7 @@
 						<p:menuitem value="Página Inicial" url="/pages/principal.xhtml" />
 						<p:menuitem value="Deconectar" url="/pages/autenticacao.xhtml" />
 					</p:submenu>
-				</p:column>		
+				</p:column>
 			</p:submenu>
 
 			<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
@@ -88,6 +88,13 @@
 					</p:submenu>
 				</p:column>
 			</p:submenu>
+
+			<f:facet name="options">
+				<h:outputText style="margin:10px"
+					value="Bem-vindo #{autenticacaoBean.usuarioLogado.nome}" />
+				<p:commandButton type="button" value="Desconectar"
+					icon="ui-icon-extlink" actionListener=#{autenticacaoBean.desconectar} />
+			</f:facet>
 		</p:megaMenu>
 	</h:form>
 
