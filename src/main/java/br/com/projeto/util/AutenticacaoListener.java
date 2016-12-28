@@ -15,23 +15,23 @@ public class AutenticacaoListener implements PhaseListener {
 	@Override
 	public void afterPhase(PhaseEvent event) {
 		String paginaAtual = Faces.getViewId();
-
+	
 		boolean ehPaginaDeAutenticacao = paginaAtual.contains("autenticacao.xhtml");
-
-		if (!ehPaginaDeAutenticacao) {
+	
+		if(!ehPaginaDeAutenticacao){
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 
-			if (autenticacaoBean == null) {
+			if(autenticacaoBean == null){
 				Faces.navigate("/pages/autenticacao.xhtml");
 				return;
 			}
-
+			
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
-			if (usuario == null) {
+			if(usuario == null){
 				Faces.navigate("/pages/autenticacao.xhtml");
 				return;
 			}
-		}
+		}		
 	}
 
 	@Override

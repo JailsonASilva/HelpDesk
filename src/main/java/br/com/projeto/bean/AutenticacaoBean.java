@@ -25,11 +25,11 @@ public class AutenticacaoBean {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-
+	
 	public Usuario getUsuarioLogado() {
 		return usuarioLogado;
 	}
-
+	
 	public void setUsuarioLogado(Usuario usuarioLogado) {
 		this.usuarioLogado = usuarioLogado;
 	}
@@ -43,23 +43,24 @@ public class AutenticacaoBean {
 		try {
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarioLogado = usuarioDAO.autenticar(usuario.getNome(), usuario.getSenha());
-
-			if (usuarioLogado == null) {
+			
+			if(usuarioLogado == null){
 				Messages.addGlobalError("Login e/ou Senha Incorretos");
 				return;
 			}
-
+			
 			Faces.redirect("./pages/principal.xhtml");
-
+			
 		} catch (IOException erro) {
 			erro.printStackTrace();
 			Messages.addGlobalError("Não foi possível Realizar a Autenticação. Erro: " + erro.getMessage());
 		}
 	}
-
+	
 	public void desconectar() {
 		try {
-			usuario = null;
+			usuario = new Usuario();
+			
 			usuarioLogado = null;
 			
 			Faces.redirect("./pages/autenticacao.xhtml");
@@ -68,16 +69,16 @@ public class AutenticacaoBean {
 			erro.printStackTrace();
 			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
 		}
-	}
-
-	// public boolean temPermissoes(List<String> permissoes){
-	// for(String permissao : permissoes){
-	// if(usuarioLogado.getTipo() == permissao.charAt(0)){
-	// return true;
-	// }
-	// }
-	//
-	// return false;
-	// }
-
+	}	
+	
+//	public boolean temPermissoes(List<String> permissoes){	
+//		for(String permissao : permissoes){
+//			if(usuarioLogado.getTipo() == permissao.charAt(0)){
+//				return true;
+//			}
+//		}
+//		
+//		return false;
+//	}
+	
 }

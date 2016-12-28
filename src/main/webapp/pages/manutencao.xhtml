@@ -357,11 +357,12 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Equipamento" widgetVar="dialogoEquipamento"
-			draggable="false" resizable="false" modal="true" closable="true">
+		<p:dialog header="Cadastro de Equipamento"
+			widgetVar="dialogoEquipamento" draggable="false" resizable="false"
+			modal="true" closable="true">
 			<h:form id="formCadastroEquipamento">
 
-				<h:panelGrid id="painelEquipamento" columns="4" class="ui-noborder">
+				<h:panelGrid id="painelEquipamento" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="tipo" value="Tipo" />
 					<p:selectOneMenu id="tipo" filter="true"
@@ -370,10 +371,24 @@
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
+							itemLabel="Selecione um Tipo de Equipamento" />
 						<f:selectItems value="#{manutencaoBean.tipoEquipamentos}"
 							var="tipoEquipamento" itemValue="#{tipoEquipamento}"
 							itemLabel="#{tipoEquipamento.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="situacao" value="Situação" />
+					<p:selectOneMenu id="situacao" filter="true" required="true"
+						requiredMessage="Campo Obrigatório!"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{manutencaoBean.equipamento.situacao}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione uma Situação" />
+						<f:selectItem itemValue="Ativo" itemLabel="Ativo" />
+						<f:selectItem itemValue="Inativo" itemLabel="Inativo" />
+						<f:selectItem itemValue="Modificado" itemLabel="Modificado" />
+						<f:selectItem itemValue="Ocioso" itemLabel="Ocioso" />
+						<f:selectItems />
 					</p:selectOneMenu>
 
 					<p:outputLabel for="departamento" value="Departamento " />
@@ -383,24 +398,10 @@
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
+							itemLabel="Selecione um Departamento" />
 						<f:selectItems value="#{manutencaoBean.departamentos}"
 							var="departamento" itemValue="#{departamento}"
 							itemLabel="#{departamento.nome}" />
-					</p:selectOneMenu>
-
-					<p:outputLabel for="situacao" value="Situação" />
-					<p:selectOneMenu id="situacao" filter="true" required="true"
-						requiredMessage="Campo Obrigatório!" size="50"
-						converter="omnifaces.SelectItemsConverter"
-						value="#{manutencaoBean.equipamento.situacao}">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItem itemValue="Ativo" itemLabel="Ativo" />
-						<f:selectItem itemValue="Inativo" itemLabel="Inativo" />
-						<f:selectItem itemValue="Modificado" itemLabel="Modificado" />
-						<f:selectItem itemValue="Ocioso" itemLabel="Ocioso" />
-						<f:selectItems />
 					</p:selectOneMenu>
 
 					<p:outputLabel for="marca" value="Marca " />
@@ -410,7 +411,7 @@
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">>
 						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
+							itemLabel="Selecione uma Marca" />
 						<f:selectItems value="#{manutencaoBean.marcas}" var="marca"
 							itemValue="#{marca}" itemLabel="#{marca.nome}" />
 					</p:selectOneMenu>
@@ -427,39 +428,20 @@
 					<p:inputText id="serie" maxlength="40" size="25"
 						value="#{manutencaoBean.equipamento.serie}" />
 
-					<p:outputLabel for="capacidade" value="Capacidade" />
-					<p:inputText id="capacidade" maxlength="40" size="25"
-						value="#{manutencaoBean.equipamento.capacidade}" />
-
-					<p:outputLabel for="valorHora" value="Valor Hora" />
-					<p:inputNumber id="valorHora" size="25"
-						value="#{manutencaoBean.equipamento.valorHora}" symbol=" R$"
-						symbolPosition="s" decimalSeparator="," thousandSeparator=".">
-					</p:inputNumber>
-
 					<p:outputLabel for="garantiaInicio" value="Data Garantia Início" />
 					<p:calendar id="garantiaInicio" mask="99/99/99"
-						yearRange="1900:2222" showOn="button"
+						yearRange="1900:2222"
 						value="#{manutencaoBean.equipamento.garantia_inicial}" size="12"
 						locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 					<p:outputLabel for="garantiaFinal" value="Data Garantia Final" />
 					<p:calendar id="garantiaFinal" mask="99/99/99"
-						yearRange="1900:2222" showOn="button"
+						yearRange="1900:2222"
 						value="#{manutencaoBean.equipamento.garantia_final}" size="12"
 						locale="pt_BR" showButtonPanel="true" navigator="true" />
 
-					<p:outputLabel for="dataAquisicao" value="Data Aquisição" />
-					<p:calendar id="dataAquisicao" mask="99/99/99" showOn="button"
-						yearRange="1900:2222"
-						value="#{manutencaoBean.equipamento.dataAquisicao}" size="12"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
-				</h:panelGrid>
-
-				<h:panelGrid columns="2" class="ui-noborder">
-					<p:outputLabel for="dadosAdicionais" value="Dados Adicionais"
-						style="margin:4px" />
-					<p:inputTextarea id="dadosAdicionais" rows="6" cols="97"
+					<p:outputLabel for="dadosAdicionais" value="Dados Adicionais" />
+					<p:inputTextarea id="dadosAdicionais" rows="4" cols="50"
 						counter="display" maxlength="500"
 						counterTemplate="{0} caracteres restantes." autoResize="false"
 						value="#{manutencaoBean.equipamento.dadosAdicionais}" />
@@ -473,7 +455,7 @@
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{manutencaoBean.salvarEquipamento}"
-						update=":formCadastroEquipamento:painelEquipamento :formListagem:tabela :formListagem:tool"
+						update=":formCadastroEquipamento:painelEquipamento :formCadastro:equipamento"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

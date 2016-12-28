@@ -28,7 +28,8 @@
 					<p:submenu label="Minha conta">
 						<p:menuitem value="Meus Chamados" />
 						<p:menuitem value="Página Inicial" url="/pages/principal.xhtml" />
-						<p:menuitem value="Deconectar" url="/pages/autenticacao.xhtml" />
+						<p:menuitem value="Deconectar"
+							actionListener="#{autenticacaoBean.desconectar}" />
 					</p:submenu>
 				</p:column>
 			</p:submenu>
@@ -92,8 +93,8 @@
 			<f:facet name="options">
 				<h:outputText style="margin:10px"
 					value="Bem-vindo #{autenticacaoBean.usuarioLogado.nome}" />
-				<p:commandButton type="button" value="Desconectar"
-					icon="ui-icon-extlink" actionListener=#{autenticacaoBean.desconectar} />
+				<p:commandButton value="Desconectar" icon="ui-icon-extlink"
+					actionListener="#{autenticacaoBean.desconectar}" />
 			</f:facet>
 		</p:megaMenu>
 	</h:form>

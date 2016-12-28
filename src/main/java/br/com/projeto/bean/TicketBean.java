@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -17,6 +18,7 @@ import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Ticket;
+import br.com.projeto.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -26,6 +28,9 @@ public class TicketBean implements Serializable {
 	private List<Ticket> tickets;
 
 	private List<Departamento> departamentos;
+
+	private AutenticacaoBean autenticacaoBean;
+	private Usuario usuario;
 
 	private FacesMessage message;
 	private String busca;
@@ -68,6 +73,22 @@ public class TicketBean implements Serializable {
 
 	public void setDepartamentos(List<Departamento> departamentos) {
 		this.departamentos = departamentos;
+	}
+
+	public AutenticacaoBean getAutenticacaoBean() {
+		return autenticacaoBean;
+	}
+
+	public void setAutenticacaoBean(AutenticacaoBean autenticacaoBean) {
+		this.autenticacaoBean = autenticacaoBean;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 
 	@PostConstruct
@@ -117,7 +138,11 @@ public class TicketBean implements Serializable {
 	}
 
 	public void novo() {
+		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+		usuario = autenticacaoBean.getUsuarioLogado();
+
 		ticket = new Ticket();
+		ticket.setUsuario(usuario);
 		ticket.setDataAbertura(new java.util.Date());
 		ticket.setStatus("Pendente");
 	}
