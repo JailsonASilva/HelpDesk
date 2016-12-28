@@ -57,6 +57,20 @@ public class AutenticacaoBean {
 		}
 	}
 	
+	public void desconectar() {
+		try {
+			usuario = new Usuario();
+			
+			usuarioLogado = null;
+			
+			Faces.redirect("./pages/autenticacao.xhtml");
+
+		} catch (IOException erro) {
+			erro.printStackTrace();
+			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+		}
+	}	
+	
 //	public boolean temPermissoes(List<String> permissoes){	
 //		for(String permissao : permissoes){
 //			if(usuarioLogado.getTipo() == permissao.charAt(0)){
