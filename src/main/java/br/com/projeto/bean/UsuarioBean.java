@@ -14,8 +14,10 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import br.com.projeto.dao.AcessoDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.UsuarioDAO;
+import br.com.projeto.domain.Acesso;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Usuario;
 
@@ -28,6 +30,9 @@ public class UsuarioBean implements Serializable {
 
 	private Departamento departamento;
 	private List<Departamento> departamentos;
+
+	private Acesso acesso;
+	private List<Acesso> acessos;
 
 	private FacesMessage message;
 	private String busca;
@@ -80,11 +85,30 @@ public class UsuarioBean implements Serializable {
 		this.departamento = departamento;
 	}
 
+	public List<Acesso> getAcessos() {
+		return acessos;
+	}
+
+	public void setAcessos(List<Acesso> acessos) {
+		this.acessos = acessos;
+	}
+
+	public Acesso getAcesso() {
+		return acesso;
+	}
+
+	public void setAcesso(Acesso acesso) {
+		this.acesso = acesso;
+	}
+
 	@PostConstruct
 	public void carregarTabelas() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listar("nome");
+
+			AcessoDAO acessoDAO = new AcessoDAO();
+			acessos = acessoDAO.listar("nome");
 
 		} catch (
 
@@ -104,6 +128,7 @@ public class UsuarioBean implements Serializable {
 			usuarios = usuarioDAO.pesquisar(busca);
 
 			departamento = new Departamento();
+			acesso = new Acesso();
 
 			usuario = null;
 
@@ -129,8 +154,9 @@ public class UsuarioBean implements Serializable {
 	public void novo() {
 		usuario = new Usuario();
 		usuario.setAtivo(true);
-		
+
 		departamento = new Departamento();
+		acesso = new Acesso();
 	}
 
 	public void salvar() {
@@ -196,6 +222,26 @@ public class UsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void salvarAcesso() {
+		try {
+			AcessoDAO acessoDAO = new AcessoDAO();
+			acessoDAO.merge(acesso);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoAcesso').hide();");
+
+			acessos = acessoDAO.listar("nome");
+
+			acesso = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
 
 	public void editarSenha(ActionEvent evento) {
 		try {
@@ -213,9 +259,9 @@ public class UsuarioBean implements Serializable {
 	public void salvarSenha() {
 		try {
 			SimpleHash hash = new SimpleHash("md5", usuario.getSenhaSemCriptografia());
-			usuario.setSenha(hash.toHex());					
-			
-			UsuarioDAO usuarioDAO = new UsuarioDAO();			
+			usuario.setSenha(hash.toHex());
+
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarioDAO.merge(usuario);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoSenha').hide();");

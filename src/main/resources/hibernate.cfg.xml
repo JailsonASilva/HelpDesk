@@ -51,6 +51,7 @@
 		<mapping class="br.com.projeto.domain.Categoria" />
 		<mapping class="br.com.projeto.domain.Nivel" />
 		<mapping class="br.com.projeto.domain.Ticket" />
+		<mapping class="br.com.projeto.domain.Acesso" />
 
 	</session-factory>
 

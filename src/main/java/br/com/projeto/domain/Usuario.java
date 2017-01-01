@@ -24,6 +24,10 @@ public class Usuario extends GenericDomain {
 	@JoinColumn(nullable = false)
 	private Departamento departamento;
 
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Acesso acesso;
+
 	@Transient
 	private String senhaSemCriptografia;
 
@@ -76,6 +80,14 @@ public class Usuario extends GenericDomain {
 
 	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
+	}
+
+	public Acesso getAcesso() {
+		return acesso;
+	}
+
+	public void setAcesso(Acesso acesso) {
+		this.acesso = acesso;
 	}
 
 	@Transient

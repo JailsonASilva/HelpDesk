@@ -26,12 +26,12 @@
 						<p:outputLabel for="departamento" value="Departamento " />
 						<p:selectOneMenu id="departamento" filter="true"
 							filterMatchMode="startsWith"
-							value="#{ticketBean.ticket.departamento}"
+							value="#{ticketExternoBean.ticket.departamento}"
 							converter="omnifaces.SelectItemsConverter" required="true"
 							requiredMessage="Campo Obrigatório">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{ticketBean.departamentos}"
+							<f:selectItems value="#{ticketExternoBean.departamentos}"
 								var="departamento" itemValue="#{departamento}"
 								itemLabel="#{departamento.nome}" />
 						</p:selectOneMenu>
@@ -40,7 +40,7 @@
 						<p:selectOneMenu id="prioridade" filter="true" required="true"
 							requiredMessage="Campo Obrigatório!"
 							converter="omnifaces.SelectItemsConverter"
-							value="#{ticketBean.ticket.prioridade}">
+							value="#{ticketExternoBean.ticket.prioridade}">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
 							<f:selectItem itemValue="Baixa" itemLabel="Baixa" />
@@ -53,14 +53,14 @@
 						<p:outputLabel for="assunto" value="Assunto" />
 						<p:inputText id="assunto" maxlength="40" size="63" required="true"
 							requiredMessage="Campo Obrigatório!"
-							value="#{ticketBean.ticket.assunto}" />
+							value="#{ticketExternoBean.ticket.assunto}" />
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
 						<p:inputTextarea id="solicitacao" rows="6" cols="60" required="true"
 							requiredMessage="Campo Obrigatório!"
 							counter="display" maxlength="600"
 							counterTemplate="{0} caracteres restantes." autoResize="false"
-							value="#{ticketBean.ticket.solicitacao}" />
+							value="#{ticketExternoBean.ticket.solicitacao}" />
 						<h:outputText id="display" />
 					</h:panelGrid>
 
@@ -68,7 +68,7 @@
 
 					<h:panelGrid columns="2">
 						<p:commandButton value="Salvar" icon="ui-icon-disk"
-							actionListener="#{ticketBean.salvarExterno}"
+							actionListener="#{ticketExternoBean.salvar}"
 							update=":formListagem:formCadastro:painel"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />

@@ -7,12 +7,9 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.TicketDAO;
@@ -23,7 +20,7 @@ import br.com.projeto.domain.Usuario;
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class TicketBean implements Serializable {
+public class TicketExternoBean implements Serializable {
 	private Ticket ticket;
 	private List<Ticket> tickets;
 
@@ -111,32 +108,6 @@ public class TicketBean implements Serializable {
 		}
 	}
 
-	public void pesquisar() {
-		try {
-			TicketDAO ticketDAO = new TicketDAO();
-			tickets = ticketDAO.pesquisar(busca);
-
-			ticket = null;
-
-			if (tickets.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
 	public void novo() {
 		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 		usuario = autenticacaoBean.getUsuarioLogado();
@@ -147,7 +118,7 @@ public class TicketBean implements Serializable {
 		ticket.setStatus("Pendente");
 	}
 
-	public void salvarExterno() {
+	public void salvar() {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -166,36 +137,5 @@ public class TicketBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}
-
-	public void excluir(ActionEvent evento) {
-		try {
-			TicketDAO ticketDAO = new TicketDAO();
-			ticketDAO.excluir(ticket);
-
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + ticket.getAssunto());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			tickets = ticketDAO.listar("nome");
-
-			ticket = null;
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
-	public void onRowSelect(SelectEvent event) {
-
-	}
-
-	public void onRowUnselect(UnselectEvent event) {
-		ticket = null;
 	}
 }

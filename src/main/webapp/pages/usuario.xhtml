@@ -120,6 +120,10 @@
 						<h:outputText value="#{usuario.departamento.nome}" />
 					</p:column>
 
+					<p:column headerText="Acesso" sortBy="#{usuario.acesso.nome}">
+						<h:outputText value="#{usuario.acesso.nome}" />
+					</p:column>
+
 					<p:column headerText="Ativo" sortBy="#{usuario.ativoFormatado}"
 						width="90">
 						<h:outputText value="#{usuario.ativoFormatado}" />
@@ -181,6 +185,17 @@
 							itemLabel="#{departamento.nome}" />
 					</p:selectOneMenu>
 
+					<p:outputLabel for="acesso" value="Acesso" />
+					<p:selectOneMenu id="acesso" filter="true"
+						filterMatchMode="startsWith" value="#{usuarioBean.usuario.acesso}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{usuarioBean.acessos}" var="acesso"
+							itemValue="#{acesso}" itemLabel="#{acesso.nome}" />
+					</p:selectOneMenu>
+
 					<p:outputLabel for="ativo" value="Ativo" />
 					<p:selectBooleanCheckbox id="ativo"
 						value="#{usuarioBean.usuario.ativo}" required="true"
@@ -205,6 +220,13 @@
 						<p:menuitem value="Novo Departamento"
 							oncomplete="PF('dialogoDepartamento').show();"
 							update=":formCadastroDepartamento:painelDepartamento">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:menuitem>
+
+						<p:menuitem value="Novo Acesso"
+							oncomplete="PF('dialogoAcesso').show();"
+							update=":formCadastroAcesso:painelAcesso">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:menuitem>
@@ -268,6 +290,104 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
+		
+		<p:dialog header="Cadastro de Acesso" widgetVar="dialogoAcesso"
+			draggable="false" resizable="false" modal="true" closable="true">
+			<h:form id="formCadastroAcesso">
+				<h:panelGrid id="painelAcesso" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{usuarioBean.acesso.nome}" />
+
+				</h:panelGrid>
+
+				<br></br>
+
+				<p:tabView id="tabView">
+					<p:tab title="Sistema">
+						<h:panelGrid id="painelSistema" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Departamento" />
+							<p:selectBooleanCheckbox
+								value="#{usuarioBean.acesso.departamento}" />
+
+							<p:outputLabel value="Acesso" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.acesso}" />
+
+							<p:outputLabel value="Usuário" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.usuario}" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Equipamento">
+						<h:panelGrid id="painelEquipamento" columns="2"
+							class="ui-noborder">
+
+							<p:outputLabel value="Equipamento" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.equipamento}" />
+
+							<p:outputLabel value="Marca" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.marca}" />
+
+							<p:outputLabel value="Tipo de Equipamento" />
+							<p:selectBooleanCheckbox
+								value="#{usuarioBean.acesso.tipoEquipamento}" />
+
+							<p:outputLabel value="Manutenção" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.manutencao}" />
+
+							<p:outputLabel value="Próxima Manutenções" />
+							<p:selectBooleanCheckbox
+								value="#{usuarioBean.acesso.proximaManutencao}" />
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Ticket">
+						<h:panelGrid id="painelTicket" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Cliente" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.cliente}" />
+
+							<p:outputLabel value="Categorias" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.categoria}" />
+
+							<p:outputLabel value="Ticket Interno" />
+							<p:selectBooleanCheckbox
+								value="#{usuarioBean.acesso.ticketInterno}" />
+
+							<p:outputLabel value="Ticket Externo" />
+							<p:selectBooleanCheckbox
+								value="#{usuarioBean.acesso.ticketExterno}" />
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="FAQ">
+						<h:panelGrid id="painelFaq" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Nível" />
+							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.nivel}" />
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{usuarioBean.salvarAcesso}"
+						update=":formCadastroAcesso:painelAcesso :formListagem:tabela :formListagem:tool"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoAcesso').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>		
 
 	</ui:define>
 </ui:composition>

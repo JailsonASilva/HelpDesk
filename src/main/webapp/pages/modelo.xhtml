@@ -19,8 +19,14 @@
 			<p:submenu label="Sistema" icon="fa fa fw fa-user">
 				<p:column>
 					<p:submenu label="Cadastros">
-						<p:menuitem value="Departamentos" url="/pages/departamento.xhtml" />
-						<p:menuitem value="Usuários" url="/pages/usuario.xhtml" />
+						<p:menuitem value="Departamentos" url="/pages/departamento.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.departamento}" />
+
+						<p:menuitem value="Acesso" url="/pages/acesso.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.acesso}" />
+
+						<p:menuitem value="Usuários" url="/pages/usuario.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.usuario}" />
 					</p:submenu>
 				</p:column>
 
@@ -37,23 +43,30 @@
 			<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
 				<p:column>
 					<p:submenu label="Cadastros">
-						<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml" />
-						<p:menuitem value="Marcas" url="/pages/marca.xhtml" />
+						<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.equipamento}" />
+
+						<p:menuitem value="Marcas" url="/pages/marca.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.manutencao}" />
+
 						<p:menuitem value="Tipos de Equipamento"
-							url="/pages/tipoEquipamento.xhtml" />
+							url="/pages/tipoEquipamento.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEquipamento}" />
 					</p:submenu>
 				</p:column>
 
 				<p:column>
 					<p:submenu label="Movimento">
-						<p:menuitem value="Manutenção" url="/pages/manutencao.xhtml" />
+						<p:menuitem value="Manutenção" url="/pages/manutencao.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.manutencao}" />
 					</p:submenu>
 				</p:column>
 
 				<p:column>
 					<p:submenu label="Consultas">
 						<p:menuitem value="Próximas Manutenções"
-							url="/pages/proximaManutencao.xhtml" />
+							url="/pages/proximaManutencao.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.proximaManutencao}" />
 					</p:submenu>
 				</p:column>
 			</p:submenu>
@@ -61,23 +74,30 @@
 			<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
 				<p:column>
 					<p:submenu label="Cadastros">
-						<p:menuitem value="Clientes" url="/pages/cliente.xhtml" />
-						<p:menuitem value="Categorias" url="/pages/categoria.xhtml" />
+						<p:menuitem value="Clientes" url="/pages/cliente.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.cliente}" />
+
+						<p:menuitem value="Categorias" url="/pages/categoria.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.categoria}" />
 					</p:submenu>
 				</p:column>
 
 				<p:column>
 					<p:submenu label="Movimento">
-						<p:menuitem value="Novo Ticket (Interno)" url="" />
+						<p:menuitem value="Novo Ticket (Interno)"
+							url="/pages/ticketInterno.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
+
 						<p:menuitem value="Novo Ticket (Externo)"
-							url="/pages/ticketExterno.xhtml" />
+							url="/pages/ticketExterno.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
 					</p:submenu>
 				</p:column>
 
 				<p:column>
 					<p:submenu label="Consultas">
-						<p:menuitem value="Chamados por Departamento" url="" />
-						<p:menuitem value="Chamados por Atendente" url="" />
+						<p:menuitem value="Ticket's por Departamento" url="" />
+						<p:menuitem value="Ticket's por Atendente" url="" />
 					</p:submenu>
 				</p:column>
 			</p:submenu>
@@ -85,7 +105,8 @@
 			<p:submenu label="FAQ" icon="fa fa fw fa-list-ol">
 				<p:column>
 					<p:submenu label="Cadastros">
-						<p:menuitem value="Nível" url="/pages/nivel.xhtml" />
+						<p:menuitem value="Nível" url="/pages/nivel.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
 					</p:submenu>
 				</p:column>
 			</p:submenu>
