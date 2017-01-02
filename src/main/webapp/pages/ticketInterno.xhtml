@@ -35,7 +35,7 @@
 								var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}" />
 						</p:selectOneMenu>
 
-						<p:outputLabel for="departamento" value="Departamento Solicitado" />
+						<p:outputLabel for="departamento" value="Departamento" />
 						<p:selectOneMenu id="departamento" filter="true"
 							filterMatchMode="startsWith"
 							value="#{ticketInternoBean.ticket.departamento}"
@@ -68,10 +68,10 @@
 							value="#{ticketInternoBean.ticket.prioridade}">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItem itemValue="Baixa" itemLabel="Baixa" />
-							<f:selectItem itemValue="Normal" itemLabel="Normal" />
-							<f:selectItem itemValue="Alta" itemLabel="Alta" />
-							<f:selectItem itemValue="Urgente" itemLabel="Urgente" />
+							<f:selectItem itemValue="4-Baixa" itemLabel="Baixa" />
+							<f:selectItem itemValue="3-Normal" itemLabel="Normal" />
+							<f:selectItem itemValue="2-Alta" itemLabel="Alta" />
+							<f:selectItem itemValue="1-Urgente" itemLabel="Urgente" />
 							<f:selectItems />
 						</p:selectOneMenu>
 
@@ -88,7 +88,7 @@
 								itemLabel="#{categoria.nome}" />
 						</p:selectOneMenu>
 
-						<p:outputLabel for="usuario" value="Usuário Abertura" />
+						<p:outputLabel for="usuario" value="Usuário" />
 						<p:selectOneMenu id="usuario" filter="true"
 							filterMatchMode="startsWith"
 							value="#{ticketInternoBean.ticket.usuario}"
@@ -106,7 +106,7 @@
 					<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 						<p:outputLabel for="assunto" value="Assunto" />
-						<p:inputText id="assunto" maxlength="47" size="53" required="true"
+						<p:inputText id="assunto" maxlength="47" size="56" required="true"
 							style="margin:20px" requiredMessage="Campo Obrigatório!"
 							value="#{ticketInternoBean.ticket.assunto}" />
 
@@ -121,7 +121,7 @@
 					<h:panelGrid id="painel3" columns="2" class="ui-noborder">
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
-						<p:inputTextarea id="solicitacao" rows="6" cols="88"
+						<p:inputTextarea id="solicitacao" rows="6" cols="95"
 							style="margin:5px" required="true"
 							requiredMessage="Campo Obrigatório!" counter="display"
 							maxlength="600" counterTemplate="{0} caracteres restantes."

@@ -126,7 +126,7 @@ public class TicketExternoBean implements Serializable {
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
 					"Para acompanhar o andamento de seu Ticket acesse o Menu Sistema - Minha Conta - Meus Chamados");
 
-			ticket = new Ticket();
+			novo();
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 

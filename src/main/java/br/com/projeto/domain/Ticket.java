@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -49,7 +50,7 @@ public class Ticket extends GenericDomain {
 
 	@Column(length = 600, nullable = false)
 	private String solicitacao;
-
+	
 	public Categoria getCategoria() {
 		return categoria;
 	}
@@ -129,4 +130,29 @@ public class Ticket extends GenericDomain {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
+	@Transient
+	public String getPrioridadeFormatada() {
+		
+		String prioridadeFormatada = "";
+		
+		if (prioridade.equals("1-Urgente")) {
+			prioridadeFormatada = "Urgente";
+		}
+
+		if (prioridade.equals("2-Alta")) {
+			prioridadeFormatada = "Alta";
+		}
+
+		if (prioridade.equals("3-Normal")) {
+			prioridadeFormatada = "Normal";
+		}
+
+		if (prioridade.equals("4-Baixa")) {
+			prioridadeFormatada = "Baixa";
+		}
+		
+		return prioridadeFormatada;
+	}
+
 }

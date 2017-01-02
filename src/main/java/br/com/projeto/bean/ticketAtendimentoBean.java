@@ -7,8 +7,12 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 
+import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
@@ -26,7 +30,7 @@ import br.com.projeto.domain.Usuario;
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class TicketInternoBean implements Serializable {
+public class ticketAtendimentoBean implements Serializable {
 	private Ticket ticket;
 	private List<Ticket> tickets;
 
@@ -37,22 +41,15 @@ public class TicketInternoBean implements Serializable {
 	private List<Usuario> usuarios;
 
 	private FacesMessage message;
-	private String busca;
+	private String departamento;
+	private String status;
 
-	public FacesMessage getMessage() {
-		return message;
+	public Ticket getTicket() {
+		return ticket;
 	}
 
-	public void setMessage(FacesMessage message) {
-		this.message = message;
-	}
-
-	public String getBusca() {
-		return busca;
-	}
-
-	public void setBusca(String busca) {
-		this.busca = busca;
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
 	}
 
 	public List<Ticket> getTickets() {
@@ -63,12 +60,12 @@ public class TicketInternoBean implements Serializable {
 		this.tickets = tickets;
 	}
 
-	public Ticket getTicket() {
-		return ticket;
+	public List<Cliente> getClientes() {
+		return clientes;
 	}
 
-	public void setTicket(Ticket ticket) {
-		this.ticket = ticket;
+	public void setClientes(List<Cliente> clientes) {
+		this.clientes = clientes;
 	}
 
 	public List<Departamento> getDepartamentos() {
@@ -77,14 +74,6 @@ public class TicketInternoBean implements Serializable {
 
 	public void setDepartamentos(List<Departamento> departamentos) {
 		this.departamentos = departamentos;
-	}
-
-	public List<Cliente> getClientes() {
-		return clientes;
-	}
-
-	public void setClientes(List<Cliente> clientes) {
-		this.clientes = clientes;
 	}
 
 	public List<Categoria> getCategorias() {
@@ -111,6 +100,30 @@ public class TicketInternoBean implements Serializable {
 		this.usuarios = usuarios;
 	}
 
+	public FacesMessage getMessage() {
+		return message;
+	}
+
+	public void setMessage(FacesMessage message) {
+		this.message = message;
+	}
+
+	public String getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(String departamento) {
+		this.departamento = departamento;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -129,7 +142,7 @@ public class TicketInternoBean implements Serializable {
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.listar("nome");
 
-			novo();
+			listarPendentes();
 
 		} catch (
 
@@ -143,8 +156,38 @@ public class TicketInternoBean implements Serializable {
 		}
 	}
 
+	public void listarPendentes() {
+		try {
+
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			departamento = usuario.getDepartamento().getNome();
+
+			TicketDAO ticketDAO = new TicketDAO();
+			tickets = ticketDAO.pesquisarDepartamento(departamento, "Pendente");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Ticket's Pendentes.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
 	public void pesquisar() {
 		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			departamento = usuario.getDepartamento().getNome();
+
+			TicketDAO ticketDAO = new TicketDAO();
+			tickets = ticketDAO.pesquisarDepartamento(departamento, status);
 
 			ticket = null;
 
@@ -158,7 +201,7 @@ public class TicketInternoBean implements Serializable {
 		} catch (
 
 		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Ticket.",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
@@ -176,12 +219,16 @@ public class TicketInternoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Salvo com Sucesso!",
 					"Para acompanhar o andamento de seu Ticket acesse o Menu Sistema - Minha Conta - Meus Chamados");
 
-			ticket = new Ticket();
-
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
+
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -190,5 +237,36 @@ public class TicketInternoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
+	}
+
+	public void excluir(ActionEvent evento) {
+		try {
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.excluir(ticket);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Nº do Ticket: " + ticket.getCodigo());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);			
+
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void onRowSelect(SelectEvent event) {
+
+	}
+
+	public void onRowUnselect(UnselectEvent event) {
+		ticket = null;
 	}
 }
