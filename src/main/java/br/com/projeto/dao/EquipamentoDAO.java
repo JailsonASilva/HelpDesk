@@ -17,6 +17,7 @@ public class EquipamentoDAO extends GenericDAO<Equipamento> {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Equipamento.class);
+			
 			Criteria consultaTipoEquipamento = consulta.createCriteria("tipoEquipamento", "tipoEquipamento",
 					Criteria.INNER_JOIN, Restrictions.like("tipoEquipamento.nome", "%" + nome + "%"));
 

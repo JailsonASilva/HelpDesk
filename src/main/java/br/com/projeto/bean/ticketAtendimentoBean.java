@@ -18,12 +18,14 @@ import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
+import br.com.projeto.dao.OcorrenciaDAO;
 import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Categoria;
 import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
+import br.com.projeto.domain.Ocorrencia;
 import br.com.projeto.domain.Ticket;
 import br.com.projeto.domain.Usuario;
 
@@ -33,6 +35,9 @@ import br.com.projeto.domain.Usuario;
 public class ticketAtendimentoBean implements Serializable {
 	private Ticket ticket;
 	private List<Ticket> tickets;
+
+	private Ocorrencia ocorrencia;
+	private List<Ocorrencia> ocorrencias;
 
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
@@ -124,6 +129,22 @@ public class ticketAtendimentoBean implements Serializable {
 		this.status = status;
 	}
 
+	public Ocorrencia getOcorrencia() {
+		return ocorrencia;
+	}
+
+	public void setOcorrencia(Ocorrencia ocorrencia) {
+		this.ocorrencia = ocorrencia;
+	}
+
+	public List<Ocorrencia> getOcorrencias() {
+		return ocorrencias;
+	}
+
+	public void setOcorrencias(List<Ocorrencia> ocorrencias) {
+		this.ocorrencias = ocorrencias;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -210,6 +231,31 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
+	public void pesquisarOcorrencia() {
+		try {
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+						
+
+			if (ocorrencias.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
 	public void novo() {
 		ticket = new Ticket();
 	}
@@ -247,7 +293,7 @@ public class ticketAtendimentoBean implements Serializable {
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Nº do Ticket: " + ticket.getCodigo());
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);			
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
 			ticket = null;
 

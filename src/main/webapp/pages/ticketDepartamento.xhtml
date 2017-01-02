@@ -42,10 +42,13 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Ocorrências"
-							process=":formListagem:tabela"
 							disabled="#{ticketAtendimentoBean.ticket == null}"
-							update=":formOcorrencia:tabView" icon="ui-icon-document"
-							oncomplete="PF('dialogoOcorrencia').show();">
+							actionListener="#{ticketAtendimentoBean.pesquisarOcorrencia}"
+							update=":formOcorrencia:tabView:tabelaOcorrencia"
+							icon="ui-icon-document"
+							oncomplete="PF('dialogoOcorrencia').show()"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -326,22 +329,50 @@
 		</p:dialog>
 
 
-		<p:dialog
-			header="Ocorrências "
-			widgetVar="dialogoOcorrencia" draggable="false" resizable="false"
+		<p:dialog header="Ocorrências" widgetVar="dialogoOcorrencia"
+			width="1000" height="600" draggable="false" resizable="false"
 			modal="true" closable="true">
 			<h:form id="formOcorrencia">
 
 				<p:tabView id="tabView">
+					<p:tab
+						title="Nº Ticket: #{ticketAtendimentoBean.ticket.codigo} / Status: #{ticketAtendimentoBean.ticket.status} / Prioridade: #{ticketAtendimentoBean.ticket.prioridadeFormatada} / Assunto: #{ticketAtendimentoBean.ticket.assunto}">
 
-					<p:tab title="Ocorrências - Nº Ticket: #{ticketAtendimentoBean.ticket.codigo}">
+						<p:toolbar id="tool">
+							<f:facet name="left">
+								<p:commandButton value="Nova Ocorrência" icon="ui-icon-document"></p:commandButton>
+							</f:facet>
+						</p:toolbar>
+
+						<p:dataTable id="tabelaOcorrencia"
+							emptyMessage="Nenhum registro encontrado." selectionMode="single"
+							selection="#{ticketAtendimentoBean.ocorrencia}"
+							draggableColumns="true" resizableColumns="true"
+							rowKey="#{ocorrencia.codigo}" paginator="true"
+							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+							value="#{ticketAtendimentoBean.ocorrencias}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							var="marca" rows="10" paginatorPosition="bottom">
+
+							<p:column headerText="Data Lanç." width="180"
+								style="text-align:center" sortBy="#{ocorrencia.data}">
+								<h:outputText value="#{ocorrencia.data}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Ocorrência"
+								sortBy="#{ocorrencia.ocorrencia}">
+								<h:outputText value="#{ocorrencia.ocorrencia}" />
+							</p:column>
+
+							<p:column headerText="Atendente"
+								sortBy="#{ocorrencia.usuario.nome}" width="350">
+								<h:outputText value="#{ocorrencia.usuario.nome}" />
+							</p:column>
+						</p:dataTable>
 
 					</p:tab>
-
-					<p:tab title="Nova Ocorrência">
-
-					</p:tab>
-
 				</p:tabView>
 
 			</h:form>

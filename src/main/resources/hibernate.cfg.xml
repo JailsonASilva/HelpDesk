@@ -52,6 +52,7 @@
 		<mapping class="br.com.projeto.domain.Nivel" />
 		<mapping class="br.com.projeto.domain.Ticket" />
 		<mapping class="br.com.projeto.domain.Acesso" />
+		<mapping class="br.com.projeto.domain.Ocorrencia" />
 
 	</session-factory>
 
