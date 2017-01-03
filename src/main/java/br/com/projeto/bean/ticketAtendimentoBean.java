@@ -231,27 +231,20 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
-	public void pesquisarOcorrencia() {
+	public void listarOcorrencia(ActionEvent evento) {
 		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+			
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
-						
+			
+			//org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').Show();");
 
-			if (ocorrencias.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
+					"Erro Inesperado!");
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
 			erro.printStackTrace();
 		}
 	}
@@ -284,6 +277,39 @@ public class ticketAtendimentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void salvarOcorrencia() {
+		try {
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
+
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
+
+			ocorrencia = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
+	
+	public void editarOcorrencia(ActionEvent evento) {
+		try {
+			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
 
 	public void excluir(ActionEvent evento) {
 		try {
@@ -308,11 +334,35 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
+	public void excluirOcorrencia(ActionEvent evento) {
+		try {
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.excluir(ocorrencia);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Ocorrência Excluída - Nº Ticket: " + ocorrencia.getTicket());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);	
+						
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());			
+			
+			ocorrencia = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
+	
 	public void onRowSelect(SelectEvent event) {
 
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
 		ticket = null;
+		ocorrencia = null;
 	}
 }

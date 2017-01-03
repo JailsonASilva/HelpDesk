@@ -41,17 +41,6 @@
 				<p:growl id="messages" showDetail="true" />
 				<p:toolbar id="tool">
 					<f:facet name="left">
-						<p:commandButton value="Ocorrências"
-							disabled="#{ticketAtendimentoBean.ticket == null}"
-							actionListener="#{ticketAtendimentoBean.pesquisarOcorrencia}"
-							update=":formOcorrencia:tabView:tabelaOcorrencia"
-							icon="ui-icon-document"
-							oncomplete="PF('dialogoOcorrencia').show()"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
 
 						<p:commandButton value="Editar Ticket"
 							process=":formListagem:tabela"
@@ -124,7 +113,7 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{ticketAtendimentoBean.onRowSelect}" /> />							
+						listener="#{ticketAtendimentoBean.onRowSelect}" />
 
 					<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
 						style="text-align:center" width="10">
@@ -159,8 +148,20 @@
 					</p:column>
 
 					<p:column headerText="Categoria" sortBy="#{ticket.categoria.nome}"
-						style="text-align:center" width="120">
+						style="text-align:center" width="60">
 						<h:outputText value="#{ticket.categoria.nome}" />
+					</p:column>
+
+					<p:column headerText="Ocorrências" width="22"
+						style="text-align:center">
+						<p:commandButton icon="fa fa fw fa-sitemap"
+							oncomplete="PF('dialogoOcorrencia').show()"
+							actionListener="#{ticketAtendimentoBean.listarOcorrencia}"
+							update=":formOcorrencia:tabView :formOcorrencia:tabView:tabelaOcorrencia">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 
@@ -338,9 +339,21 @@
 					<p:tab
 						title="Nº Ticket: #{ticketAtendimentoBean.ticket.codigo} / Status: #{ticketAtendimentoBean.ticket.status} / Prioridade: #{ticketAtendimentoBean.ticket.prioridadeFormatada} / Assunto: #{ticketAtendimentoBean.ticket.assunto}">
 
-						<p:toolbar id="tool">
+						<p:toolbar id="toolOcorrencia">
 							<f:facet name="left">
-								<p:commandButton value="Nova Ocorrência" icon="ui-icon-document"></p:commandButton>
+
+								<p:commandButton value="Nova Ocorrência" icon="ui-icon-document">
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+
+								<span class="ui-separator"> <span
+									class="ui-icon ui-icon-grip-dotted-vertical" />
+								</span>
+
+								<p:commandButton title="Imprimir" icon="ui-icon-print">
+									<p:printer target=":formOcorrencia:tabView:tabelaOcorrencia" />
+								</p:commandButton>
 							</f:facet>
 						</p:toolbar>
 
@@ -352,7 +365,7 @@
 							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
 							value="#{ticketAtendimentoBean.ocorrencias}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							var="marca" rows="10" paginatorPosition="bottom">
+							var="ocorrencia" rows="10" paginatorPosition="bottom">
 
 							<p:column headerText="Data Lanç." width="180"
 								style="text-align:center" sortBy="#{ocorrencia.data}">
@@ -362,13 +375,36 @@
 							</p:column>
 
 							<p:column headerText="Ocorrência"
+								style="white-space:normal !important;"
 								sortBy="#{ocorrencia.ocorrencia}">
 								<h:outputText value="#{ocorrencia.ocorrencia}" />
 							</p:column>
 
 							<p:column headerText="Atendente"
-								sortBy="#{ocorrencia.usuario.nome}" width="350">
+								sortBy="#{ocorrencia.usuario.nome}" width="120">
 								<h:outputText value="#{ocorrencia.usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Opções" width="68">
+								<p:commandButton icon="ui-icon-trash"
+									actionListener="#{ticketAtendimentoBean.excluirOcorrencia}"
+									update=":formOcorrencia:tabView:tabelaOcorrencia"
+									onstart="PF('iconeDeProcessamento').show()"
+									onsuccess="PF('iconeDeProcessamento').hide()">
+									<p:confirm header="Confirmação"
+										message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
+
+								</p:commandButton>
+
+								<p:commandButton icon="ui-icon-pencil"
+									actionListener="#{ticketAtendimentoBean.editarOcorrencia}"
+									update=":formCadastro:painel"
+									oncomplete="PF('dialogo').show();">
+									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
 							</p:column>
 						</p:dataTable>
 
