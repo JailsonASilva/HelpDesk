@@ -32,7 +32,7 @@ import br.com.projeto.domain.Usuario;
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class ticketAtendimentoBean implements Serializable {
+public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private Ticket ticket;
 	private List<Ticket> tickets;
 
@@ -50,6 +50,7 @@ public class ticketAtendimentoBean implements Serializable {
 
 	private FacesMessage message;
 	private String departamento;
+	private String usuarioBusca;
 	private String status;
 
 	public Ticket getTicket() {
@@ -148,6 +149,30 @@ public class ticketAtendimentoBean implements Serializable {
 		this.ocorrencias = ocorrencias;
 	}
 
+	public AutenticacaoBean getAutenticacaoBean() {
+		return autenticacaoBean;
+	}
+
+	public void setAutenticacaoBean(AutenticacaoBean autenticacaoBean) {
+		this.autenticacaoBean = autenticacaoBean;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public String getUsuarioBusca() {
+		return usuarioBusca;
+	}
+
+	public void setUsuarioBusca(String usuarioBusca) {
+		this.usuarioBusca = usuarioBusca;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -166,7 +191,7 @@ public class ticketAtendimentoBean implements Serializable {
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.listar("nome");
 
-			listarPendentesDepartamento();
+			listarPendentes();
 
 		} catch (
 
@@ -180,7 +205,7 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
-	public void pesquisarDepartamento() {
+	public void pesquisar() {
 		try {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
@@ -209,9 +234,9 @@ public class ticketAtendimentoBean implements Serializable {
 
 			erro.printStackTrace();
 		}
-	}
+	}		
 
-	public void listarPendentesDepartamento() {
+	public void listarPendentes() {
 		try {
 
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
@@ -237,7 +262,7 @@ public class ticketAtendimentoBean implements Serializable {
 	public void listarOcorrencia(ActionEvent evento) {
 		try {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
-			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());			
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
@@ -258,7 +283,7 @@ public class ticketAtendimentoBean implements Serializable {
 		ocorrencia.setData(new java.util.Date());
 	}
 
-	public void salvarDepartamento() {
+	public void salvar() {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -272,7 +297,7 @@ public class ticketAtendimentoBean implements Serializable {
 
 			ticket = null;
 
-			listarPendentesDepartamento();
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -303,7 +328,7 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
-	public void atenderTicketDepartamento() {
+	public void atenderTicket() {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket em Atendimento!");
@@ -317,7 +342,7 @@ public class ticketAtendimentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			listarPendentesDepartamento();
+			listarPendentes();
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Atendido com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!");
@@ -333,7 +358,7 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
-	public void suspenderTicketDepartamento() {
+	public void suspenderTicket() {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket Suspenso!");
@@ -347,7 +372,7 @@ public class ticketAtendimentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			listarPendentesDepartamento();
+			listarPendentes();
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Suspenso com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Suspenso!");
@@ -362,8 +387,8 @@ public class ticketAtendimentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
-	public void concluirTicketDepartamento() {
+
+	public void concluirTicket() {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket Concluído!");
@@ -377,7 +402,7 @@ public class ticketAtendimentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			listarPendentesDepartamento();
+			listarPendentes();
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Concluído com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Concluído!");
@@ -392,7 +417,7 @@ public class ticketAtendimentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void editarOcorrencia(ActionEvent evento) {
 		try {
 			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
@@ -406,7 +431,7 @@ public class ticketAtendimentoBean implements Serializable {
 		}
 	}
 
-	public void excluirTicketDepartamento(ActionEvent evento) {
+	public void excluirTicket(ActionEvent evento) {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.excluir(ticket);
@@ -418,7 +443,7 @@ public class ticketAtendimentoBean implements Serializable {
 
 			ticket = null;
 
-			listarPendentesDepartamento();
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
@@ -428,7 +453,7 @@ public class ticketAtendimentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-
+	
 	public void excluirOcorrencia(ActionEvent evento) {
 		try {
 			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
