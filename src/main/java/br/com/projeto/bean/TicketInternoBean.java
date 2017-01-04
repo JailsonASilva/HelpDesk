@@ -169,6 +169,7 @@ public class TicketInternoBean implements Serializable {
 
 	public void novo() {
 		ticket = new Ticket();
+		ticket.setStatus("Pendente");
 	}
 
 	public void salvar() {

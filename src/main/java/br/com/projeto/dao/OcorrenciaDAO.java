@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.projeto.domain.Ocorrencia;
@@ -20,6 +21,8 @@ public class OcorrenciaDAO extends GenericDAO<Ocorrencia> {
 			Criteria consultaTicket = consulta.createCriteria("ticket", "ticket",
 					Criteria.INNER_JOIN, Restrictions.eq("ticket.codigo", ticket));			
 
+			consulta.addOrder(Order.asc("data"));
+			
 			List<Ocorrencia> resultado = consulta.list();
 			return resultado;
 

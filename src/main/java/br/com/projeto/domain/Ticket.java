@@ -33,6 +33,10 @@ public class Ticket extends GenericDomain {
 
 	@ManyToOne
 	@JoinColumn(nullable = true)
+	private Usuario usuarioAtendimento;
+
+	@ManyToOne
+	@JoinColumn(nullable = true)
 	private Equipamento equipamento;
 
 	@Column(nullable = false)
@@ -50,7 +54,7 @@ public class Ticket extends GenericDomain {
 
 	@Column(length = 600, nullable = false)
 	private String solicitacao;
-	
+
 	public Categoria getCategoria() {
 		return categoria;
 	}
@@ -131,11 +135,19 @@ public class Ticket extends GenericDomain {
 		this.usuario = usuario;
 	}
 
+	public Usuario getUsuarioAtendimento() {
+		return usuarioAtendimento;
+	}
+
+	public void setUsuarioAtendimento(Usuario usuarioAtendimento) {
+		this.usuarioAtendimento = usuarioAtendimento;
+	}
+
 	@Transient
 	public String getPrioridadeFormatada() {
-		
+
 		String prioridadeFormatada = "";
-		
+
 		if (prioridade.equals("1-Urgente")) {
 			prioridadeFormatada = "Urgente";
 		}
@@ -151,7 +163,7 @@ public class Ticket extends GenericDomain {
 		if (prioridade.equals("4-Baixa")) {
 			prioridadeFormatada = "Baixa";
 		}
-		
+
 		return prioridadeFormatada;
 	}
 

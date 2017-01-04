@@ -48,18 +48,9 @@
 								itemLabel="#{departamento.nome}" />
 						</p:selectOneMenu>
 
-						<p:outputLabel for="status" value="Status" />
-						<p:selectOneMenu id="status" filter="true" required="true"
-							style="margin:7px" requiredMessage="Campo Obrigatório!"
-							converter="omnifaces.SelectItemsConverter"
-							value="#{ticketInternoBean.ticket.status}">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItem itemValue="Pendente" itemLabel="Pendente" />
-							<f:selectItem itemValue="Suspenso" itemLabel="Suspenso" />
-							<f:selectItem itemValue="Concluído" itemLabel="Concluído" />
-							<f:selectItems />
-						</p:selectOneMenu>
+						<p:outputLabel value="Status" />
+						<p:inputText maxlength="40" size="37" readonly="true"
+							style="margin:7px" value="#{ticketInternoBean.ticket.status}" />
 
 						<p:outputLabel for="prioridade" value="Prioridade" />
 						<p:selectOneMenu id="prioridade" filter="true" required="true"

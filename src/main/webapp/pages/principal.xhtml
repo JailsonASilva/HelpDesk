@@ -9,9 +9,13 @@
 	template="/pages/modelo.xhtml">
 
 	<ui:define name="conteudo">
-		<h:form id="formPrincipal">
-			
-		</h:form>
+
+		<p:tabView id="tabView">
+
+			<p:tab title="Meus Atendimentos"></p:tab>
+			<p:tab title="Ticket's por Departamento"></p:tab>
+
+		</p:tabView>
 
 		<p:dialog widgetVar="iconeDeProcessamento">
 			<f:facet name="header">
@@ -20,6 +24,13 @@
 					value="Aguarde... Estamos Processando sua Informação..." />
 			</f:facet>
 		</p:dialog>
+
+		<p:confirmDialog global="true">
+			<p:commandButton value="Sim" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+			<p:commandButton value="Não" type="button"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		</p:confirmDialog>
 
 	</ui:define>
 </ui:composition>
