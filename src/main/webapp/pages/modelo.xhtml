@@ -106,13 +106,21 @@
 			</p:submenu>
 
 			<p:submenu label="Eventos" icon="fa fa fw fa-calendar">
-
+				<p:column>
+					<p:submenu label="Cadastros">
+						<p:menuitem value="Local" url="/pages/local.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.local}" />
+					</p:submenu>
+				</p:column>
 			</p:submenu>
 
 			<p:submenu label="FAQ" icon="fa fa fw fa-list-ol">
 				<p:column>
 					<p:submenu label="Cadastros">
 						<p:menuitem value="Nível" url="/pages/nivel.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
+
+						<p:menuitem value="Classficação" url="/pages/classificacao.xhtml"
 							rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
 					</p:submenu>
 				</p:column>

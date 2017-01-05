@@ -112,8 +112,9 @@
 						<h:outputText value="#{nivel.nome}" />
 					</p:column>
 
-					<p:column headerText="Tipo" width="150" sortBy="#{nivel.visualizacao}">
-						<h:outputText value="#{nivel.visualizacao}" />
+					<p:column headerText="Público" sortBy="#{nivel.publicoFormatado}"
+						style="text-align:center" width="90">
+						<h:outputText value="#{nivel.publicoFormatado}" />
 					</p:column>
 				</p:dataTable>
 
@@ -144,18 +145,9 @@
 						requiredMessage="Campo Obrigatório"
 						value="#{nivelBean.nivel.nome}" />
 
-					<p:outputLabel for="visualizacao" value="Visualização" />
-					<p:selectOneMenu id="visualizacao" filter="true" required="true"
-						requiredMessage="Campo Obrigatório!"
-						converter="omnifaces.SelectItemsConverter"
-						value="#{nivelBean.nivel.visualizacao}">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Tipo" />
-						<f:selectItem itemValue="Atendente" itemLabel="Atendente" />
-						<f:selectItem itemValue="Cliente" itemLabel="Cliente" />
-						<f:selectItem itemValue="Ambos" itemLabel="Ambos" />
-						<f:selectItems />
-					</p:selectOneMenu>
+					<p:outputLabel for="publico" value="Público" />
+					<p:selectBooleanCheckbox id="publico"
+						value="#{nivelBean.nivel.publico}" />
 				</h:panelGrid>
 
 				<br></br>

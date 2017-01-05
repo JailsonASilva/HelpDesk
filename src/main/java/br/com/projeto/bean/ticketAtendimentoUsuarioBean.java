@@ -49,7 +49,6 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	private List<Usuario> usuarios;
 
 	private FacesMessage message;
-	private String departamento;
 	private String usuarioBusca;
 	private String status;
 
@@ -115,14 +114,6 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 	public void setMessage(FacesMessage message) {
 		this.message = message;
-	}
-
-	public String getDepartamento() {
-		return departamento;
-	}
-
-	public void setDepartamento(String departamento) {
-		this.departamento = departamento;
 	}
 
 	public String getStatus() {

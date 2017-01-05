@@ -50,6 +50,12 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean usuario;
 
+	@Column(nullable = true)
+	private Boolean local;
+
+	@Column(nullable = true)
+	private Boolean classificacao;
+
 	public String getNome() {
 		return nome;
 	}
@@ -162,4 +168,19 @@ public class Acesso extends GenericDomain {
 		this.usuario = usuario;
 	}
 
+	public Boolean getLocal() {
+		return local;
+	}
+
+	public void setLocal(Boolean local) {
+		this.local = local;
+	}
+
+	public Boolean getClassificacao() {
+		return classificacao;
+	}
+
+	public void setClassificacao(Boolean classificacao) {
+		this.classificacao = classificacao;
+	}
 }

@@ -53,6 +53,9 @@
 		<mapping class="br.com.projeto.domain.Ticket" />
 		<mapping class="br.com.projeto.domain.Acesso" />
 		<mapping class="br.com.projeto.domain.Ocorrencia" />
+		<mapping class="br.com.projeto.domain.Local" />
+		<mapping class="br.com.projeto.domain.Faq" />
+		<mapping class="br.com.projeto.domain.Classificacao" />
 
 	</session-factory>
 

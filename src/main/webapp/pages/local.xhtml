@@ -10,15 +10,15 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de Acessos">
+			<p:panel header="Cadastro de Locais">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{acessoBean.busca}" />
+					value="#{localBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
-					actionListener="#{acessoBean.pesquisar}"
+					actionListener="#{localBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -30,16 +30,16 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{acessoBean.novo}"
-							update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento">
+							icon="ui-icon-document" actionListener="#{localBean.novo}"
+							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
-							disabled="#{acessoBean.acesso == null}"
-							update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento"
-							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							disabled="#{localBean.local == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -49,14 +49,14 @@
 						</span>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{acessoBean.excluir}"
-							disabled="#{acessoBean.acesso == null}"
+							actionListener="#{localBean.excluir}"
+							disabled="#{localBean.local == null}"
 							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="acessoSelecionado" value="#{acesso}" />
+							<f:attribute name="localSelecionado" value="#{local}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -68,20 +68,20 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="acesso" />
+								<p:dataExporter type="xls" target="tabela" fileName="local" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="acesso" />
+								<p:dataExporter type="pdf" target="tabela" fileName="local" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="acesso" />
+								<p:dataExporter type="xml" target="tabela" fileName="local" />
 							</p:menuitem>
 
-							<p:menuitem value="Página Inicial" url="/pages/principal.xhtml" icon="ui-icon-extlink" />
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
 						</p:menuButton>
 
 						<p:commandButton id="coluna" type="button" value="Colunas"
@@ -92,24 +92,24 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{acessoBean.acesso}"
+					selectionMode="single" selection="#{localBean.local}"
 					draggableColumns="true" resizableColumns="true"
-					rowKey="#{acesso.codigo}" paginator="true"
+					rowKey="#{local.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{acessoBean.acessos}"
+					value="#{localBean.locals}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="acesso" rows="10" paginatorPosition="bottom">
+					var="local" rows="10" paginatorPosition="bottom">
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{acessoBean.onRowUnselect}" />
+						listener="#{localBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{acessoBean.onRowSelect}" /> />							
+						listener="#{localBean.onRowSelect}" /> />							
 
-					<p:column headerText="Nome" sortBy="#{acesso.nome}">
-						<h:outputText value="#{acesso.nome}" />
+					<p:column headerText="Nome" sortBy="#{local.nome}">
+						<h:outputText value="#{local.nome}" />
 					</p:column>
 				</p:dataTable>
 
@@ -131,105 +131,23 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Acesso" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Local" widgetVar="dialogo" 
 			draggable="false" resizable="false" modal="true" closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{acessoBean.acesso.nome}" />
-
+						value="#{localBean.local.nome}" />
+					<p:message for="nome" display="Nome" />
 				</h:panelGrid>
-
-				<br></br>
-
-				<p:tabView id="tabView">
-					<p:tab title="Sistema">
-						<h:panelGrid id="painelSistema" columns="2" class="ui-noborder">
-
-							<p:outputLabel value="Departamento" />
-							<p:selectBooleanCheckbox
-								value="#{acessoBean.acesso.departamento}" />
-
-							<p:outputLabel value="Acesso" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.acesso}" />
-
-							<p:outputLabel value="Usuário" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.usuario}" />
-
-						</h:panelGrid>
-					</p:tab>
-
-					<p:tab title="Equipamento">
-						<h:panelGrid id="painelEquipamento" columns="2"
-							class="ui-noborder">
-
-							<p:outputLabel value="Equipamento" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.equipamento}" />
-
-							<p:outputLabel value="Marca" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.marca}" />
-
-							<p:outputLabel value="Tipo de Equipamento" />
-							<p:selectBooleanCheckbox
-								value="#{acessoBean.acesso.tipoEquipamento}" />
-
-							<p:outputLabel value="Manutenção" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.manutencao}" />
-
-							<p:outputLabel value="Próxima Manutenções" />
-							<p:selectBooleanCheckbox
-								value="#{acessoBean.acesso.proximaManutencao}" />
-						</h:panelGrid>
-					</p:tab>
-
-					<p:tab title="Ticket">
-						<h:panelGrid id="painelTicket" columns="2" class="ui-noborder">
-
-							<p:outputLabel value="Cliente" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.cliente}" />
-
-							<p:outputLabel value="Categorias" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.categoria}" />
-
-							<p:outputLabel value="Ticket Interno" />
-							<p:selectBooleanCheckbox
-								value="#{acessoBean.acesso.ticketInterno}" />
-
-							<p:outputLabel value="Ticket Externo" />
-							<p:selectBooleanCheckbox
-								value="#{acessoBean.acesso.ticketExterno}" />
-						</h:panelGrid>
-					</p:tab>
-					
-					<p:tab title="Eventos">
-						<h:panelGrid id="painelEvento" columns="2" class="ui-noborder">
-
-							<p:outputLabel value="Local" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.local}" />
-						</h:panelGrid>
-					</p:tab>					
-
-					<p:tab title="FAQ">
-						<h:panelGrid id="painelFaq" columns="2" class="ui-noborder">
-
-							<p:outputLabel value="Nível" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.nivel}" />
-							
-							<p:outputLabel value="Classificação" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.classificacao}" />
-						</h:panelGrid>
-					</p:tab>
-				</p:tabView>
-
 
 				<br></br>
 				<p:separator />
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{acessoBean.salvar}"
+						actionListener="#{localBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
