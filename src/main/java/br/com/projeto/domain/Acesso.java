@@ -55,6 +55,9 @@ public class Acesso extends GenericDomain {
 
 	@Column(nullable = true)
 	private Boolean classificacao;
+	
+	@Column(nullable = true)
+	private Boolean classificacao;	
 
 	public String getNome() {
 		return nome;
