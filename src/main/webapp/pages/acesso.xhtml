@@ -211,7 +211,7 @@
 						</h:panelGrid>
 					</p:tab>					
 
-					<p:tab title="FAQ">
+					<p:tab title="Base de Conhecimento">
 						<h:panelGrid id="painelFaq" columns="2" class="ui-noborder">
 
 							<p:outputLabel value="Nível" />
@@ -219,6 +219,12 @@
 							
 							<p:outputLabel value="Classificação" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.classificacao}" />
+							
+							<p:outputLabel value="Artigo" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.artigo}" />							
+							
+							<p:outputLabel value="Base de Conhecimento" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.baseConhecimento}" />							
 						</h:panelGrid>
 					</p:tab>
 				</p:tabView>

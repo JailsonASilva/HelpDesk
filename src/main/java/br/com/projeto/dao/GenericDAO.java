@@ -27,7 +27,7 @@ public class GenericDAO<Entidade> {
 			Criteria consulta = sessao.createCriteria(classe);
 			List<Entidade> resultado = consulta.list();
 			return resultado;
-			
+
 		} catch (RuntimeException erro) {
 			throw erro;
 		} finally {
@@ -50,24 +50,24 @@ public class GenericDAO<Entidade> {
 			sessao.close();
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Entidade> pesquisar(String nome) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(classe);
-			consulta.add(Restrictions.like("nome","%" + nome + "%"));
+			consulta.add(Restrictions.like("nome", "%" + nome + "%"));
 			consulta.addOrder(Order.asc("nome"));
-			
-			List<Entidade> resultado = consulta.list();			
+
+			List<Entidade> resultado = consulta.list();
 			return resultado;
-			
+
 		} catch (RuntimeException erro) {
 			throw erro;
 		} finally {
 			sessao.close();
 		}
-	}	
+	}
 
 	@SuppressWarnings("unchecked")
 	public Entidade buscar(Long codigo) {
@@ -120,14 +120,16 @@ public class GenericDAO<Entidade> {
 		}
 	}
 
-	public void merge(Entidade entidade) {
+	@SuppressWarnings("unchecked")
+	public Entidade merge(Entidade entidade) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		Transaction transacao = null;
 
 		try {
 			transacao = sessao.beginTransaction();
-			sessao.merge(entidade);
+			Entidade retorno = (Entidade) sessao.merge(entidade);
 			transacao.commit();
+			return retorno;
 		} catch (RuntimeException erro) {
 			if (transacao != null) {
 				transacao.rollback();

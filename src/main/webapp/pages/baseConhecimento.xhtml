@@ -10,15 +10,15 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de FAQs">
+			<p:panel header="Cadastro de Marcas">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{faqBean.busca}" />
+					value="#{marcaBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
-					actionListener="#{faqBean.pesquisar}"
+					actionListener="#{marcaBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -30,15 +30,16 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{faqBean.novo}"
+							icon="ui-icon-document" actionListener="#{marcaBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
-							disabled="#{faqBean.faq == null}" update=":formCadastro:painel"
-							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							disabled="#{marcaBean.marca == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -48,14 +49,14 @@
 						</span>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{faqBean.excluir}"
-							disabled="#{faqBean.faq == null}"
+							actionListener="#{marcaBean.excluir}"
+							disabled="#{marcaBean.marca == null}"
 							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="faqSelecionado" value="#{faq}" />
+							<f:attribute name="marcaSelecionado" value="#{marca}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -67,17 +68,17 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="faq" />
+								<p:dataExporter type="xls" target="tabela" fileName="marca" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="faq" />
+								<p:dataExporter type="pdf" target="tabela" fileName="marca" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="faq" />
+								<p:dataExporter type="xml" target="tabela" fileName="marca" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -91,24 +92,24 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{faqBean.faq}"
+					selectionMode="single" selection="#{marcaBean.marca}"
 					draggableColumns="true" resizableColumns="true"
-					rowKey="#{faq.codigo}" paginator="true"
+					rowKey="#{marca.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{faqBean.faqs}"
+					value="#{marcaBean.marcas}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="faq" rows="10" paginatorPosition="bottom">
+					var="marca" rows="10" paginatorPosition="bottom">
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{faqBean.onRowUnselect}" />
+						listener="#{marcaBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{faqBean.onRowSelect}" /> />							
+						listener="#{marcaBean.onRowSelect}" /> />							
 
-					<p:column headerText="Título" sortBy="#{faq.titulo}">
-						<h:outputText value="#{faq.titulo}" />
+					<p:column headerText="Nome" sortBy="#{marca.nome}">
+						<h:outputText value="#{marca.nome}" />
 					</p:column>
 				</p:dataTable>
 
@@ -130,13 +131,15 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de FAQ" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Marca" widgetVar="dialogo" 
 			draggable="false" resizable="false" modal="true" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="3" class="ui-noborder">
-					<p:outputLabel for="titulo" value="Título " />
-					<p:inputText id="titulo" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório" value="#{faqBean.faq.titulo}" />
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{marcaBean.marca.nome}" />
+					<p:message for="nome" display="Nome" />
 				</h:panelGrid>
 
 				<br></br>
@@ -144,7 +147,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{faqBean.salvar}"
+						actionListener="#{marcaBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />

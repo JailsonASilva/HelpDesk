@@ -13,12 +13,12 @@ import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "faq")
-public class Faq extends GenericDomain {
+@Table(name = "artigo")
+public class Artigo extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String titulo;
 
-	@Column(length = 200, nullable = false)
+	@Column(length = 300, nullable = false)
 	private String palavraChave;
 
 	@ManyToOne
@@ -32,13 +32,16 @@ public class Faq extends GenericDomain {
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Usuario autor;
-	
+
 	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataCadastro;
 
 	@Column(nullable = false)
 	private Boolean ativo;
+
+	@Transient
+	private String caminho;
 
 	public String getTitulo() {
 		return titulo;
@@ -55,7 +58,7 @@ public class Faq extends GenericDomain {
 	public void setPalavraChave(String palavraChave) {
 		this.palavraChave = palavraChave;
 	}
-	
+
 	public Nivel getNivel() {
 		return nivel;
 	}
@@ -88,6 +91,14 @@ public class Faq extends GenericDomain {
 		this.ativo = ativo;
 	}
 
+	public Date getDataCadastro() {
+		return dataCadastro;
+	}
+
+	public void setDataCadastro(Date dataCadastro) {
+		this.dataCadastro = dataCadastro;
+	}
+
 	@Transient
 	public String getAtivoFormatado() {
 		String ativoFormatado = "Não";
@@ -97,6 +108,14 @@ public class Faq extends GenericDomain {
 		}
 
 		return ativoFormatado;
+	}
+
+	public String getCaminho() {
+		return caminho;
+	}
+
+	public void setCaminho(String caminho) {
+		this.caminho = caminho;
 	}
 
 }

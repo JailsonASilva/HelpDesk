@@ -55,9 +55,12 @@ public class Acesso extends GenericDomain {
 
 	@Column(nullable = true)
 	private Boolean classificacao;
-	
+
 	@Column(nullable = true)
-	private Boolean classificacao;	
+	private Boolean artigo;
+
+	@Column(nullable = true)
+	private Boolean baseConhecimento;
 
 	public String getNome() {
 		return nome;
@@ -186,4 +189,21 @@ public class Acesso extends GenericDomain {
 	public void setClassificacao(Boolean classificacao) {
 		this.classificacao = classificacao;
 	}
+
+	public Boolean getArtigo() {
+		return artigo;
+	}
+
+	public void setArtigo(Boolean artigo) {
+		this.artigo = artigo;
+	}
+
+	public Boolean getBaseConhecimento() {
+		return baseConhecimento;
+	}
+
+	public void setBaseConhecimento(Boolean baseConhecimento) {
+		this.baseConhecimento = baseConhecimento;
+	}
+
 }

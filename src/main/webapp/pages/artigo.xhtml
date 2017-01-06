@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cadastro de Artigos">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{artigoBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="ui-icon-script"
+					actionListener="#{artigoBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document" actionListener="#{artigoBean.novo}"
+							update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{artigoBean.artigo == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{artigoBean.excluir}"
+							disabled="#{artigoBean.artigo == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="artigoSelecionado" value="#{artigo}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="artigo" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="artigo" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="artigo" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{artigoBean.artigo}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{artigo.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{artigoBean.artigos}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="artigo" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{artigoBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{artigoBean.onRowSelect}" /> />							
+
+					<p:column headerText="Título" sortBy="#{artigo.titulo}">
+						<h:outputText value="#{artigo.titulo}" />
+					</p:column>
+
+					<p:column headerText="Classificação" style="text-align:center"
+						sortBy="#{artigo.classificacao.nome}" width="250">
+						<h:outputText value="#{artigo.classificacao.nome}" />
+					</p:column>
+
+					<p:column headerText="Nível" style="text-align:center"
+						sortBy="#{artigo.nivel.nome}" width="250">
+						<h:outputText value="#{artigo.nivel.nome}" />
+					</p:column>
+
+					<p:column headerText="Autor" sortBy="#{artigo.autor.nome}"
+						width="250" style="text-align:center">
+						<h:outputText value="#{artigo.autor.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Artigo" width="120"
+						style="text-align:center" sortBy="#{artigo.dataCadastro}">
+						<h:outputText value="#{artigo.dataCadastro}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Ativo" style="text-align:center"
+						sortBy="#{artigo.ativoFormatado}" width="90">
+						<h:outputText value="#{artigo.ativoFormatado}" />
+					</p:column>
+
+					<p:column headerText="Download" width="90"
+						style="text-align:center">
+						<p:commandButton icon="ui-icon-arrowthick-1-s"
+							actionListener="#{artigoBean.download}" ajax="false">
+							<f:attribute name="artigoSelecionado" value="#{artigo}" />
+							<p:fileDownload value="#{artigoBean.arquivo}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Artigo" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="true" closable="true">
+			<h:form id="formCadastro" enctype="multipart/form-data">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+					<p:outputLabel for="titulo" value="Título " />
+					<p:inputText id="titulo" maxlength="100" size="63" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{artigoBean.artigo.titulo}" />
+
+					<p:outputLabel for="nivel" value="Nível " />
+					<p:selectOneMenu id="nivel" filter="true"
+						filterMatchMode="startsWith" value="#{artigoBean.artigo.nivel}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{artigoBean.niveis}" var="nivel"
+							itemValue="#{nivel}"
+							itemLabel="#{nivel.nome} / Público: #{nivel.publicoFormatado}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="classficacao" value="Classificação " />
+					<p:selectOneMenu id="classficacao" filter="true"
+						filterMatchMode="startsWith"
+						value="#{artigoBean.artigo.classificacao}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{artigoBean.classificacoes}"
+							var="classficacao" itemValue="#{classficacao}"
+							itemLabel="#{classficacao.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="palavra" value="Palavras Chaves" />
+					<p:inputTextarea id="palavra" rows="6" cols="60" required="true"
+						requiredMessage="Campo Obrigatório!" counter="display"
+						maxlength="300" counterTemplate="{0} caracteres restantes."
+						autoResize="false" value="#{artigoBean.artigo.palavraChave}" />
+					<br></br>
+					<h:outputText id="display" />
+					<br></br>
+					<p:outputLabel
+						value="Com espaços Ex: 'Impressora Impressão Imprimir'." />
+
+
+					<br></br>
+					<br></br>
+					<p:separator />
+
+					<p:outputLabel for="arquivo" value="Arquivo" />
+					<p:fileUpload id="arquivo" required="true"
+						fileUploadListener="#{artigoBean.upload}" mode="advanced"
+						dragDropSupport="false" fileLimit="1" allowTypes="/(\.|\/)(pdf)$/" />
+
+					<br></br>
+					<h:outputText value="Permitido apenas arquivos PDF's." />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{artigoBean.salvar}"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
