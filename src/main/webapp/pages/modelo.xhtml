@@ -126,9 +126,12 @@
 						<p:menuitem value="Artigo" url="/pages/artigo.xhtml"
 							rendered="#{autenticacaoBean.usuarioLogado.acesso.artigo}" />
 					</p:submenu>
+				</p:column>
 
+				<p:column>
 					<p:submenu label="Consulta">
-						<p:menuitem value="Base de Conhecimento" url="/pages/baseConhecimento.xhtml"
+						<p:menuitem value="Base de Conhecimento"
+							url="/pages/baseConhecimento.xhtml"
 							rendered="#{autenticacaoBean.usuarioLogado.acesso.baseConhecimento}" />
 					</p:submenu>
 

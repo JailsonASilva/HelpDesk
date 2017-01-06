@@ -29,4 +29,27 @@ public class ArtigoDAO extends GenericDAO<Artigo> {
 			sessao.close();
 		}
 	}
+
+	@SuppressWarnings({ "unchecked", "deprecation", "unused" })
+	public List<Artigo> pesquisarBaseConhecimento(String palavraChave) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Artigo.class);
+			consulta.add(Restrictions.like("palavraChave", "%" + palavraChave + "%"));
+			consulta.add(Restrictions.eq("ativo", true));			
+			
+			Criteria consultaNivel = consulta.createCriteria("nivel", "nivel",
+					Criteria.INNER_JOIN, Restrictions.eq("nivel.publico", true));			
+			
+			consulta.addOrder(Order.asc("titulo"));
+
+			List<Artigo> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
 }

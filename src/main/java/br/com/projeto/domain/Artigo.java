@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "artigo")
 public class Artigo extends GenericDomain {
-	@Column(length = 100, nullable = false)
+	@Column(length = 500, nullable = false)
 	private String titulo;
 
 	@Column(length = 300, nullable = false)

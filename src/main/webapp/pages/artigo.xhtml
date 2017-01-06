@@ -172,7 +172,7 @@
 			<h:form id="formCadastro" enctype="multipart/form-data">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="titulo" value="Título " />
-					<p:inputText id="titulo" maxlength="100" size="63" required="true"
+					<p:inputText id="titulo" maxlength="500" size="63" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{artigoBean.artigo.titulo}" />
 
@@ -230,7 +230,7 @@
 				<br></br>
 				<p:separator />
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{artigoBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
@@ -239,9 +239,82 @@
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogo').hide();" />
+
+					<p:menuButton value="Opções" style="margin:0 50px 0 50px">
+
+						<p:menuitem value="Novo Nível"
+							oncomplete="PF('dialogoNivel').show();"
+							update=":formCadastroNivel:painelNivel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:menuitem>
+
+						<p:menuitem value="Novo Classificação"
+							oncomplete="PF('dialogoClassificacao').show();"
+							update=":formCadastroClassificacao:painelClassificacao">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:menuitem>
+					</p:menuButton>
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
+
+		<p:dialog header="Cadastro de Nivel" widgetVar="dialogoNivel"
+			draggable="false" resizable="false" modal="true" closable="true">
+			<h:form id="formCadastroNivel">
+				<h:panelGrid id="painelNivel" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{artigoBean.nivel.nome}" /> 
+
+					<p:outputLabel for="publico" value="Público" />
+					<p:selectBooleanCheckbox id="publico"
+						value="#{artigoBean.nivel.publico}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{artigoBean.salvarNivel}" 
+						update=":formCadastroNivel:painelNivel :formCadastro:nivel"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoNivel').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		
+		<p:dialog header="Cadastro de Classificação" widgetVar="dialogoClassificacao" 
+			draggable="false" resizable="false" modal="true" closable="true">
+			<h:form id="formCadastroClassificacao">
+				<h:panelGrid id="painelClassificacao" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{artigoBean.classificacao.nome}" />   
+				</h:panelGrid>
+ 
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{artigoBean.salvarClassificacao}"
+						update=":formCadastro:painel :formCadastro:classficacao"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>		
 
 	</ui:define>
 </ui:composition>

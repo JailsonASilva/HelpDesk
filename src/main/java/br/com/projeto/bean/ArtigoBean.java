@@ -1,6 +1,5 @@
 package br.com.projeto.bean;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,6 +44,9 @@ public class ArtigoBean implements Serializable {
 
 	private List<Nivel> niveis;
 	private List<Classificacao> classificacoes;
+
+	private Nivel nivel;
+	private Classificacao classificacao;
 
 	private FacesMessage message;
 	private String busca;
@@ -126,6 +128,22 @@ public class ArtigoBean implements Serializable {
 		this.arquivo = arquivo;
 	}
 
+	public Nivel getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(Nivel nivel) {
+		this.nivel = nivel;
+	}
+
+	public Classificacao getClassificacao() {
+		return classificacao;
+	}
+
+	public void setClassificacao(Classificacao classificacao) {
+		this.classificacao = classificacao;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -153,6 +171,9 @@ public class ArtigoBean implements Serializable {
 			artigos = artigoDAO.pesquisarPalavraChave(busca);
 
 			artigo = null;
+
+			nivel = new Nivel();
+			classificacao = new Classificacao();
 
 			if (artigos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -182,6 +203,9 @@ public class ArtigoBean implements Serializable {
 		artigo.setAutor(usuario);
 		artigo.setDataCadastro(new java.util.Date());
 		artigo.setAtivo(true);
+
+		nivel = new Nivel();
+		classificacao = new Classificacao();
 	}
 
 	public void upload(FileUploadEvent evento) {
@@ -212,15 +236,9 @@ public class ArtigoBean implements Serializable {
 
 	public void salvar() {
 		try {
-
-			String arquivoVerificar = Paths.get("C:/Artigos/" + artigo.getCodigo() + ".pdf").toString();
-
-			File file = new File(arquivoVerificar);
-
-			if (file.exists() == false) {
-
-				message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campo Obrigatório!",
-						"Informe o Arquivo a ser Anexado.");
+			if (artigo.getCaminho() == null) {
+				message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Campo Obrigatório.",
+						"Informe o Arquivo a ser Anexado!");
 
 				RequestContext.getCurrentInstance().showMessageInDialog(message);
 
@@ -242,6 +260,46 @@ public class ArtigoBean implements Serializable {
 			artigo = null;
 
 		} catch (RuntimeException | IOException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarNivel() {
+		try {
+			NivelDAO nivelDAO = new NivelDAO();
+			nivelDAO.merge(nivel);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoNivel').hide();");
+
+			nivel = new Nivel();
+
+			niveis = nivelDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarClassificacao() {
+		try {
+			ClassificacaoDAO classificacaoDAO = new ClassificacaoDAO();
+			classificacaoDAO.merge(classificacao);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoClassificacao').hide();");
+
+			classificacao = new Classificacao();
+
+			classificacoes = classificacaoDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
 
@@ -274,7 +332,7 @@ public class ArtigoBean implements Serializable {
 	}
 
 	public void onRowSelect(SelectEvent event) {
-
+		artigo.setCaminho("C:/Artigos/" + artigo.getCodigo() + ".pdf");
 	}
 
 	public void onRowUnselect(UnselectEvent event) {

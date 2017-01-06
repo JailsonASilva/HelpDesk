@@ -1,3 +1,4 @@
+
 package br.com.projeto.util;
 
 import javax.faces.event.PhaseEvent;
@@ -17,8 +18,9 @@ public class AutenticacaoListener implements PhaseListener {
 		String paginaAtual = Faces.getViewId();
 	
 		boolean ehPaginaDeAutenticacao = paginaAtual.contains("autenticacao.xhtml");
+		boolean ehPaginaBaseConhecimento = paginaAtual.contains("baseConhecimento.xhtml");
 	
-		if(!ehPaginaDeAutenticacao){
+		if(!ehPaginaDeAutenticacao & !ehPaginaBaseConhecimento)  {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 
 			if(autenticacaoBean == null){

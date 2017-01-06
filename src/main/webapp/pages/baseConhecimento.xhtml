@@ -1,162 +1,110 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-	template="/pages/modelo.xhtml">
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta charset="UTF-8" />
+	<title><ui:insert name="titulo">Help Desk</ui:insert></title>
+	<h:outputStylesheet library="algaworks" name="estilo.css" />
+	<h:outputStylesheet library="webjars" name="/css/font-awesome.min.css" />
+	<h:outputScript library="js" name="scripts.js" />
+	<h:outputScript library="js" name="fecharDialogo.js" />
+</h:head>
+<h:body>
+	<header> </header>
 
-	<ui:define name="conteudo">
-		<h:form id="formListagem">
-			<p:panel header="Cadastro de Marcas">
-				<br></br>
-				<p:outputLabel value="Digite sua Pesquisa: " />
-				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{marcaBean.busca}" />
+	<h:form id="formListagem">
+		<p:panel header="Base de Conhecimento">
+			<br></br>
+			<p:outputLabel value="Digite sua Pesquisa: " />
+			<p:inputText id="textoPesquisa" maxlength="65" size="65"
+				value="#{baseConhecimentoBean.busca}" />
 
-				<p:commandButton id="bitPesquisar" style="margin:10px"
-					value="Pesquisar" icon="ui-icon-script"
-					actionListener="#{marcaBean.pesquisar}"
-					update="formListagem:tabela :formListagem:tool"
-					onstart="PF('iconeDeProcessamento').show()"
-					onsuccess="PF('iconeDeProcessamento').hide()" />
+			<p:commandButton id="bitPesquisar" style="margin:10px"
+				value="Pesquisar" icon="ui-icon-script"
+				actionListener="#{baseConhecimentoBean.pesquisar}"
+				update="formListagem:tabela "
+				onstart="PF('iconeDeProcessamento').show()"
+				onsuccess="PF('iconeDeProcessamento').hide()" />
 
-				<br></br>
-				<br></br>
+			<br></br>
+			<br></br>
 
-				<p:growl id="messages" showDetail="true" />
-				<p:toolbar id="tool">
-					<f:facet name="left">
-						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{marcaBean.novo}"
-							update=":formCadastro:painel">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
+			<p:growl id="messages" showDetail="true" />
 
-						<p:commandButton value="Editar" process=":formListagem:tabela"
-							disabled="#{marcaBean.marca == null}"
-							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
-							oncomplete="PF('dialogo').show();">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
+			<p:toolbar id="tool">
+				<f:facet name="right">
+					<p:commandButton value="Acessar Sistema" icon="ui-icon-extlink"
+						actionListener="#{autenticacaoBean.desconectar}">
+					</p:commandButton>
+				</f:facet>
+			</p:toolbar>
 
-						<span class="ui-separator"> <span
-							class="ui-icon ui-icon-grip-dotted-vertical" />
-						</span>
 
-						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{marcaBean.excluir}"
-							disabled="#{marcaBean.marca == null}"
-							update=":formListagem:tabela :formListagem:tool"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()">
-							<p:confirm header="Confirmação"
-								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="marcaSelecionado" value="#{marca}" />
-						</p:commandButton>
+			<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+				selectionMode="single" selection="#{baseConhecimentoBean.artigo}"
+				draggableColumns="true" resizableColumns="true"
+				rowKey="#{artigo.codigo}" paginator="true"
+				rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+				value="#{baseConhecimentoBean.artigos}"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				var="artigo" rows="10" paginatorPosition="bottom">
 
-						<p:commandButton title="Imprimir" icon="ui-icon-print">
-							<p:printer target=":formListagem:tabela" />
-						</p:commandButton>
-					</f:facet>
+				<p:column headerText="Título" sortBy="#{artigo.titulo}"
+					style="white-space:normal !important;">
+					<h:outputText value="#{artigo.titulo}" />
+				</p:column>
 
-					<f:facet name="right">
-						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
-							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
-								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="marca" />
-							</p:menuitem>
+				<p:column headerText="Classificação" style="text-align:center"
+					sortBy="#{artigo.classificacao.nome}" width="250">
+					<h:outputText value="#{artigo.classificacao.nome}" />
+				</p:column>
 
-							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
-								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="marca" />
-							</p:menuitem>
+				<p:column headerText="Nível" style="text-align:center"
+					sortBy="#{artigo.nivel.nome}" width="250">
+					<h:outputText value="#{artigo.nivel.nome}" />
+				</p:column>
 
-							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
-								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="marca" />
-							</p:menuitem>
+				<p:column headerText="Autor" sortBy="#{artigo.autor.nome}"
+					width="250" style="text-align:center">
+					<h:outputText value="#{artigo.autor.nome}" />
+				</p:column>
 
-							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
-						</p:menuButton>
+				<p:column headerText="Data Artigo" width="120"
+					style="text-align:center" sortBy="#{artigo.dataCadastro}">
+					<h:outputText value="#{artigo.dataCadastro}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
 
-						<p:commandButton id="coluna" type="button" value="Colunas"
-							style="float:right" icon="ui-icon-calculator" />
-						<p:columnToggler datasource=":formListagem:tabela"
-							trigger="coluna" />
-					</f:facet>
-				</p:toolbar>
+				<p:column headerText="Download" width="90" style="text-align:center">
+					<p:commandButton icon="ui-icon-arrowthick-1-s"
+						actionListener="#{baseConhecimentoBean.download}" ajax="false">
+						<f:attribute name="artigoSelecionado" value="#{artigo}" />
+						<p:fileDownload value="#{baseConhecimentoBean.arquivo}" />
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
 
-				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{marcaBean.marca}"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{marca.codigo}" paginator="true"
-					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{marcaBean.marcas}"
-					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="marca" rows="10" paginatorPosition="bottom">
+			<p:confirmDialog global="true">
+				<p:commandButton value="Sim" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="Não" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</p:panel>
 
-					<p:ajax event="rowUnselect"
-						update=":formListagem:messages :formListagem:tool"
-						listener="#{marcaBean.onRowUnselect}" />
+	</h:form>
 
-					<p:ajax event="rowSelect"
-						update=":formListagem:messages :formListagem:tool"
-						listener="#{marcaBean.onRowSelect}" /> />							
+	<p:dialog widgetVar="iconeDeProcessamento">
+		<f:facet name="header">
+			<h:graphicImage value="/imagens/ampulheta.png" />
+			<h:outputText id="dialogHeader"
+				value="Aguarde... Estamos Processando sua Informação..." />
+		</f:facet>
+	</p:dialog>
 
-					<p:column headerText="Nome" sortBy="#{marca.nome}">
-						<h:outputText value="#{marca.nome}" />
-					</p:column>
-				</p:dataTable>
-
-				<p:confirmDialog global="true">
-					<p:commandButton value="Sim" type="button"
-						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-					<p:commandButton value="Não" type="button"
-						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-				</p:confirmDialog>
-			</p:panel>
-
-		</h:form>
-
-		<p:dialog widgetVar="iconeDeProcessamento">
-			<f:facet name="header">
-				<h:graphicImage value="/imagens/ampulheta.png" />
-				<h:outputText id="dialogHeader"
-					value="Aguarde... Estamos Processando sua Informação..." />
-			</f:facet>
-		</p:dialog>
-
-		<p:dialog header="Cadastro de Marca" widgetVar="dialogo" 
-			draggable="false" resizable="false" modal="true" closable="true">
-			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="3" class="ui-noborder">
-					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{marcaBean.marca.nome}" />
-					<p:message for="nome" display="Nome" />
-				</h:panelGrid>
-
-				<br></br>
-				<p:separator />
-
-				<h:panelGrid columns="2">
-					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{marcaBean.salvar}"
-						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()" />
-
-					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogo').hide();" />
-				</h:panelGrid>
-			</h:form>
-		</p:dialog>
-
-	</ui:define>
-</ui:composition>
+</h:body>
+</html>
