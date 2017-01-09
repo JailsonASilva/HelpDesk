@@ -40,6 +40,42 @@
 				</p:column>
 			</p:submenu>
 
+			<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
+				<p:column>
+					<p:submenu label="Cadastros">
+						<p:menuitem value="Solcitantes" url="/pages/cliente.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.cliente}" />
+
+						<p:menuitem value="Categorias" url="/pages/categoria.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.categoria}" />
+					</p:submenu>
+				</p:column>
+
+				<p:column>
+					<p:submenu label="Movimento">
+						<p:menuitem value="Novo Ticket (Interno)"
+							url="/pages/ticketInterno.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
+
+						<p:menuitem value="Novo Ticket (Externo)"
+							url="/pages/ticketExterno.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
+					</p:submenu>
+				</p:column>
+
+				<p:column>
+					<p:submenu label="Consultas">
+						<p:menuitem value="Ticket's por Departamento"
+							url="/pages/ticketDepartamento.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}" />
+
+						<p:menuitem value="Ticket's por Atendente"
+							url="/pages/ticketUsuario.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}" />
+					</p:submenu>
+				</p:column>
+			</p:submenu>
+
 			<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
 				<p:column>
 					<p:submenu label="Cadastros">
@@ -71,45 +107,14 @@
 				</p:column>
 			</p:submenu>
 
-			<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
-				<p:column>
-					<p:submenu label="Cadastros">
-						<p:menuitem value="Clientes" url="/pages/cliente.xhtml"
-							rendered="#{autenticacaoBean.usuarioLogado.acesso.cliente}" />
-
-						<p:menuitem value="Categorias" url="/pages/categoria.xhtml"
-							rendered="#{autenticacaoBean.usuarioLogado.acesso.categoria}" />
-					</p:submenu>
-				</p:column>
-
-				<p:column>
-					<p:submenu label="Movimento">
-						<p:menuitem value="Novo Ticket (Interno)"
-							url="/pages/ticketInterno.xhtml"
-							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
-
-						<p:menuitem value="Novo Ticket (Externo)"
-							url="/pages/ticketExterno.xhtml"
-							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
-					</p:submenu>
-				</p:column>
-
-				<p:column>
-					<p:submenu label="Consultas">
-						<p:menuitem value="Ticket's por Departamento"
-							url="/pages/ticketDepartamento.xhtml" />
-
-						<p:menuitem value="Ticket's por Atendente"
-							url="/pages/ticketUsuario.xhtml" />
-					</p:submenu>
-				</p:column>
-			</p:submenu>
-
 			<p:submenu label="Eventos" icon="fa fa fw fa-calendar">
 				<p:column>
 					<p:submenu label="Cadastros">
 						<p:menuitem value="Local" url="/pages/local.xhtml"
 							rendered="#{autenticacaoBean.usuarioLogado.acesso.local}" />
+							
+						<p:menuitem value="Tipo de Evento" url="/pages/tipoEvento.xhtml"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEvento}" />							
 					</p:submenu>
 				</p:column>
 			</p:submenu>

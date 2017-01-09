@@ -62,6 +62,15 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean baseConhecimento;
 
+	@Column(nullable = true)
+	private Boolean ticketDepartamento;
+
+	@Column(nullable = true)
+	private Boolean ticketUsuario;
+
+	@Column(nullable = true)
+	private Boolean tipoEvento;
+
 	public String getNome() {
 		return nome;
 	}
@@ -204,6 +213,30 @@ public class Acesso extends GenericDomain {
 
 	public void setBaseConhecimento(Boolean baseConhecimento) {
 		this.baseConhecimento = baseConhecimento;
+	}
+
+	public Boolean getTicketDepartamento() {
+		return ticketDepartamento;
+	}
+
+	public void setTicketDepartamento(Boolean ticketDepartamento) {
+		this.ticketDepartamento = ticketDepartamento;
+	}
+
+	public Boolean getTicketUsuario() {
+		return ticketUsuario;
+	}
+
+	public void setTicketUsuario(Boolean ticketUsuario) {
+		this.ticketUsuario = ticketUsuario;
+	}
+
+	public Boolean getTipoEvento() {
+		return tipoEvento;
+	}
+
+	public void setTipoEvento(Boolean tipoEvento) {
+		this.tipoEvento = tipoEvento;
 	}
 
 }

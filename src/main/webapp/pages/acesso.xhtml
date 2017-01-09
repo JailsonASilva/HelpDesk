@@ -81,7 +81,8 @@
 								<p:dataExporter type="xml" target="tabela" fileName="acesso" />
 							</p:menuitem>
 
-							<p:menuitem value="Página Inicial" url="/pages/principal.xhtml" icon="ui-icon-extlink" />
+							<p:menuitem value="Página Inicial" url="/pages/principal.xhtml"
+								icon="ui-icon-extlink" />
 						</p:menuButton>
 
 						<p:commandButton id="coluna" type="button" value="Colunas"
@@ -200,31 +201,44 @@
 							<p:outputLabel value="Ticket Externo" />
 							<p:selectBooleanCheckbox
 								value="#{acessoBean.acesso.ticketExterno}" />
+
+							<p:outputLabel value="Ticket por Departamento" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.ticketDepartamento}" />
+
+							<p:outputLabel value="Ticket por Atendente" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.ticketUsuario}" />
 						</h:panelGrid>
 					</p:tab>
-					
+
 					<p:tab title="Eventos">
 						<h:panelGrid id="painelEvento" columns="2" class="ui-noborder">
 
 							<p:outputLabel value="Local" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.local}" />
+							
+							<p:outputLabel value="Tipo de Evento" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.tipoEvento}" />							
 						</h:panelGrid>
-					</p:tab>					
+					</p:tab>
 
 					<p:tab title="Base de Conhecimento">
 						<h:panelGrid id="painelFaq" columns="2" class="ui-noborder">
 
 							<p:outputLabel value="Nível" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.nivel}" />
-							
+
 							<p:outputLabel value="Classificação" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.classificacao}" />
-							
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.classificacao}" />
+
 							<p:outputLabel value="Artigo" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.artigo}" />							
-							
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.artigo}" />
+
 							<p:outputLabel value="Base de Conhecimento" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.baseConhecimento}" />							
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.baseConhecimento}" />
 						</h:panelGrid>
 					</p:tab>
 				</p:tabView>
