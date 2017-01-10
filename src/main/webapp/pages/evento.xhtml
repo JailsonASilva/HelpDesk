@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cadastro de Eventos">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{eventoBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="ui-icon-script"
+					actionListener="#{eventoBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document" actionListener="#{eventoBean.novo}"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{eventoBean.evento == null}"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
+							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{eventoBean.excluir}"
+							disabled="#{eventoBean.evento == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="eventoSelecionado" value="#{evento}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="evento" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="evento" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="evento" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{eventoBean.evento}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{evento.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{eventoBean.eventos}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="evento" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{eventoBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{eventoBean.onRowSelect}" />
+
+					<p:column headerText="Título" sortBy="#{evento.titulo}">
+						<h:outputText value="#{evento.titulo}" />
+					</p:column>
+
+					<p:column headerText="Local" width="250"
+						sortBy="#{evento.local.nome}">
+						<h:outputText value="#{evento.local.nome}" />
+					</p:column>
+
+					<p:column headerText="Tipo" width="180"
+						sortBy="#{evento.tipoEvento.nome}">
+						<h:outputText value="#{evento.tipoEvento.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Início" width="180"
+						style="text-align:center" sortBy="#{evento.dataHoraInicial}">
+						<h:outputText value="#{evento.dataHoraInicial}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Data Término" width="180"
+						style="text-align:center" sortBy="#{evento.dataHoraFinal}">
+						<h:outputText value="#{evento.dataHoraFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Evento" widgetVar="dialogo"
+			draggable="false" resizable="false" modal="false" closable="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="titulo" value="Título: " />
+					<p:inputText id="titulo" maxlength="100" size="95" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{eventoBean.evento.titulo}" />
+				</h:panelGrid>
+
+				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
+
+					<p:outputLabel for="local" value="Local" />
+					<p:selectOneMenu id="local" filter="true" style="margin:0 10px"
+						filterMatchMode="startsWith" value="#{eventoBean.evento.local}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{eventoBean.locais}" var="local"
+							itemValue="#{local}" itemLabel="#{local.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início" />
+					<p:calendar id="dataHoraInicial" size="24" mask="99/99/99 99:99:99"
+						yearRange="1900:2222" value="#{eventoBean.evento.dataHoraInicial}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" locale="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo Obrigatório!" />
+
+					<p:outputLabel for="tipo" value="Tipo" />
+					<p:selectOneMenu id="tipo" filter="true" style="margin:0 10px"
+						filterMatchMode="startsWith"
+						value="#{eventoBean.evento.tipoEvento}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{eventoBean.tipoEventos}" var="tipo"
+							itemValue="#{tipo}" itemLabel="#{tipo.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="dataHoraFinal" value="Data/Hora Término" />
+					<p:calendar id="dataHoraFinal" size="24" mask="99/99/99 99:99:99"
+						yearRange="1900:2222" value="#{eventoBean.evento.dataHoraFinal}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" locale="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo Obrigatório!" />
+				</h:panelGrid>
+
+				<h:panelGrid id="painel3" columns="1" class="ui-noborder">
+					<p:outputLabel for="observacao" value="Observação"
+						style="margin:4px" />
+					<p:inputTextarea id="observacao" rows="6" cols="103"
+						counter="display" maxlength="500"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{eventoBean.evento.observacao}" />
+					<h:outputText id="display" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{eventoBean.salvar}"
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formListagem:tabela :formListagem:tool"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

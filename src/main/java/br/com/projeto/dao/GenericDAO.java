@@ -100,8 +100,7 @@ public class GenericDAO<Entidade> {
 		} finally {
 			sessao.close();
 		}
-	}
-
+}
 	public void editar(Entidade entidade) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		Transaction transacao = null;

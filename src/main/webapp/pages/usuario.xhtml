@@ -388,6 +388,34 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>		
+		
+		<p:dialog header="Cadastro de Departamento"
+			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
+			 closable="true">
+			<h:form id="formCadastroDepartamento">
+				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{usuarioBean.departamento.nome}" />
+					<p:message for="nome" display="Nome" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{usuarioBean.salvarDepartamento}"
+						update=":formCadastroDepartamento:painelDepartamento :formCadastro:departamento"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoDepartamento').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

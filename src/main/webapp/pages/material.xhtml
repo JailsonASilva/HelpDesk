@@ -10,15 +10,15 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de Marcas">
+			<p:panel header="Cadastro de Materiais">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{marcaBean.busca}" />
+					value="#{materialBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
-					actionListener="#{marcaBean.pesquisar}"
+					actionListener="#{materialBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -30,14 +30,14 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{marcaBean.novo}"
+							icon="ui-icon-document" actionListener="#{materialBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
-							disabled="#{marcaBean.marca == null}"
+							disabled="#{materialBean.material == null}"
 							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
 							oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -49,14 +49,14 @@
 						</span>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{marcaBean.excluir}"
-							disabled="#{marcaBean.marca == null}"
+							actionListener="#{materialBean.excluir}"
+							disabled="#{materialBean.material == null}"
 							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="marcaSelecionado" value="#{marca}" />
+							<f:attribute name="materialSelecionado" value="#{material}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -68,17 +68,17 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="marca" />
+								<p:dataExporter type="xls" target="tabela" fileName="material" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="marca" />
+								<p:dataExporter type="pdf" target="tabela" fileName="material" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="marca" />
+								<p:dataExporter type="xml" target="tabela" fileName="material" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -92,25 +92,31 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{marcaBean.marca}"
+					selectionMode="single" selection="#{materialBean.material}"
 					draggableColumns="true" resizableColumns="true"
-					rowKey="#{marca.codigo}" paginator="true"
+					rowKey="#{material.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{marcaBean.marcas}"
+					value="#{materialBean.materiais}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="marca" rows="10" paginatorPosition="bottom">
+					var="material" rows="10" paginatorPosition="bottom">
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{marcaBean.onRowUnselect}" />
+						listener="#{materialBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{marcaBean.onRowSelect}" />
+						listener="#{materialBean.onRowSelect}" />
 
-					<p:column headerText="Nome" sortBy="#{marca.nome}">
-						<h:outputText value="#{marca.nome}" />
+					<p:column headerText="Nome" sortBy="#{material.nome}">
+						<h:outputText value="#{material.nome}" />
 					</p:column>
+
+					<p:column headerText="Departamento"
+						sortBy="#{material.departamento.nome}">
+						<h:outputText value="#{material.departamento.nome}" />
+					</p:column>
+
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -131,14 +137,28 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Marca" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Material" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="false" closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{marcaBean.marca.nome}" />
+						value="#{materialBean.material.nome}" />
+
+
+					<p:outputLabel for="departamento" value="Departamento " />
+					<p:selectOneMenu id="departamento" filter="true"
+						filterMatchMode="startsWith"
+						value="#{materialBean.material.departamento}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{materialBean.departamentos}"
+							var="departamento" itemValue="#{departamento}"
+							itemLabel="#{departamento.nome}" />
+					</p:selectOneMenu>
 				</h:panelGrid>
 
 				<br></br>
@@ -146,7 +166,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{marcaBean.salvar}"
+						actionListener="#{materialBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />

@@ -106,7 +106,7 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{localBean.onRowSelect}" /> />							
+						listener="#{localBean.onRowSelect}" /> 							
 
 					<p:column headerText="Nome" sortBy="#{local.nome}">
 						<h:outputText value="#{local.nome}" />
@@ -134,12 +134,11 @@
 		<p:dialog header="Cadastro de Local" widgetVar="dialogo" 
 			draggable="false" resizable="false"  closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{localBean.local.nome}" />
-					<p:message for="nome" display="Nome" />
 				</h:panelGrid>
 
 				<br></br>

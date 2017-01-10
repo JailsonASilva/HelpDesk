@@ -71,6 +71,12 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean tipoEvento;
 
+	@Column(nullable = true)
+	private Boolean material;
+
+	@Column(nullable = true)
+	private Boolean evento;
+
 	public String getNome() {
 		return nome;
 	}
@@ -237,6 +243,22 @@ public class Acesso extends GenericDomain {
 
 	public void setTipoEvento(Boolean tipoEvento) {
 		this.tipoEvento = tipoEvento;
+	}
+
+	public Boolean getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(Boolean material) {
+		this.material = material;
+	}
+
+	public Boolean getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Boolean evento) {
+		this.evento = evento;
 	}
 
 }

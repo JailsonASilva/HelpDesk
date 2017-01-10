@@ -145,7 +145,19 @@
 										url="/pages/tipoEvento.xhtml"
 										icon="fa fa fw fa-angle-double-right"
 										rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEvento}" />
+
+									<p:menuitem value="Material" url="/pages/material.xhtml"
+										icon="fa fa fw fa-angle-double-right"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.material}" />
 								</p:submenu>
+
+								<p:submenu label="Movimento"
+									icon="fa fa fw fa-angle-double-right">
+									<p:menuitem value="Evento" url="/pages/evento.xhtml"
+										icon="fa fa fw fa-angle-double-right"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.evento}" />
+								</p:submenu>
+
 							</p:submenu>
 
 							<p:submenu label="Base de Conhecimento"
