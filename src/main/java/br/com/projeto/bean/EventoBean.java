@@ -198,7 +198,7 @@ public class EventoBean implements Serializable {
 			TipoEventoDAO tipoEventoDAO = new TipoEventoDAO();
 			tipoEventoDAO.merge(tipoEvento);
 
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoTipoEvento').hide();");
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoTipo').hide();");
 
 			tipoEventos = tipoEventoDAO.listar("nome");
 
