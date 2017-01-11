@@ -149,7 +149,7 @@ public class EventoBean implements Serializable {
 
 	public void novo() {
 		evento = new Evento();
-		
+
 		local = new Local();
 		tipoEvento = new TipoEvento();
 	}
@@ -192,7 +192,7 @@ public class EventoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarTipoEvento() {
 		try {
 			TipoEventoDAO tipoEventoDAO = new TipoEventoDAO();
@@ -212,7 +212,6 @@ public class EventoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
 
 	public void excluir(ActionEvent eventoExcluir) {
 		try {
@@ -230,6 +229,20 @@ public class EventoBean implements Serializable {
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void exibirMateriais(ActionEvent eventoMaterial) {
+		try {
+			evento = (Evento) eventoMaterial.getComponent().getAttributes().get("eventoSelecionado");
+			
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Exibir Materiais.",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);

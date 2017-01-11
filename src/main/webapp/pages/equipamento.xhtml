@@ -134,7 +134,28 @@
 						<h:outputText value="#{equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
+					<p:column headerText="Local" width="180"
+						filterBy="#{equipamento.localEquipamento.nome}"
+						filterMatchMode="in" sortBy="#{equipamento.localEquipamento.nome}">
+
+						<f:facet name="filter">
+							<f:facet name="filter">
+								<p:selectCheckboxMenu label="Filtro"
+									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
+									scrollHeight="150">
+
+									<f:selectItems value="#{equipamento.localEquipamentos}"
+										var="localFiltro" itemValue="#{localFiltro.nome}"
+										itemLabel="#{localFiltro.nome}" />
+								</p:selectCheckboxMenu>
+							</f:facet>
+						</f:facet>
+
+						<h:outputText value="#{equipamento.localEquipamento.nome}" />
+					</p:column>
+
 					<p:column headerText="Departamento" width="120"
+						style="text-align:center"
 						filterBy="#{equipamento.departamento.nome}" filterMatchMode="in"
 						sortBy="#{equipamento.departamento.nome}">
 
@@ -155,7 +176,8 @@
 						<h:outputText value="#{equipamento.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Marca" width="120"
+
+					<p:column headerText="Marca" width="120" style="text-align:center"
 						filterBy="#{equipamento.marca.nome}" filterMatchMode="in"
 						sortBy="#{equipamento.marca.nome}">
 
@@ -175,18 +197,18 @@
 						<h:outputText value="#{equipamento.marca.nome}" />
 					</p:column>
 
-					<p:column headerText="Modelo" width="120"
+					<p:column headerText="Modelo" width="120" style="text-align:center"
 						sortBy="#{equipamento.modelo}">
 						<h:outputText value="#{equipamento.modelo}" />
 					</p:column>
 
-					<p:column headerText="Nº Patrimômio" width="120"
-						sortBy="#{equipamento.patrimonio}">
-						<h:outputText value="#{equipamento.patrimonio}" />
+					<p:column headerText="Nº Etiqueta" width="120"
+						style="text-align:center" sortBy="#{equipamento.numeroEtiqueta}">
+						<h:outputText value="#{equipamento.numeroEtiqueta}" />
 					</p:column>
 
 					<p:column headerText="Situação" width="100"
-						sortBy="#{equipamento.situacao}">
+						style="text-align:center" sortBy="#{equipamento.situacao}">
 						<h:outputText value="#{equipamento.situacao}" />
 					</p:column>
 
@@ -210,7 +232,7 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Equipamento" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 
 				<h:panelGrid id="painel" columns="4" class="ui-noborder">
@@ -267,6 +289,19 @@
 							itemValue="#{marca}" itemLabel="#{marca.nome}" />
 					</p:selectOneMenu>
 
+					<p:outputLabel for="local" value="Local" />
+					<p:selectOneMenu id="local" filter="true"
+						value="#{equipamentoBean.equipamento.localEquipamento}"
+						converter="omnifaces.SelectItemsConverter" required="true"
+						requiredMessage="Campo Obrigatório">>
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{equipamentoBean.localEquipamentos}"
+							var="localEquipamento" itemValue="#{localEquipamento}"
+							itemLabel="#{localEquipamento.nome}" />
+					</p:selectOneMenu>
+
+
 					<p:outputLabel for="modelo" value="Modelo " />
 					<p:inputText id="modelo" maxlength="40" size="25"
 						value="#{equipamentoBean.equipamento.modelo}" />
@@ -282,6 +317,10 @@
 					<p:outputLabel for="capacidade" value="Capacidade" />
 					<p:inputText id="capacidade" maxlength="40" size="25"
 						value="#{equipamentoBean.equipamento.capacidade}" />
+
+					<p:outputLabel for="numeroEtiqueta" value="Nº Etiqueta" />
+					<p:inputText id="numeroEtiqueta" maxlength="40" size="25"
+						value="#{equipamentoBean.equipamento.numeroEtiqueta}" />
 
 					<p:outputLabel for="valorHora" value="Valor Hora" />
 					<p:inputNumber id="valorHora" size="25"
@@ -362,7 +401,7 @@
 
 		<p:dialog header="Cadastro de Departamento"
 			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
-			 closable="true">
+			closable="true">
 			<h:form id="formCadastroDepartamento">
 				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
@@ -389,7 +428,7 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Marca" widgetVar="dialogoMarca"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastroMarca">
 				<h:panelGrid id="painelMarca" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
@@ -416,7 +455,7 @@
 
 		<p:dialog header="Cadastro de Tipos de Equipamento"
 			widgetVar="dialogoTipo" draggable="false" resizable="false"
-			 closable="true">
+			closable="true">
 			<h:form id="formCadastroTipo">
 				<h:panelGrid id="painelTipo" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />

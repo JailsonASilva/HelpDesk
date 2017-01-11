@@ -36,6 +36,10 @@ public class Equipamento extends GenericDomain {
 	@JoinColumn(nullable = false)
 	private Marca marca;
 
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private LocalEquipamento localEquipamento;
+
 	@Column(length = 40, nullable = false)
 	private String situacao;
 
@@ -50,15 +54,18 @@ public class Equipamento extends GenericDomain {
 	@Column(length = 500, nullable = true)
 	private String dadosAdicionais;
 
+	@Column(length = 20, nullable = true)
+	private String numeroEtiqueta;
+
 	@Column(length = 40, nullable = true)
 	private String capacidade;
-	
+
 	@Column(nullable = true)
 	@Temporal(TemporalType.DATE)
-	private Date dataAquisicao;	
-	
+	private Date dataAquisicao;
+
 	@Column(nullable = false, precision = 6, scale = 2)
-	private BigDecimal valorHora;	
+	private BigDecimal valorHora;
 
 	public String getDadosAdicionais() {
 		return dadosAdicionais;
@@ -164,5 +171,20 @@ public class Equipamento extends GenericDomain {
 		this.valorHora = valorHora;
 	}
 
-	
+	public LocalEquipamento getLocalEquipamento() {
+		return localEquipamento;
+	}
+
+	public void setLocalEquipamento(LocalEquipamento localEquipamento) {
+		this.localEquipamento = localEquipamento;
+	}
+
+	public String getNumeroEtiqueta() {
+		return numeroEtiqueta;
+	}
+
+	public void setNumeroEtiqueta(String numeroEtiqueta) {
+		this.numeroEtiqueta = numeroEtiqueta;
+	}
+
 }

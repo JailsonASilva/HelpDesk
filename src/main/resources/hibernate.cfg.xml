@@ -54,11 +54,13 @@
 		<mapping class="br.com.projeto.domain.Acesso" />
 		<mapping class="br.com.projeto.domain.Ocorrencia" />
 		<mapping class="br.com.projeto.domain.Local" />
+		<mapping class="br.com.projeto.domain.LocalEquipamento" />		
 		<mapping class="br.com.projeto.domain.Artigo" />
 		<mapping class="br.com.projeto.domain.Classificacao"/>
 		<mapping class="br.com.projeto.domain.TipoEvento"/>
 		<mapping class="br.com.projeto.domain.Material"/>
 		<mapping class="br.com.projeto.domain.Evento"/>
+		<mapping class="br.com.projeto.domain.EventoMaterial"/>
 		
 
 	</session-factory>

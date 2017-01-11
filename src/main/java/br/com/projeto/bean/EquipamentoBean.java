@@ -15,10 +15,12 @@ import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
+import br.com.projeto.dao.LocalEquipamentoDAO;
 import br.com.projeto.dao.MarcaDAO;
 import br.com.projeto.dao.TipoEquipamentoDAO;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
+import br.com.projeto.domain.LocalEquipamento;
 import br.com.projeto.domain.Marca;
 import br.com.projeto.domain.TipoEquipamento;
 
@@ -31,6 +33,9 @@ public class EquipamentoBean implements Serializable {
 
 	private TipoEquipamento tipoEquipamento;
 	private List<TipoEquipamento> tipoEquipamentos;
+
+	private LocalEquipamento localEquipamento;
+	private List<LocalEquipamento> localEquipamentos;
 
 	private Marca marca;
 	private List<Marca> marcas;
@@ -121,6 +126,22 @@ public class EquipamentoBean implements Serializable {
 		this.tipoEquipamentos = tipoEquipamentos;
 	}
 
+	public LocalEquipamento getLocalEquipamento() {
+		return localEquipamento;
+	}
+
+	public void setLocalEquipamento(LocalEquipamento localEquipamento) {
+		this.localEquipamento = localEquipamento;
+	}
+
+	public List<LocalEquipamento> getLocalEquipamentos() {
+		return localEquipamentos;
+	}
+
+	public void setLocalEquipamentos(List<LocalEquipamento> localEquipamentos) {
+		this.localEquipamentos = localEquipamentos;
+	}
+
 	@PostConstruct
 	public void carregarTabelas() {
 		try {
@@ -132,6 +153,9 @@ public class EquipamentoBean implements Serializable {
 
 			TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
 			tipoEquipamentos = tipoEquipamentoDAO.listar("nome");
+			
+			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
+			localEquipamentos = localEquipamentoDAO.listar("nome");
 
 		} catch (
 
@@ -153,6 +177,7 @@ public class EquipamentoBean implements Serializable {
 			departamento = new Departamento();
 			marca = new Marca();
 			tipoEquipamento = new TipoEquipamento();
+			localEquipamento = new LocalEquipamento();
 
 			equipamento = null;
 
@@ -176,10 +201,11 @@ public class EquipamentoBean implements Serializable {
 	}
 
 	public void novo() {
-		equipamento = new Equipamento();		
+		equipamento = new Equipamento();
 		departamento = new Departamento();
 		marca = new Marca();
 		tipoEquipamento = new TipoEquipamento();
+		localEquipamento = new LocalEquipamento();
 	}
 
 	public void salvar() {
@@ -284,6 +310,27 @@ public class EquipamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void salvarLocal() {
+		try {
+			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
+			localEquipamentoDAO.merge(localEquipamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoLocal').hide();");
+
+			localEquipamentos = localEquipamentoDAO.listar("nome");
+
+			localEquipamento = new LocalEquipamento();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+	
 
 	public void onRowSelect(SelectEvent event) {
 

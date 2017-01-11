@@ -29,4 +29,5 @@ public class EventoDAO extends GenericDAO<Evento> {
 			sessao.close();
 		}
 	}
+
 }

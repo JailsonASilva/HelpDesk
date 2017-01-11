@@ -135,6 +135,17 @@
 							<f:convertDateTime eventoe="pt_BR" pattern="dd/MM/yyyy HH:mm:ss" />
 						</h:outputText>
 					</p:column>
+
+					<p:column headerText="Materiais" width="68"
+						style="text-align:center">
+						<p:commandButton icon="fa fa fw fa-list-ol"
+							actionListener="#{eventoBean.exibirMateriais}"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="eventoSelecionado" value="#{evento}" />
+
+						</p:commandButton>
+					</p:column>
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -187,7 +198,8 @@
 
 					<p:outputLabel for="tipo" value="Tipo" />
 					<p:selectOneMenu id="tipo" filter="true" style="margin:0 10px"
-						filterMatchMode="startsWith" value="#{eventoBean.evento.tipoEvento}"
+						filterMatchMode="startsWith"
+						value="#{eventoBean.evento.tipoEvento}"
 						converter="omnifaces.SelectItemsConverter" required="true"
 						requiredMessage="Campo Obrigatório">
 						<f:selectItem noSelectionOption="true"
@@ -299,6 +311,11 @@
 			</h:form>
 		</p:dialog>
 
-
+		<p:dialog header="Materiais" widgetVar="dialogoMaterial"
+			draggable="false" resizable="false" modal="false" closable="true">
+			<h:form id="formCadastroMaterial">
+			
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>
