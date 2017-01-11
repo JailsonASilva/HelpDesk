@@ -134,7 +134,7 @@
 						<h:outputText value="#{equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Local" width="180"
+					<p:column headerText="local" width="280"
 						filterBy="#{equipamento.localEquipamento.nome}"
 						filterMatchMode="in" sortBy="#{equipamento.localEquipamento.nome}">
 
@@ -144,9 +144,10 @@
 									onchange="PF('tabelaFiltro').filter()" panelStyle="width:225px"
 									scrollHeight="150">
 
-									<f:selectItems value="#{equipamento.localEquipamentos}"
-										var="localFiltro" itemValue="#{localFiltro.nome}"
-										itemLabel="#{localFiltro.nome}" />
+									<f:selectItems value="#{equipamentoBean.localEquipamentos}"
+										var="localEquipamentoFiltro"
+										itemValue="#{localEquipamentoFiltro.nome}"
+										itemLabel="#{localEquipamentoFiltro.nome}" />
 								</p:selectCheckboxMenu>
 							</f:facet>
 						</f:facet>
