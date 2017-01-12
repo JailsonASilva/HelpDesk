@@ -15,39 +15,71 @@
 <h:body>
 	<p:growl id="mensagem" />
 
-	<p:dialog header="Autenticação" closable="false" draggable="false"
-		resizable="false" modal="true" visible="true">
-		<h:form>
-			<h:panelGrid columns="2">
-				<p:outputLabel for="login" value="Login" />
-				<p:inputMask id="login" required="true"
-					requiredMessage="O campo Login é obrigatório"
-					value="#{autenticacaoBean.usuario.nome}" />
 
-				<p:outputLabel for="senha" value="Senha" />
-				<p:password id="senha" maxlength="8" size="20" required="true"
-					requiredMessage="O campo Senha é obrigatório"
-					value="#{autenticacaoBean.usuario.senha}" />
-			</h:panelGrid>
+	<div>
+		<p:layout fullPage="true">
 
-			<p:separator />
+			<p:layoutUnit position="north" size="110" resizable="true"
+				closable="true" collapsible="true" style="border:none;">
 
-			<h:panelGrid columns="1">
-				<p:commandButton value="Entrar" update=":mensagem"
-					actionListener="#{autenticacaoBean.autenticar}"
-					onstart="PF('iconeDeProcessamento').show()"
-					onsuccess="PF('iconeDeProcessamento').hide()" />
-			</h:panelGrid>
+				<p:panel header="Help Desk">
+					<h:graphicImage url="/imagens/educa.png" width="111" height="42" />
+				</p:panel>
 
-			<p:dialog widgetVar="iconeDeProcessamento">
-				<f:facet name="header">
-					<h:graphicImage value="/imagens/ampulheta.png" />
-					<h:outputText id="dialogHeader"
-						value="Aguarde... Estamos Processando sua Informação..." />
-				</f:facet>
-			</p:dialog>
+			</p:layoutUnit>
 
-		</h:form>
-	</p:dialog>
+			<div align="center">
+				<p:layoutUnit position="south" size="50" resizable="true"
+					closable="true" collapsible="true">
+
+					<h:outputText
+						value="Faculdade de Ciências e Tecnologia do Maranhão." />
+					<br></br>
+					<h:outputText value="Tecnologia da Informação." />
+
+				</p:layoutUnit>
+			</div>
+
+			<p:layoutUnit position="center" style="border:none;">
+				<p:dialog header="Autenticação" closable="false" draggable="false"
+					height="150" width="235" resizable="false" modal="false"
+					visible="true">
+					<h:form>
+						<h:panelGrid columns="1">
+							<p:outputLabel for="login" value="Login" />
+							<p:inputMask id="login" required="true" size="30"
+								requiredMessage="O campo Login é obrigatório"
+								value="#{autenticacaoBean.usuario.nome}" />
+
+							<p:outputLabel for="senha" value="Senha" />
+							<p:password id="senha" maxlength="8" size="30" required="true"
+								requiredMessage="O campo Senha é obrigatório"
+								value="#{autenticacaoBean.usuario.senha}" />
+						</h:panelGrid>
+
+						<p:separator />
+
+						<h:panelGrid columns="1">
+							<p:commandButton value="Autenticar" update=":mensagem"								
+								actionListener="#{autenticacaoBean.autenticar}"
+								onstart="PF('iconeDeProcessamento').show()"
+								onsuccess="PF('iconeDeProcessamento').hide()" />
+						</h:panelGrid>
+
+						<p:dialog widgetVar="iconeDeProcessamento">
+							<f:facet name="header">
+								<h:graphicImage value="/imagens/ampulheta.png" />
+								<h:outputText id="dialogHeader"
+									value="Aguarde... Estamos Processando sua Informação..." />
+							</f:facet>
+						</p:dialog>
+
+					</h:form>
+				</p:dialog>
+			</p:layoutUnit>
+
+		</p:layout>
+	</div>
+
 </h:body>
 </html>
