@@ -41,7 +41,6 @@
 				<p:growl id="messages" showDetail="true" />
 				<p:toolbar id="tool">
 					<f:facet name="left">
-
 						<p:commandButton value="Atender"
 							disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
 							actionListener="#{ticketAtendimentoUsuarioBean.atenderTicket}"
@@ -96,6 +95,11 @@
 						<span class="ui-separator"> <span
 							class="ui-icon ui-icon-grip-dotted-vertical" />
 						</span>
+						
+						<p:commandButton title="Novo Ticket" icon="ui-icon-document"
+							actionListener="#{ticketAtendimentoUsuarioBean.novoTicket}"> 
+
+						</p:commandButton>						
 
 						<p:commandButton title="Editar" process=":formListagem:tabela"
 							disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
@@ -306,16 +310,9 @@
 
 					<p:outputLabel for="usuario" value="Usuario " />
 					<h:panelGroup>
-						<p:inputText id="usuario" size="32" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+						<p:inputText id="usuario" size="37" required="true"
+							readonly="true"
 							value="#{ticketAtendimentoUsuarioBean.ticket.nomeUsuario}" />
-
-						<p:commandButton icon="ui-icon-search" title="Pesquisa"
-							process="@this" update="@none"
-							oncomplete="PF('dialogoPesqUsuario').show();">
-
-							<p:resetInput target="usuario" />
-						</p:commandButton>
 					</h:panelGroup>
 
 				</h:panelGrid>
@@ -374,7 +371,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoUsuarioBean.salvar}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+						update=":formListagem:tabela :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>

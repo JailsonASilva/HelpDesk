@@ -1,5 +1,6 @@
 package br.com.projeto.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Faces;
+import org.omnifaces.util.Messages;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -238,10 +240,10 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	public void abrirTabelas() {
 		try {
 			listarPendentes();
-			
+
 			categoria = new Categoria();
 			departamento = new Departamento();
-			cliente = new Cliente();			
+			cliente = new Cliente();
 
 		} catch (
 
@@ -337,8 +339,8 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Salvo com Sucesso!",
-					"Para acompanhar o andamento de seu Ticket acesse o Menu Sistema - Minha Conta - Meus Chamados");
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso!",
+					"Ticket Salvo com Sucesso");
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
@@ -815,6 +817,16 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
+		}
+	}
+
+	public void novoTicket() {
+		try {
+			Faces.redirect("./pages/ticketInterno.xhtml");
+
+		} catch (IOException erro) {
+			erro.printStackTrace();
+			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
 		}
 	}
 }

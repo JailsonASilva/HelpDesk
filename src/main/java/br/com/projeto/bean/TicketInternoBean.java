@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
 
 import br.com.projeto.dao.CategoriaDAO;
@@ -32,6 +33,9 @@ public class TicketInternoBean implements Serializable {
 	private Categoria categoria;
 	private Departamento departamento;
 	private Cliente cliente;
+	private Usuario usuario;
+
+	private AutenticacaoBean autenticacaoBean;
 
 	private List<Ticket> tickets;
 	private List<Cliente> clientes;
@@ -185,6 +189,22 @@ public class TicketInternoBean implements Serializable {
 		this.cliente = cliente;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public AutenticacaoBean getAutenticacaoBean() {
+		return autenticacaoBean;
+	}
+
+	public void setAutenticacaoBean(AutenticacaoBean autenticacaoBean) {
+		this.autenticacaoBean = autenticacaoBean;
+	}
+
 	@PostConstruct
 	public void inicializar() {
 		try {
@@ -228,8 +248,14 @@ public class TicketInternoBean implements Serializable {
 	}
 
 	public void novo() {
+		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+		usuario = autenticacaoBean.getUsuarioLogado();
+
 		ticket = new Ticket();
 		ticket.setStatus("Pendente");
+		ticket.setUsuario(usuario);
+		ticket.setDataAbertura(new java.util.Date());
+		ticket.setPrioridade("Normal");
 
 		categoria = new Categoria();
 		departamento = new Departamento();
@@ -244,7 +270,7 @@ public class TicketInternoBean implements Serializable {
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
 					"Para acompanhar o andamento de seu Ticket acesse o Menu Sistema - Minha Conta - Meus Chamados");
 
-			ticket = new Ticket();
+			novo();
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
@@ -298,7 +324,7 @@ public class TicketInternoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void selecionarDepartamentoCliente(ActionEvent evento) {
 		try {
 			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
@@ -306,7 +332,8 @@ public class TicketInternoBean implements Serializable {
 
 			cliente.setDepartamento(departamentoPesq);
 
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamentoCliente').hide();");
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoPesqDepartamentoCliente').hide();");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
@@ -315,7 +342,7 @@ public class TicketInternoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void pesquisarCliente() {
 		try {
@@ -518,7 +545,7 @@ public class TicketInternoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarCliente() {
 		try {
 			ClienteDAO clienteDAO = new ClienteDAO();
@@ -535,6 +562,5 @@ public class TicketInternoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
-
+	}
 }

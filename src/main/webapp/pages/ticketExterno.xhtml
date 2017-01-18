@@ -42,12 +42,14 @@
 							requiredMessage="Campo Obrigatório!"
 							converter="omnifaces.SelectItemsConverter"
 							value="#{ticketExternoBean.ticket.prioridade}">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
+
+							<f:selectItem noSelectionOption="false" itemValue="3-Normal"
+								itemLabel="Normal" />
 							<f:selectItem itemValue="4-Baixa" itemLabel="Baixa" />
-							<f:selectItem itemValue="3-Normal" itemLabel="Normal" />
 							<f:selectItem itemValue="2-Alta" itemLabel="Alta" />
 							<f:selectItem itemValue="1-Urgente" itemLabel="Urgente" />
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
 							<f:selectItems />
 						</p:selectOneMenu>
 

@@ -41,7 +41,6 @@
 				<p:growl id="messages" showDetail="true" />
 				<p:toolbar id="tool">
 					<f:facet name="left">
-
 						<p:commandButton value="Atender"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
 							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicket}"
@@ -96,6 +95,11 @@
 						<span class="ui-separator"> <span
 							class="ui-icon ui-icon-grip-dotted-vertical" />
 						</span>
+
+						<p:commandButton title="Novo Ticket" icon="ui-icon-document"
+							actionListener="#{ticketAtendimentoDepartamentoBean.novoTicket}">
+
+						</p:commandButton>
 
 						<p:commandButton title="Editar" process=":formListagem:tabela"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
@@ -304,19 +308,8 @@
 					</h:panelGroup>
 
 					<p:outputLabel for="usuario" value="Usuario " />
-					<h:panelGroup>
-						<p:inputText id="usuario" size="32" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{ticketAtendimentoDepartamentoBean.ticket.nomeUsuario}" />
-
-						<p:commandButton icon="ui-icon-search" title="Pesquisa"
-							process="@this" update="@none"
-							oncomplete="PF('dialogoPesqUsuario').show();">
-
-							<p:resetInput target="usuario" />
-						</p:commandButton>
-					</h:panelGroup>
-
+					<p:inputText id="usuario" size="37" required="true" readonly="true"
+						value="#{ticketAtendimentoDepartamentoBean.ticket.nomeUsuario}" />
 				</h:panelGrid>
 
 				<p:separator />
@@ -373,7 +366,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoDepartamentoBean.salvar}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -522,9 +515,9 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
-					value="#{ticketAtendimentoDepartamentoBean.departamentos}" var="departamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
+					value="#{ticketAtendimentoDepartamentoBean.departamentos}"
+					var="departamento" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
 
 					<p:column headerText="Nome">
@@ -564,9 +557,9 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
-					value="#{ticketAtendimentoDepartamentoBean.departamentos}" var="departamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
+					value="#{ticketAtendimentoDepartamentoBean.departamentos}"
+					var="departamento" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
 
 					<p:column headerText="Nome">
@@ -650,9 +643,9 @@
 				</div>
 
 				<p:dataTable id="tabelaCategoria"
-					value="#{ticketAtendimentoDepartamentoBean.categorias}" var="categoria"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
+					value="#{ticketAtendimentoDepartamentoBean.categorias}"
+					var="categoria" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
 
 					<p:column headerText="Nome">
@@ -732,9 +725,9 @@
 				</div>
 
 				<p:dataTable id="tabelaEquipamento"
-					value="#{ticketAtendimentoDepartamentoBean.equipamentos}" var="equipamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
+					value="#{ticketAtendimentoDepartamentoBean.equipamentos}"
+					var="equipamento" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
 
 					<p:column headerText="Nome">
@@ -764,7 +757,7 @@
 						value="#{ticketAtendimentoDepartamentoBean.categoria.nome}" />
 					<p:message for="nome" display="Nome" />
 				</h:panelGrid>
- 
+
 				<br></br>
 				<p:separator />
 
@@ -829,7 +822,7 @@
 					<h:panelGroup>
 						<p:inputText id="departamento" size="34" required="true"
 							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{ticketAtendimentoDepartamentoBean.cliente.nomeDepartamento}" /> 
+							value="#{ticketAtendimentoDepartamentoBean.cliente.nomeDepartamento}" />
 
 						<p:commandButton icon="ui-icon-search"
 							title="Pesquisa Departamento" process="@this" update="@none"

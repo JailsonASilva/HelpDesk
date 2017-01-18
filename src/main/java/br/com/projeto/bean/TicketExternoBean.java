@@ -101,7 +101,7 @@ public class TicketExternoBean implements Serializable {
 	@PostConstruct
 	public void inicializar() {
 		try {
-
+			
 			novo();
 
 		} catch (
@@ -124,6 +124,7 @@ public class TicketExternoBean implements Serializable {
 		ticket.setUsuario(usuario);
 		ticket.setDataAbertura(new java.util.Date());
 		ticket.setStatus("Pendente");
+		ticket.setPrioridade("Normal");
 	}
 
 	public void salvar() {
