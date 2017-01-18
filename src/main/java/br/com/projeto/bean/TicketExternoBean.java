@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 
 import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
@@ -31,6 +32,7 @@ public class TicketExternoBean implements Serializable {
 
 	private FacesMessage message;
 	private String busca;
+	private String buscaDepartamento;
 
 	public FacesMessage getMessage() {
 		return message;
@@ -88,18 +90,24 @@ public class TicketExternoBean implements Serializable {
 		this.usuario = usuario;
 	}
 
+	public String getBuscaDepartamento() {
+		return buscaDepartamento;
+	}
+
+	public void setBuscaDepartamento(String buscaDepartamento) {
+		this.buscaDepartamento = buscaDepartamento;
+	}
+
 	@PostConstruct
-	public void abrirTabelas() {
+	public void inicializar() {
 		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.listarAtendimento();
 
 			novo();
 
 		} catch (
 
 		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Inicializar Rotinas.",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
@@ -133,6 +141,48 @@ public class TicketExternoBean implements Serializable {
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisarAtendimento(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarDepartamento(ActionEvent evento) {
+		try {
+			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
+					.get("departamentoSelecionado");
+
+			ticket.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();

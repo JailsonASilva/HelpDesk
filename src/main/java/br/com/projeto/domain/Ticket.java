@@ -167,4 +167,56 @@ public class Ticket extends GenericDomain {
 		return prioridadeFormatada;
 	}
 
+	@Transient
+	public String getNomeDepartamento() {
+		return getDepartamento() == null ? null : getDepartamento().getNome();
+	}
+
+	@Transient
+	public void setNomeDepartamento(String nomeDepartamento) {
+		departamento.setNome(nomeDepartamento);
+	}
+
+	@Transient
+	public String getNomeCliente() {
+		return getCliente() == null ? null : getCliente().getNome();
+	}
+
+	@Transient
+	public void setNomeCliente(String nomeCliente) {
+		cliente.setNome(nomeCliente);
+	}
+
+	@Transient
+	public String getNomeCategoria() {
+		return getCategoria() == null ? null : getCategoria().getNome();
+	}
+
+	@Transient
+	public void setNomeCategoria(String nomeCategoria) {
+		categoria.setNome(nomeCategoria);
+	}
+
+	@Transient
+	public String getNomeUsuario() {
+		return getUsuario() == null ? null : getUsuario().getNome();
+	}
+
+	@Transient
+	public void setNomeUsuario(String nomeUsuario) {
+		usuario.setNome(nomeUsuario);
+	}
+
+	@Transient
+	public String getNomeEquipamento() {
+		return getEquipamento() == null ? null
+				: getEquipamento().getTipoEquipamento().getNome() + " / "
+						+ getEquipamento().getLocalEquipamento().getNome();
+	}
+
+	@Transient
+	public void setNomeEquipamento(String nomeEquipamento) {
+
+	}
+
 }

@@ -30,7 +30,7 @@
 
 					<p:commandButton id="bitPesquisar" style="margin:0 10px"
 						value="Pesquisar" icon="ui-icon-script"
-						actionListener="#{ticketAtendimentoUsuarioBean.pesquisar}" 
+						actionListener="#{ticketAtendimentoUsuarioBean.pesquisar}"
 						update="formListagem:tabela :formListagem:tool formListagem:painelBusca"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -106,7 +106,7 @@
 						</p:commandButton>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{ticketAtendimentoUsuarioBean.excluirTicket}" 
+							actionListener="#{ticketAtendimentoUsuarioBean.excluirTicket}"
 							disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
 							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
@@ -149,7 +149,8 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{ticketAtendimentoUsuarioBean.ticket}"
+					selectionMode="single"
+					selection="#{ticketAtendimentoUsuarioBean.ticket}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{ticket.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
@@ -222,39 +223,52 @@
 		</p:dialog>
 
 
-		<p:dialog header="Ticket" widgetVar="dialogo" draggable="false"
-			resizable="false"  closable="true">
+
+		<p:dialog header="Dados do Ticket" widgetVar="dialogo" visible="false"
+			draggable="false" resizable="false" modal="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="4" class="ui-noborder">
 
-					<p:outputLabel for="cliente" value="Solicitante" />
-					<p:selectOneMenu id="cliente" filter="true" style="margin:7px"
-						filterMatchMode="startsWith"
-						value="#{ticketAtendimentoUsuarioBean.ticket.cliente}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{ticketAtendimentoUsuarioBean.clientes}"
-							var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="cliente" value="Solicitante " />
+					<h:panelGroup>
+						<p:inputText id="cliente" size="32" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{ticketAtendimentoUsuarioBean.ticket.nomeCliente}" />
 
-					<p:outputLabel for="departamento" value="Departamento" />
-					<p:selectOneMenu id="departamento" filter="true"
-						filterMatchMode="startsWith"
-						value="#{ticketAtendimentoUsuarioBean.ticket.departamento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{ticketAtendimentoUsuarioBean.departamentos}"
-							var="departamento" itemValue="#{departamento}"
-							itemLabel="#{departamento.nome}" />
-					</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-search" title="Pesquisa Cliente"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqCliente').show();">
+
+							<p:resetInput target="cliente" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document" title="Novo Cliente"
+							oncomplete="PF('dialogoCliente').show();" />
+					</h:panelGroup>
 
 					<p:outputLabel value="Status" />
 					<p:inputText maxlength="40" size="37" readonly="true"
-						style="margin:7px" value="#{ticketAtendimentoUsuarioBean.ticket.status}" />
+						isabled="true"
+						value="#{ticketAtendimentoUsuarioBean.ticket.status}" />
+
+
+					<p:outputLabel for="departamento" value="Departamento " />
+					<h:panelGroup>
+						<p:inputText id="departamento" size="32" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{ticketAtendimentoUsuarioBean.ticket.nomeDepartamento}" />
+
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa Departamento" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqDepartamento').show();">
+
+							<p:resetInput target="departamento" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document" title="Novo Departamento"
+							oncomplete="PF('dialogoDepartamento').show();" />
+					</h:panelGroup>
+
 
 					<p:outputLabel for="prioridade" value="Prioridade" />
 					<p:selectOneMenu id="prioridade" filter="true" required="true"
@@ -270,98 +284,106 @@
 						<f:selectItems />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="categoria" value="Categoria " />
-					<p:selectOneMenu id="categoria" filter="true" style="margin:7px"
-						filterMatchMode="startsWith"
-						value="#{ticketAtendimentoUsuarioBean.ticket.categoria}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{ticketAtendimentoUsuarioBean.categorias}"
-							var="categoria" itemValue="#{categoria}"
-							itemLabel="#{categoria.nome}" />
-					</p:selectOneMenu>
 
-					<p:outputLabel for="usuario" value="Usuário" />
-					<p:selectOneMenu id="usuario" filter="true"
-						filterMatchMode="startsWith"
-						value="#{ticketAtendimentoUsuarioBean.ticket.usuario}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{ticketAtendimentoUsuarioBean.usuarios}"
-							var="usuario" itemValue="#{usuario}" itemLabel="#{usuario.nome}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="categoria" value="Categoria " />
+					<h:panelGroup>
+						<p:inputText id="categoria" size="32" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{ticketAtendimentoUsuarioBean.ticket.nomeCategoria}" />
+
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa Departamento" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqCategoria').show();">
+
+							<p:resetInput target="categoria" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document" title="Novo Departamento"
+							oncomplete="PF('dialogoCategoria').show();">
+
+						</p:commandButton>
+					</h:panelGroup>
+
+					<p:outputLabel for="usuario" value="Usuario " />
+					<h:panelGroup>
+						<p:inputText id="usuario" size="32" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{ticketAtendimentoUsuarioBean.ticket.nomeUsuario}" />
+
+						<p:commandButton icon="ui-icon-search" title="Pesquisa"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqUsuario').show();">
+
+							<p:resetInput target="usuario" />
+						</p:commandButton>
+					</h:panelGroup>
+
 				</h:panelGrid>
 
+				<p:separator />
 
 				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 					<p:outputLabel for="assunto" value="Assunto" />
-					<p:inputText id="assunto" maxlength="47" size="56" required="true"
-						style="margin:20px" requiredMessage="Campo Obrigatório!"
+					<p:inputText id="assunto" maxlength="47" size="53" required="true"
+						style="margin:0 39px 0 39px" requiredMessage="Campo Obrigatório!"
 						value="#{ticketAtendimentoUsuarioBean.ticket.assunto}" />
 
 					<p:outputLabel for="data" value="Data Abertura" />
 					<p:calendar id="data" mask="99/99/99" required="true"
 						showOn="button" requiredMessage="Campo Obrigatório!"
 						yearRange="1900:2222"
-						value="#{ticketAtendimentoUsuarioBean.ticket.dataAbertura}" size="12"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
+						value="#{ticketAtendimentoUsuarioBean.ticket.dataAbertura}"
+						size="12" locale="pt_BR" showButtonPanel="true" navigator="true" />
 				</h:panelGrid>
 
 				<h:panelGrid id="painel3" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="solicitacao" value="Solicitação" />
 					<p:inputTextarea id="solicitacao" rows="6" cols="95"
-						style="margin:5px" required="true"
+						style="margin:0 25px 0 25px" required="true"
 						requiredMessage="Campo Obrigatório!" counter="display"
 						maxlength="600" counterTemplate="{0} caracteres restantes."
 						autoResize="false"
 						value="#{ticketAtendimentoUsuarioBean.ticket.solicitacao}" />
 
 					<br></br>
-					<h:outputText id="display" />
+					<h:outputText id="display" style="margin:0 25px 0 25px" />
 				</h:panelGrid>
 
 				<h:panelGrid id="painel4" columns="1" class="ui-noborder">
 					<p:separator />
 
-					<p:outputLabel for="equipamento" value="Equipamento" />
-					<p:selectOneMenu id="equipamento" filter="true"
-						filterMatchMode="startsWith"
-						value="#{ticketAtendimentoUsuarioBean.ticket.equipamento}"
-						converter="omnifaces.SelectItemsConverter">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{ticketAtendimentoUsuarioBean.equipamentos}"
-							var="equipamento" itemValue="#{equipamento}"
-							itemLabel="#{equipamento.tipoEquipamento.nome} / Departamento: #{equipamento.departamento.nome} / Marca: #{equipamento.marca.nome} / Modelo: #{equipamento.modelo}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="equipamento" value="Equipamento " />
+					<h:panelGroup>
+						<p:inputText id="equipamento" size="110" readonly="true"
+							value="#{ticketAtendimentoUsuarioBean.ticket.nomeEquipamento}" />
+
+						<p:commandButton icon="ui-icon-search" title="Pesquisa"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqEquipamento').show();">
+
+							<p:resetInput target="equipamento" />
+						</p:commandButton>
+					</h:panelGroup>
+
 				</h:panelGrid>
 
-				<br></br>
 				<p:separator />
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoUsuarioBean.salvar}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4 :formListagem:tabela :formListagem:tool"
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
-
-					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogo').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 
-
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
 			width="1000" height="600" draggable="false" resizable="false"
-			 closable="true">
+			closable="true">
 			<h:form id="formListagemOcorrencia">
 
 				<p:tabView id="tabView">
@@ -450,7 +472,7 @@
 
 		<p:dialog header="Cadastro de Ocorrência"
 			widgetVar="dialogoOcorrencia" draggable="false" resizable="false"
-			 closable="true">
+			closable="true">
 			<h:form id="formCadastroOcorrencia">
 				<h:panelGrid id="painelOcorrencia" columns="1" class="ui-noborder">
 
@@ -476,6 +498,360 @@
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoOcorrencia').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
+			widgetVar="dialogoPesqDepartamento" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqDepartamento">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{ticketAtendimentoUsuarioBean.buscaDepartamento}"
+						placeholder="Informe o Nome do Departamento" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{ticketAtendimentoUsuarioBean.pesquisarDepartamento}"
+						update="tabelaDepartamento" />
+				</div>
+
+				<p:dataTable id="tabelaDepartamento"
+					value="#{ticketAtendimentoUsuarioBean.departamentos}"
+					var="departamento" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{departamento.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{ticketAtendimentoUsuarioBean.selecionarDepartamento}"
+							update=":formCadastro:departamento">
+							<f:attribute name="departamentoSelecionado"
+								value="#{departamento}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
+			widgetVar="dialogoPesqDepartamentoCliente" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqDepartamentoCliente">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{ticketAtendimentoUsuarioBean.buscaDepartamento}"
+						placeholder="Informe o Nome do Departamento" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{ticketAtendimentoUsuarioBean.pesquisarDepartamento}"
+						update="tabelaDepartamento" />
+				</div>
+
+				<p:dataTable id="tabelaDepartamento"
+					value="#{ticketAtendimentoUsuarioBean.departamentos}"
+					var="departamento" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{departamento.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{ticketAtendimentoUsuarioBean.selecionarDepartamentoCliente}"
+							update=":formCadastroCliente:departamento">
+
+							<f:attribute name="departamentoSelecionado"
+								value="#{departamento}" />
+
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Pesquisa de Solicitante" width="800" height="600"
+			widgetVar="dialogoPesqCliente" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formPesqCliente">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{ticketAtendimentoUsuarioBean.buscaCliente}"
+						placeholder="Informe o Nome do Cliente" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{ticketAtendimentoUsuarioBean.pesquisarCliente}"
+						update="tabelaCliente" />
+				</div>
+
+				<p:dataTable id="tabelaCliente"
+					value="#{ticketAtendimentoUsuarioBean.clientes}" var="cliente"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{cliente.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{ticketAtendimentoUsuarioBean.selecionarCliente}"
+							update=":formCadastro:cliente">
+							<f:attribute name="clienteSelecionado" value="#{cliente}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Categoria" width="800" height="600"
+			widgetVar="dialogoPesqCategoria" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formPesqCategoria">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{ticketAtendimentoUsuarioBean.buscaCategoria}"
+						placeholder="Informe o Nome do Categoria" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{ticketAtendimentoUsuarioBean.pesquisarCategoria}"
+						update="tabelaCategoria" />
+				</div>
+
+				<p:dataTable id="tabelaCategoria"
+					value="#{ticketAtendimentoUsuarioBean.categorias}" var="categoria"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{categoria.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{ticketAtendimentoUsuarioBean.selecionarCategoria}"
+							update=":formCadastro:categoria">
+							<f:attribute name="categoriaSelecionado" value="#{categoria}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Usuario" width="800" height="600"
+			widgetVar="dialogoPesqUsuario" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formPesqUsuario">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{ticketAtendimentoUsuarioBean.buscaUsuario}"
+						placeholder="Informe o Nome do Usuario" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{ticketAtendimentoUsuarioBean.pesquisarUsuario}"
+						update="tabelaUsuario" />
+				</div>
+
+				<p:dataTable id="tabelaUsuario"
+					value="#{ticketAtendimentoUsuarioBean.usuarios}" var="usuario"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{usuario.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{ticketAtendimentoUsuarioBean.selecionarUsuario}"
+							update=":formCadastro:usuario">
+							<f:attribute name="usuarioSelecionado" value="#{usuario}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Equipamento" width="800" height="600"
+			widgetVar="dialogoPesqEquipamento" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqEquipamento">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{ticketAtendimentoUsuarioBean.buscaEquipamento}"
+						placeholder="Informe o Nome do Equipamento" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{ticketAtendimentoUsuarioBean.pesquisarEquipamento}"
+						update="tabelaEquipamento" />
+				</div>
+
+				<p:dataTable id="tabelaEquipamento"
+					value="#{ticketAtendimentoUsuarioBean.equipamentos}"
+					var="equipamento" emptyMessage="Nenhum Registro Encontrado."
+					rows="10" paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText
+							value="#{equipamento.tipoEquipamento.nome} / #{equipamento.localEquipamento.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{ticketAtendimentoUsuarioBean.selecionarEquipamento}"
+							update=":formCadastro:equipamento">
+							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Categoria" widgetVar="dialogoCategoria"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroCategoria">
+				<h:panelGrid id="painelCategoria" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{ticketAtendimentoUsuarioBean.categoria.nome}" />
+					<p:message for="nome" display="Nome" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketAtendimentoUsuarioBean.salvarCategoria}"
+						update=":formCadastroCategoria:painelCategoria :formCadastro:categoria"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoCategoria').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Departamento"
+			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroDepartamento">
+				<h:panelGrid id="painelDepartamento" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{ticketAtendimentoUsuarioBean.departamento.nome}" />
+
+					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:selectBooleanCheckbox id="atendimento"
+						value="#{ticketAtendimentoUsuarioBean.departamento.atendimento}"
+						required="true"
+						requiredMessage="O campo 'Atendimento' é obrigatório" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketAtendimentoUsuarioBean.salvarDepartamento}"
+						update=":formCadastroDepartamento:painelDepartamento :formCadastro:departamento"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoDepartamento').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Solicitante" widgetVar="dialogoCliente"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroCliente">
+				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="45" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{ticketAtendimentoUsuarioBean.cliente.nome}" />
+
+
+					<p:outputLabel for="departamento" value="Departamento " />
+					<h:panelGroup>
+						<p:inputText id="departamento" size="34" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{ticketAtendimentoUsuarioBean.cliente.nomeDepartamento}" />
+
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa Departamento" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqDepartamentoCliente').show();">
+
+							<p:resetInput target="departamento" />
+						</p:commandButton>
+					</h:panelGroup>
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketAtendimentoUsuarioBean.salvarCliente}"
+						update=":formCadastroCliente:painelCliente :formCadastro:cliente"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoCliente').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

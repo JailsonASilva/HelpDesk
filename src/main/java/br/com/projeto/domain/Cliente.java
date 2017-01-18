@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -33,4 +34,13 @@ public class Cliente extends GenericDomain {
 		this.departamento = departamento;
 	}
 
+	@Transient
+	public String getNomeDepartamento() {
+		return getDepartamento() == null ? null : getDepartamento().getNome();
+	}
+
+	@Transient
+	public void setNomeDepartamento(String nomeDepartamento) {
+		departamento.setNome(nomeDepartamento);
+	}
 }

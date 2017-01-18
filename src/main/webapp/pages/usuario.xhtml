@@ -10,7 +10,7 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de Usuarios">
+			<p:panel header="Cadastro de Usuários">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
@@ -115,17 +115,18 @@
 						<h:outputText value="#{usuario.email}" />
 					</p:column>
 
-					<p:column headerText="Departamento"
-						sortBy="#{usuario.departamento.nome}">
+					<p:column headerText="Departamento" style="text-align:center"
+						width="260" sortBy="#{usuario.departamento.nome}">
 						<h:outputText value="#{usuario.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Acesso" sortBy="#{usuario.acesso.nome}">
+					<p:column headerText="Acesso" sortBy="#{usuario.acesso.nome}"
+						width="200" style="text-align:center">
 						<h:outputText value="#{usuario.acesso.nome}" />
 					</p:column>
 
 					<p:column headerText="Ativo" sortBy="#{usuario.ativoFormatado}"
-						width="90">
+						style="text-align:center" width="70">
 						<h:outputText value="#{usuario.ativoFormatado}" />
 					</p:column>
 
@@ -159,42 +160,56 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Usuario" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+		<p:dialog header="Cadastro de Usuário" widgetVar="dialogo"
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
+					<p:inputText id="nome" maxlength="100" size="45" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{usuarioBean.usuario.nome}" />
 
 					<p:outputLabel for="email" value="E-mail " />
-					<p:inputText id="email" maxlength="100" size="60"
+					<p:inputText id="email" maxlength="100" size="45"
 						value="#{usuarioBean.usuario.email}" />
 
 					<p:outputLabel for="departamento" value="Departamento " />
-					<p:selectOneMenu id="departamento" filter="true"
-						filterMatchMode="startsWith"
-						value="#{usuarioBean.usuario.departamento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{usuarioBean.departamentos}"
-							var="departamento" itemValue="#{departamento}"
-							itemLabel="#{departamento.nome}" />
-					</p:selectOneMenu>
+					<h:panelGroup>
+						<p:inputText id="departamento" size="34" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{usuarioBean.usuario.nomeDepartamento}" />
 
-					<p:outputLabel for="acesso" value="Acesso" />
-					<p:selectOneMenu id="acesso" filter="true"
-						filterMatchMode="startsWith" value="#{usuarioBean.usuario.acesso}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{usuarioBean.acessos}" var="acesso"
-							itemValue="#{acesso}" itemLabel="#{acesso.nome}" />
-					</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa Departamento" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqDepartamento').show();">
+
+							<p:resetInput target="departamento" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa fw fa-plus-circle" title="Novo Departamento"
+							process="@this"
+							update=":formCadastroDepartamento:painelDepartamento"
+							oncomplete="PF('dialogoDepartamento').show();">
+
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+					</h:panelGroup>
+
+					<p:outputLabel for="acesso" value="Acesso " />
+					<h:panelGroup>
+						<p:inputText id="acesso" size="40" required="true"
+							value="#{usuarioBean.usuario.nomeAcesso}"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}" />
+
+						<p:commandButton icon="ui-icon-search" title="Pesquisa"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqAcesso').show();">
+
+							<p:resetInput target="acesso" />
+						</p:commandButton>
+					</h:panelGroup>
 
 					<p:outputLabel for="ativo" value="Ativo" />
 					<p:selectBooleanCheckbox id="ativo"
@@ -238,7 +253,7 @@
 
 		<p:dialog header="Cadastro de Departamento"
 			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
-			 closable="true">
+			closable="true">
 			<h:form id="formCadastroDepartamento">
 				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
@@ -265,11 +280,11 @@
 		</p:dialog>
 
 		<p:dialog header="Senha" widgetVar="dialogoSenha" draggable="false"
-			resizable="false"  closable="true">
+			resizable="false" closable="true">
 			<h:form id="formSenha">
 				<h:panelGrid id="painelSenha" columns="3" class="ui-noborder">
 					<p:outputLabel for="senha" value="Senha:" />
-					<p:password id="senha" maxlength="32" size="25"
+					<p:password id="senha" maxlength="100" size="100"
 						value="#{usuarioBean.usuario.senhaSemCriptografia}"
 						required="true" requiredMessage="O campo 'Senha' é obrigatório">
 					</p:password>
@@ -290,9 +305,9 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
-		
+
 		<p:dialog header="Cadastro de Acesso" widgetVar="dialogoAcesso"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastroAcesso">
 				<h:panelGrid id="painelAcesso" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
@@ -326,7 +341,8 @@
 							class="ui-noborder">
 
 							<p:outputLabel value="Equipamento" />
-							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.equipamento}" />
+							<p:selectBooleanCheckbox
+								value="#{usuarioBean.acesso.equipamento}" />
 
 							<p:outputLabel value="Marca" />
 							<p:selectBooleanCheckbox value="#{usuarioBean.acesso.marca}" />
@@ -387,7 +403,89 @@
 						oncomplete="PF('dialogoAcesso').hide();" />
 				</h:panelGrid>
 			</h:form>
-		</p:dialog>		
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
+			widgetVar="dialogoPesqDepartamento" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqDepartamento">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{usuarioBean.buscaDepartamento}"
+						placeholder="Informe o Nome do Departamento" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{usuarioBean.pesquisarDepartamento}"
+						update="tabelaDepartamento" />
+				</div>
+
+				<p:dataTable id="tabelaDepartamento"
+					value="#{usuarioBean.departamentos}" var="departamento"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{departamento.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{usuarioBean.selecionarDepartamento}"
+							update=":formCadastro:departamento">
+							<f:attribute name="departamentoSelecionado"
+								value="#{departamento}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Acesso" width="800" height="600"
+			widgetVar="dialogoPesqAcesso" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formPesqAcesso">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45" value="#{usuarioBean.buscaAcesso}"
+						placeholder="Informe o Nome do Acesso" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{usuarioBean.pesquisarAcesso}" update="tabelaAcesso" />
+				</div>
+
+				<p:dataTable id="tabelaAcesso" value="#{usuarioBean.acessos}"
+					var="acesso" emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{acesso.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{usuarioBean.selecionarAcesso}"
+							update=":formCadastro:acesso">
+							<f:attribute name="acessoSelecionado" value="#{acesso}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

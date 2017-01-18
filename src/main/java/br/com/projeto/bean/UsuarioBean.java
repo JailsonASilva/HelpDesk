@@ -3,7 +3,6 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -18,6 +17,7 @@ import br.com.projeto.dao.AcessoDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Acesso;
+import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Usuario;
 
@@ -26,16 +26,20 @@ import br.com.projeto.domain.Usuario;
 @ManagedBean
 public class UsuarioBean implements Serializable {
 	private Usuario usuario;
-	private List<Usuario> usuarios;
-
 	private Departamento departamento;
-	private List<Departamento> departamentos;
-
 	private Acesso acesso;
+	private Cliente cliente;
+
+	private List<Usuario> usuarios;
+	private List<Departamento> departamentos;
 	private List<Acesso> acessos;
+	private List<Cliente> clientes;
 
 	private FacesMessage message;
 	private String busca;
+	private String buscaDepartamento;
+	private String buscaAcesso;
+	private String buscaCliente;
 
 	public Usuario getUsuario() {
 		return usuario;
@@ -69,28 +73,12 @@ public class UsuarioBean implements Serializable {
 		this.busca = busca;
 	}
 
-	public List<Departamento> getDepartamentos() {
-		return departamentos;
-	}
-
-	public void setDepartamentos(List<Departamento> departamentos) {
-		this.departamentos = departamentos;
-	}
-
 	public Departamento getDepartamento() {
 		return departamento;
 	}
 
 	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
-	}
-
-	public List<Acesso> getAcessos() {
-		return acessos;
-	}
-
-	public void setAcessos(List<Acesso> acessos) {
-		this.acessos = acessos;
 	}
 
 	public Acesso getAcesso() {
@@ -101,25 +89,60 @@ public class UsuarioBean implements Serializable {
 		this.acesso = acesso;
 	}
 
-	@PostConstruct
-	public void carregarTabelas() {
-		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.listar("nome");
+	public String getBuscaDepartamento() {
+		return buscaDepartamento;
+	}
 
-			AcessoDAO acessoDAO = new AcessoDAO();
-			acessos = acessoDAO.listar("nome");
+	public void setBuscaDepartamento(String buscaDepartamento) {
+		this.buscaDepartamento = buscaDepartamento;
+	}
 
-		} catch (
+	public String getBuscaAcesso() {
+		return buscaAcesso;
+	}
 
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
-					"Erro: " + erro.getMessage());
+	public void setBuscaAcesso(String buscaAcesso) {
+		this.buscaAcesso = buscaAcesso;
+	}
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+	public Cliente getCliente() {
+		return cliente;
+	}
 
-			erro.printStackTrace();
-		}
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public String getBuscaCliente() {
+		return buscaCliente;
+	}
+
+	public void setBuscaCliente(String buscaCliente) {
+		this.buscaCliente = buscaCliente;
+	}
+
+	public List<Departamento> getDepartamentos() {
+		return departamentos;
+	}
+
+	public void setDepartamentos(List<Departamento> departamentos) {
+		this.departamentos = departamentos;
+	}
+
+	public List<Acesso> getAcessos() {
+		return acessos;
+	}
+
+	public void setAcessos(List<Acesso> acessos) {
+		this.acessos = acessos;
+	}
+
+	public List<Cliente> getClientes() {
+		return clientes;
+	}
+
+	public void setClientes(List<Cliente> clientes) {
+		this.clientes = clientes;
 	}
 
 	public void pesquisar() {
@@ -133,6 +156,54 @@ public class UsuarioBean implements Serializable {
 			usuario = null;
 
 			if (usuarios.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisar(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarAcesso() {
+		try {
+			AcessoDAO acessoDAO = new AcessoDAO();
+			acessos = acessoDAO.pesquisar(buscaAcesso);
+
+			if (acessos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -222,7 +293,7 @@ public class UsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarAcesso() {
 		try {
 			AcessoDAO acessoDAO = new AcessoDAO();
@@ -241,7 +312,7 @@ public class UsuarioBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void editarSenha(ActionEvent evento) {
 		try {
@@ -279,6 +350,43 @@ public class UsuarioBean implements Serializable {
 		}
 	}
 
+	public void selecionarDepartamento(ActionEvent evento) {
+		try {
+
+			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
+					.get("departamentoSelecionado");
+
+			usuario.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:departamento");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarAcesso(ActionEvent evento) {
+		try {
+			Acesso acessoPesq = (Acesso) evento.getComponent().getAttributes().get("acessoSelecionado");
+
+			usuario.setAcesso(acessoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqAcesso').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void onRowSelect(SelectEvent event) {
 
 	}
@@ -286,5 +394,4 @@ public class UsuarioBean implements Serializable {
 	public void onRowUnselect(UnselectEvent event) {
 		usuario = null;
 	}
-
 }

@@ -31,6 +31,7 @@ public class ClienteBean implements Serializable {
 
 	private FacesMessage message;
 	private String busca;
+	private String buscaDepartamento;
 
 	public Cliente getCliente() {
 		return cliente;
@@ -78,6 +79,14 @@ public class ClienteBean implements Serializable {
 
 	public void setDepartamento(Departamento departamento) {
 		this.departamento = departamento;
+	}
+
+	public String getBuscaDepartamento() {
+		return buscaDepartamento;
+	}
+
+	public void setBuscaDepartamento(String buscaDepartamento) {
+		this.buscaDepartamento = buscaDepartamento;
 	}
 
 	@PostConstruct
@@ -137,7 +146,7 @@ public class ClienteBean implements Serializable {
 			clienteDAO.merge(cliente);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
-			
+
 			clientes = clienteDAO.listar("nome");
 
 			cliente = null;
@@ -173,7 +182,7 @@ public class ClienteBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarDepartamento() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
@@ -200,6 +209,48 @@ public class ClienteBean implements Serializable {
 
 	public void onRowUnselect(UnselectEvent event) {
 		cliente = null;
-	}	
+	}
+
+	public void pesquisarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisarAtendimento(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarDepartamento(ActionEvent evento) {
+		try {
+			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
+					.get("departamentoSelecionado");
+
+			cliente.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
 
 }

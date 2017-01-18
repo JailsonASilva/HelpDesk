@@ -34,14 +34,15 @@ import br.com.projeto.domain.Usuario;
 @ViewScoped
 public class ticketAtendimentoUsuarioBean implements Serializable {
 	private Ticket ticket;
-	private List<Ticket> tickets;
-
 	private Ocorrencia ocorrencia;
-	private List<Ocorrencia> ocorrencias;
-
 	private AutenticacaoBean autenticacaoBean;
 	private Usuario usuario;
+	private Categoria categoria;
+	private Departamento departamento;
+	private Cliente cliente;
 
+	private List<Ocorrencia> ocorrencias;
+	private List<Ticket> tickets;
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
 	private List<Categoria> categorias;
@@ -51,6 +52,11 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	private FacesMessage message;
 	private String usuarioBusca;
 	private String status;
+	private String buscaDepartamento;
+	private String buscaCliente;
+	private String buscaCategoria;
+	private String buscaUsuario;
+	private String buscaEquipamento;
 
 	public Ticket getTicket() {
 		return ticket;
@@ -164,25 +170,78 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		this.usuarioBusca = usuarioBusca;
 	}
 
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	public Departamento getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(Departamento departamento) {
+		this.departamento = departamento;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+	public String getBuscaDepartamento() {
+		return buscaDepartamento;
+	}
+
+	public void setBuscaDepartamento(String buscaDepartamento) {
+		this.buscaDepartamento = buscaDepartamento;
+	}
+
+	public String getBuscaCliente() {
+		return buscaCliente;
+	}
+
+	public void setBuscaCliente(String buscaCliente) {
+		this.buscaCliente = buscaCliente;
+	}
+
+	public String getBuscaCategoria() {
+		return buscaCategoria;
+	}
+
+	public void setBuscaCategoria(String buscaCategoria) {
+		this.buscaCategoria = buscaCategoria;
+	}
+
+	public String getBuscaUsuario() {
+		return buscaUsuario;
+	}
+
+	public void setBuscaUsuario(String buscaUsuario) {
+		this.buscaUsuario = buscaUsuario;
+	}
+
+	public String getBuscaEquipamento() {
+		return buscaEquipamento;
+	}
+
+	public void setBuscaEquipamento(String buscaEquipamento) {
+		this.buscaEquipamento = buscaEquipamento;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.listarAtendimento();
-
-			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
-			equipamentos = equipamentoDAO.listar();
-
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarios = usuarioDAO.listar("nome");
-
-			ClienteDAO clienteDAO = new ClienteDAO();
-			clientes = clienteDAO.listar("nome");
-
-			CategoriaDAO categoriaDAO = new CategoriaDAO();
-			categorias = categoriaDAO.listar("nome");
-
 			listarPendentes();
+			
+			categoria = new Categoria();
+			departamento = new Departamento();
+			cliente = new Cliente();			
 
 		} catch (
 
@@ -195,7 +254,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void pesquisar() {
 		try {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
@@ -225,7 +284,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void listarPendentes() {
 		try {
@@ -421,7 +480,6 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		}
 	}
 
-
 	public void excluirTicket(ActionEvent evento) {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
@@ -444,7 +502,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void excluirOcorrencia(ActionEvent evento) {
 		try {
 			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
@@ -477,5 +535,286 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 	public void onRowUnselect(UnselectEvent event) {
 		ticket = null;
+	}
+
+	public void pesquisarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisarAtendimento(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarDepartamento(ActionEvent evento) {
+		try {
+			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
+					.get("departamentoSelecionado");
+
+			ticket.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarDepartamentoCliente(ActionEvent evento) {
+		try {
+			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
+					.get("departamentoSelecionado");
+
+			cliente.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoPesqDepartamentoCliente').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarCliente() {
+		try {
+			ClienteDAO clienteDAO = new ClienteDAO();
+			clientes = clienteDAO.pesquisar(buscaCliente);
+
+			if (clientes.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarCliente(ActionEvent evento) {
+		try {
+
+			Cliente clientePesq = (Cliente) evento.getComponent().getAttributes().get("clienteSelecionado");
+
+			ticket.setCliente(clientePesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqCliente').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarCategoria() {
+		try {
+			CategoriaDAO categoriaDAO = new CategoriaDAO();
+			categorias = categoriaDAO.pesquisar(buscaCategoria);
+
+			if (categorias.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarCategoria(ActionEvent evento) {
+		try {
+			Categoria categoriaPesq = (Categoria) evento.getComponent().getAttributes().get("categoriaSelecionado");
+
+			ticket.setCategoria(categoriaPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqCategoria').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarUsuario() {
+		try {
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.pesquisar(buscaUsuario);
+
+			if (usuarios.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarUsuario(ActionEvent evento) {
+		try {
+			Usuario usuarioPesq = (Usuario) evento.getComponent().getAttributes().get("usuarioSelecionado");
+
+			ticket.setUsuario(usuarioPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqUsuario').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarEquipamento() {
+		try {
+			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
+			equipamentos = equipamentoDAO.pesquisarEquipamento(buscaEquipamento);
+
+			if (equipamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarEquipamento(ActionEvent evento) {
+		try {
+			Equipamento equipamentoPesq = (Equipamento) evento.getComponent().getAttributes()
+					.get("equipamentoSelecionado");
+
+			ticket.setEquipamento(equipamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqEquipamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarCategoria() {
+		try {
+			CategoriaDAO categoriaDAO = new CategoriaDAO();
+			categoriaDAO.merge(categoria);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCategoria').hide();");
+
+			categoria = new Categoria();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentoDAO.merge(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
+
+			departamento = new Departamento();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarCliente() {
+		try {
+			ClienteDAO clienteDAO = new ClienteDAO();
+			clienteDAO.merge(cliente);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCliente').hide();");
+
+			cliente = new Cliente();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
 	}
 }

@@ -17,7 +17,7 @@ public class Usuario extends GenericDomain {
 	@Column(length = 100, nullable = true)
 	private String email;
 
-	@Column(length = 32, nullable = true)
+	@Column(length = 100, nullable = true)
 	private String senha;
 
 	@ManyToOne
@@ -101,4 +101,23 @@ public class Usuario extends GenericDomain {
 		return ativoFormatado;
 	}
 
+	@Transient
+	public String getNomeDepartamento() {
+		return getDepartamento() == null ? null : getDepartamento().getNome();
+	}
+
+	@Transient
+	public void setNomeDepartamento(String nomeDepartamento) {
+
+	}
+
+	@Transient
+	public String getNomeAcesso() {
+		return getAcesso() == null ? null : getAcesso().getNome();
+	}
+
+	@Transient
+	public void setNomeAcesso(String nomeAcesso) {
+		acesso.setNome(nomeAcesso);
+	}
 }

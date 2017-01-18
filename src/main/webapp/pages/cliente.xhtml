@@ -136,26 +136,32 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Solicitante" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
+					<p:inputText id="nome" maxlength="100" size="45" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{clienteBean.cliente.nome}" />
 
 
 					<p:outputLabel for="departamento" value="Departamento " />
-					<p:selectOneMenu id="departamento"
-						value="#{clienteBean.cliente.departamento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Departamento" />
-						<f:selectItems value="#{clienteBean.departamentos}"
-							var="departamento" itemValue="#{departamento}"
-							itemLabel="#{departamento.nome}" />
-					</p:selectOneMenu>
+					<h:panelGroup>
+						<p:inputText id="departamento" size="34" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{clienteBean.cliente.nomeDepartamento}" />
+
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa Departamento" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqDepartamento').show();">
+
+							<p:resetInput target="departamento" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document" title="Novo Departamento"
+							oncomplete="PF('dialogoDepartamento').show();" />
+					</h:panelGroup>
+
 				</h:panelGrid>
 
 				<br></br>
@@ -185,16 +191,21 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Departamento"
+	<p:dialog header="Cadastro de Departamento"
 			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
-			 closable="true">
+			closable="true">
 			<h:form id="formCadastroDepartamento">
-				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
-					<p:outputLabel for="nome" value="Nome " />
+				<h:panelGrid id="painelDepartamento" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{clienteBean.departamento.nome}" />
-					<p:message for="nome" display="Nome" />
+
+					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:selectBooleanCheckbox id="atendimento"
+						value="#{clienteBean.departamento.atendimento}"
+						required="true"
+						requiredMessage="O campo 'Atendimento' é obrigatório" />
 				</h:panelGrid>
 
 				<br></br>
@@ -210,6 +221,48 @@
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoDepartamento').hide();" />
 				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
+			widgetVar="dialogoPesqDepartamento" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqDepartamento">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{clienteBean.buscaDepartamento}"
+						placeholder="Informe o Nome do Departamento" /> 
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{clienteBean.pesquisarDepartamento}"
+						update="tabelaDepartamento" />
+				</div>
+
+				<p:dataTable id="tabelaDepartamento"
+					value="#{clienteBean.departamentos}" var="departamento"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{departamento.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{clienteBean.selecionarDepartamento}"
+							update=":formCadastro:departamento">
+							<f:attribute name="departamentoSelecionado"
+								value="#{departamento}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
 			</h:form>
 		</p:dialog>
 
