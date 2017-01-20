@@ -61,4 +61,29 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			sessao.close();
 		}
 	}
+	
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	public List<Ticket> pesquisarUsuarioAbertura(String usuario, String status) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+			
+			@SuppressWarnings("unused")
+			Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario",
+					Criteria.INNER_JOIN, Restrictions.like("usuario.nome", "%" + usuario + "%"));
+			
+			consulta.add(Restrictions.eq("status", status));
+			
+			consulta.addOrder(Order.asc("prioridade"));
+			consulta.addOrder(Order.asc("dataAbertura"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}	
 }

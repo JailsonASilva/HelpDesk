@@ -10,7 +10,7 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Ticket's por Atendente">
+			<p:panel header="Meus Atendimentos">
 
 				<h:panelGrid columns="1" class="ui-noborder">
 					<p:outputLabel for="status" value="Status" />
@@ -433,12 +433,12 @@
 								<h:outputText value="#{ocorrencia.ocorrencia}" />
 							</p:column>
 
-							<p:column headerText="Atendente"
+							<p:column headerText="Atendente" style="text-align:center"
 								sortBy="#{ocorrencia.usuario.nome}" width="120">
 								<h:outputText value="#{ocorrencia.usuario.nome}" />
 							</p:column>
 
-							<p:column headerText="Opções" width="68">
+							<p:column headerText="Opções" width="68" style="text-align:center">
 								<p:commandButton icon="ui-icon-trash"
 									actionListener="#{ticketAtendimentoUsuarioBean.excluirOcorrencia}"
 									update=":formListagemOcorrencia:tabView:tabelaOcorrencia"

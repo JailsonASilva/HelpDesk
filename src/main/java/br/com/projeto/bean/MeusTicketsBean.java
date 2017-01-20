@@ -36,7 +36,7 @@ import br.com.projeto.util.EmailUtils;
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class ticketAtendimentoUsuarioBean implements Serializable {
+public class MeusTicketsBean implements Serializable {
 	private Ticket ticket;
 	private Ocorrencia ocorrencia;
 	private AutenticacaoBean autenticacaoBean;
@@ -298,7 +298,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			usuarioBusca = usuario.getNome();
 
 			TicketDAO ticketDAO = new TicketDAO();
-			tickets = ticketDAO.pesquisarUsuario(usuarioBusca, "Pendente");
+			tickets = ticketDAO.pesquisarUsuarioAbertura(usuarioBusca, "Pendente");
 
 		} catch (
 
