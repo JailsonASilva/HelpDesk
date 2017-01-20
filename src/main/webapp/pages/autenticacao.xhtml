@@ -42,17 +42,17 @@
 
 			<p:layoutUnit position="center" style="border:none;">
 				<p:dialog header="Autenticação" closable="false" draggable="false"
-					height="160" width="235" resizable="false" modal="false"
+					height="160" width="268" resizable="false" modal="false"
 					visible="true">
 					<h:form>
 						<h:panelGrid columns="1">
-							<p:outputLabel for="login" value="Login" />
-							<p:inputMask id="login" required="true" size="30"
-								requiredMessage="O campo Login é obrigatório"
-								value="#{autenticacaoBean.usuario.nome}" />
+							<p:outputLabel for="email" value="E-mail" />
+							<p:inputMask id="email" required="true" size="35"
+								requiredMessage="O campo E-mail é obrigatório"
+								value="#{autenticacaoBean.usuario.email}" />
 
 							<p:outputLabel for="senha" value="Senha" />
-							<p:password id="senha" maxlength="100" size="30" required="true"
+							<p:password id="senha" maxlength="100" size="35" required="true"
 								requiredMessage="O campo Senha é obrigatório"
 								value="#{autenticacaoBean.usuario.senha}" />
 						</h:panelGrid>
@@ -60,7 +60,7 @@
 						<p:separator />
 
 						<h:panelGrid columns="1">
-							<p:commandButton value="Autenticar" update=":mensagem"								
+							<p:commandButton value="Autenticar" update=":mensagem"
 								actionListener="#{autenticacaoBean.autenticar}"
 								onstart="PF('iconeDeProcessamento').show()"
 								onsuccess="PF('iconeDeProcessamento').hide()" />

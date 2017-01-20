@@ -10,6 +10,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.apache.commons.mail.EmailException;
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.context.RequestContext;
@@ -30,6 +31,7 @@ import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Ocorrencia;
 import br.com.projeto.domain.Ticket;
 import br.com.projeto.domain.Usuario;
+import br.com.projeto.util.EmailUtils;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -350,8 +352,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso!",
-					"Ticket Salvo com Sucesso");
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso!", "Ticket Salvo com Sucesso");
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
@@ -370,10 +371,12 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void salvarOcorrencia() {
+	public void salvarOcorrencia() throws EmailException {
 		try {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
+
+			enviarEmail();
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -390,7 +393,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void atenderTicket() {
+	public void atenderTicket() throws EmailException {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket em Atendimento!");
@@ -403,6 +406,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+			
+			enviarEmail();
 
 			listarPendentes();
 
@@ -420,7 +425,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void suspenderTicket() {
+	public void suspenderTicket() throws EmailException {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket Suspenso!");
@@ -433,6 +438,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+			
+			enviarEmail();
 
 			listarPendentes();
 
@@ -450,7 +457,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void concluirTicket() {
+	public void concluirTicket() throws EmailException {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket Concluído!");
@@ -463,6 +470,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+			
+			enviarEmail();
 
 			listarPendentes();
 
@@ -840,4 +849,36 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
 		}
 	}
+
+	public void enviarEmail() throws EmailException {
+		try {
+			String mensagem = "Registro de Ocorrência " + "\n" + "\n" + "Data Ocorrência: " + ocorrencia.getData()
+					+ "\n" + "Atendente: " + ocorrencia.getUsuario().getNome() + "\n" + "Ocorrência: "
+					+ ocorrencia.getOcorrencia() + "\n" + "" +
+
+					"Dados do Ticket " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
+					+ ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n" + "" + "\n"
+					+ "Dados da Solicitação: " + "\n" + ticket.getSolicitacao() + "\n";
+
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.listarUsuarios(ticket.getDepartamento().getCodigo());
+
+			for (int i = 0; i < usuarios.size(); i++) {
+				Usuario usuarioEmail = (Usuario) usuarios.get(i);
+
+				EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, usuarioEmail.getEmail());
+			}
+
+			EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, ticket.getUsuario().getEmail());
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Enviar E-mail para o Departamento", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+
+	}
+
 }

@@ -42,10 +42,10 @@ public class AutenticacaoBean {
 	public void autenticar() {
 		try {
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarioLogado = usuarioDAO.autenticar(usuario.getNome(), usuario.getSenha());
+			usuarioLogado = usuarioDAO.autenticar(usuario.getEmail(), usuario.getSenha());
 
 			if (usuarioLogado == null) {
-				Messages.addGlobalError("Login e/ou Senha Incorretos");
+				Messages.addGlobalError("E-mail e/ou Senha Incorretos");
 				return;
 			}
 

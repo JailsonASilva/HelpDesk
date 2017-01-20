@@ -111,7 +111,7 @@
 						<h:outputText value="#{usuario.nome}" />
 					</p:column>
 
-					<p:column headerText="E-mail" sortBy="#{usuario.email}">
+					<p:column headerText="E-mail" sortBy="#{usuario.email}" width="250">
 						<h:outputText value="#{usuario.email}" />
 					</p:column>
 
@@ -124,6 +124,11 @@
 						width="200" style="text-align:center">
 						<h:outputText value="#{usuario.acesso.nome}" />
 					</p:column>
+					
+					<p:column headerText="Ramal" sortBy="#{usuario.ramal}"
+						style="text-align:center" width="70">
+						<h:outputText value="#{usuario.ramal}" />
+					</p:column>					
 
 					<p:column headerText="Ativo" sortBy="#{usuario.ativoFormatado}"
 						style="text-align:center" width="70">
@@ -170,7 +175,7 @@
 						value="#{usuarioBean.usuario.nome}" />
 
 					<p:outputLabel for="email" value="E-mail " />
-					<p:inputText id="email" maxlength="100" size="45"
+					<p:inputText id="email" maxlength="100" size="45" required="true"
 						value="#{usuarioBean.usuario.email}" />
 
 					<p:outputLabel for="departamento" value="Departamento " />
@@ -210,6 +215,11 @@
 							<p:resetInput target="acesso" />
 						</p:commandButton>
 					</h:panelGroup>
+
+					<p:outputLabel for="ramal" value="Ramal" />
+					<p:inputText id="ramal" maxlength="10" size="15" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{usuarioBean.usuario.ramal}" />
 
 					<p:outputLabel for="ativo" value="Ativo" />
 					<p:selectBooleanCheckbox id="ativo"
@@ -264,8 +274,7 @@
 
 					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
 					<p:selectBooleanCheckbox id="atendimento"
-						value="#{usuarioBean.departamento.atendimento}"
-						required="true"
+						value="#{usuarioBean.departamento.atendimento}" required="true"
 						requiredMessage="O campo 'Atendimento' é obrigatório" />
 				</h:panelGrid>
 
@@ -490,7 +499,7 @@
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
-			
+
 
 	</ui:define>
 </ui:composition>

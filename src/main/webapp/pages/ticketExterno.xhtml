@@ -35,10 +35,6 @@
 
 								<p:resetInput target="departamento" />
 							</p:commandButton>
-
-							<p:commandButton icon="ui-icon-document"
-								title="Novo Departamento"
-								oncomplete="PF('dialogoDepartamento').show();" />
 						</h:panelGroup>
 
 						<p:outputLabel for="prioridade" value="Prioridade" />
@@ -58,7 +54,7 @@
 						</p:selectOneMenu>
 
 						<p:outputLabel for="assunto" value="Assunto" />
-						<p:inputText id="assunto" maxlength="40" size="63" required="true"
+						<p:inputText id="assunto" maxlength="100" size="63" required="true"
 							requiredMessage="Campo Obrigatório!"
 							value="#{ticketExternoBean.ticket.assunto}" />
 

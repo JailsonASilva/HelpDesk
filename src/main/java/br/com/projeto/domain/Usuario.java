@@ -14,11 +14,14 @@ public class Usuario extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String nome;
 
-	@Column(length = 100, nullable = true)
+	@Column(length = 100, nullable = false)
 	private String email;
 
 	@Column(length = 100, nullable = true)
 	private String senha;
+
+	@Column(length = 10, nullable = true)
+	private String ramal;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
@@ -88,6 +91,14 @@ public class Usuario extends GenericDomain {
 
 	public void setAcesso(Acesso acesso) {
 		this.acesso = acesso;
+	}
+
+	public String getRamal() {
+		return ramal;
+	}
+
+	public void setRamal(String ramal) {
+		this.ramal = ramal;
 	}
 
 	@Transient

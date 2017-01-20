@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.apache.commons.mail.EmailException;
 import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
 
@@ -24,6 +25,7 @@ import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Ticket;
 import br.com.projeto.domain.Usuario;
+import br.com.projeto.util.EmailUtils;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -49,7 +51,8 @@ public class TicketInternoBean implements Serializable {
 	private String busca;
 	private String buscaDepartamento;
 	private String buscaCliente;
-	private String buscaCategoria;	private String buscaUsuario;
+	private String buscaCategoria;
+	private String buscaUsuario;
 	private String buscaEquipamento;
 
 	public FacesMessage getMessage() {
@@ -261,14 +264,17 @@ public class TicketInternoBean implements Serializable {
 		cliente = new Cliente();
 	}
 
-	public void salvar() {
+	public void salvar() throws EmailException {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
-					"Para acompanhar o andamento de seu Ticket acesse o Menu Sistema - Minha Conta - Meus Chamados");
-
+					"Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's");
+			
+			enviarEmailDepartamento();
+			enviarEmailSolicitante();
+			
 			novo();
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
@@ -561,5 +567,52 @@ public class TicketInternoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
+	}
+
+	public void enviarEmailDepartamento() throws EmailException {
+		try {
+			String mensagem = "Dados do Solicitante " + "\n" + "\n" + "Nome: " + ticket.getUsuario().getNome() + "\n"
+					+ "E-mail: " + ticket.getUsuario().getEmail() + "\n" + "Ramal: " + ticket.getUsuario().getRamal()
+					+ "\n" + "" + "\n" + "\n" +
+
+					"Dados do Ticket " + "\n" + "\n" + "Data Abertura: " + ticket.getDataAbertura() + "\n"
+					+ "Prioridade: " + ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n"
+					+ "" + "\n" + "Dados da Solicitação: " + "\n" + ticket.getSolicitacao() + "\n";
+
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.listarUsuarios(ticket.getDepartamento().getCodigo());
+
+			for (int i = 0; i < usuarios.size(); i++) {
+				Usuario usuarioEmail = (Usuario) usuarios.get(i);
+
+				EmailUtils.enviaEmail("Ticket Aberto", mensagem, usuarioEmail.getEmail());
+			}
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Enviar E-mail para o Departamento", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+
+	}
+
+	public void enviarEmailSolicitante() throws EmailException {
+		try {
+			String mensagem = "Seu Ticket foi aberto com sucesso! Em breve o Departamento de "
+					+ ticket.getDepartamento().getNome()
+					+ " entrará em contato. Para acompanhar o andamento de seu Ticket acesse o Sistema no menu Meus Ticket's.";
+
+			EmailUtils.enviaEmail("Ticket Aberto", mensagem, usuario.getEmail());
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Enviar E-mail para o Solicitante", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+
 	}
 }
