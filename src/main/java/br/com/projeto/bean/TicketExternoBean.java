@@ -25,6 +25,7 @@ public class TicketExternoBean implements Serializable {
 	private Ticket ticket;
 	private List<Ticket> tickets;
 
+	private Departamento departamento;
 	private List<Departamento> departamentos;
 
 	private AutenticacaoBean autenticacaoBean;
@@ -98,10 +99,18 @@ public class TicketExternoBean implements Serializable {
 		this.buscaDepartamento = buscaDepartamento;
 	}
 
+	public Departamento getDepartamento() {
+		return departamento;
+	}
+
+	public void setDepartamento(Departamento departamento) {
+		this.departamento = departamento;
+	}
+
 	@PostConstruct
 	public void inicializar() {
 		try {
-			
+
 			novo();
 
 		} catch (
@@ -119,6 +128,8 @@ public class TicketExternoBean implements Serializable {
 	public void novo() {
 		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 		usuario = autenticacaoBean.getUsuarioLogado();
+
+		departamento = new Departamento();
 
 		ticket = new Ticket();
 		ticket.setUsuario(usuario);
@@ -184,6 +195,24 @@ public class TicketExternoBean implements Serializable {
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
 					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentoDAO.merge(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
+
+			departamento = new Departamento();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();

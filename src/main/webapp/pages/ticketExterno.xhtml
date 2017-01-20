@@ -25,16 +25,20 @@
 
 						<p:outputLabel for="departamento" value="Departamento " />
 						<h:panelGroup>
-							<p:inputText id="departamento" size="33" required="true"
+							<p:inputText id="departamento" size="32" required="true"
 								readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
 								value="#{ticketExternoBean.ticket.nomeDepartamento}" />
 
-							<p:commandButton icon="ui-icon-search" title="Pesquisa"
-								process="@this" update="@none"
+							<p:commandButton icon="ui-icon-search"
+								title="Pesquisa Departamento" process="@this" update="@none"
 								oncomplete="PF('dialogoPesqDepartamento').show();">
 
 								<p:resetInput target="departamento" />
 							</p:commandButton>
+
+							<p:commandButton icon="ui-icon-document"
+								title="Novo Departamento"
+								oncomplete="PF('dialogoDepartamento').show();" />
 						</h:panelGroup>
 
 						<p:outputLabel for="prioridade" value="Prioridade" />
@@ -119,6 +123,39 @@
 					</p:column>
 
 				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Departamento"
+			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroDepartamento">
+				<h:panelGrid id="painelDepartamento" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{ticketExternoBean.departamento.nome}" />
+
+					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:selectBooleanCheckbox id="atendimento"
+						value="#{ticketExternoBean.departamento.atendimento}"
+						required="true"
+						requiredMessage="O campo 'Atendimento' é obrigatório" />
+				</h:panelGrid>
+
+				<br></br> 
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketExternoBean.salvarDepartamento}"
+						update=":formCadastroDepartamento:painelDepartamento :formListagem:formCadastro:departamento"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoDepartamento').hide();" />
+				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 

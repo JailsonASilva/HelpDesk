@@ -19,7 +19,7 @@ public class Artigo extends GenericDomain {
 	private String titulo;
 
 	@Column(length = 300, nullable = false)
-	private String palavraChave; 
+	private String palavraChave;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
@@ -118,4 +118,23 @@ public class Artigo extends GenericDomain {
 		this.caminho = caminho;
 	}
 
+	@Transient
+	public String getNomeNivel() {
+		return getNivel() == null ? null : getNivel().getNome();
+	}
+
+	@Transient
+	public void setNomeNivel(String nomeNivel) {
+
+	}
+
+	@Transient
+	public String getNomeClassificacao() {
+		return getClassificacao() == null ? null : getClassificacao().getNome();
+	}
+
+	@Transient
+	public void setNomeClassificacao(String nomeClassificacao) {
+
+	}
 }

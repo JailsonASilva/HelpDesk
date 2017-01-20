@@ -41,7 +41,7 @@ import net.sf.jasperreports.engine.JasperPrintManager;
 @ViewScoped
 public class ProximaManutencaoBean implements Serializable {
 	private Manutencao manutencao;
-	private List<Manutencao> manutencoes;
+	private List<Manutencao> manutencoes; 
 
 	private Equipamento equipamento;
 	private List<Equipamento> equipamentos;

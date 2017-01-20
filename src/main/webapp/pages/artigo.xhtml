@@ -168,7 +168,7 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Artigo" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro" enctype="multipart/form-data">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="titulo" value="Título " />
@@ -177,29 +177,50 @@
 						value="#{artigoBean.artigo.titulo}" />
 
 					<p:outputLabel for="nivel" value="Nível " />
-					<p:selectOneMenu id="nivel" filter="true"
-						filterMatchMode="startsWith" value="#{artigoBean.artigo.nivel}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{artigoBean.niveis}" var="nivel"
-							itemValue="#{nivel}"
-							itemLabel="#{nivel.nome} / Público: #{nivel.publicoFormatado}" />
-					</p:selectOneMenu>
+					<h:panelGroup>
+						<p:inputText id="nivel" size="34" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{artigoBean.artigo.nomeNivel}" />
 
-					<p:outputLabel for="classficacao" value="Classificação " />
-					<p:selectOneMenu id="classficacao" filter="true"
-						filterMatchMode="startsWith"
-						value="#{artigoBean.artigo.classificacao}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{artigoBean.classificacoes}"
-							var="classficacao" itemValue="#{classficacao}"
-							itemLabel="#{classficacao.nome}" />
-					</p:selectOneMenu>
+						<p:commandButton icon="ui-icon-search" title="Pesquisa Nivel"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqNivel').show();">
+
+							<p:resetInput target="nivel" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document" title="Novo Nivel"
+							process="@this" update=":formCadastroNivel:painelNivel"
+							oncomplete="PF('dialogoNivel').show();">
+
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</h:panelGroup>
+
+					<p:outputLabel for="classificacao" value="Classificação " />
+					<h:panelGroup>
+						<p:inputText id="classificacao" size="34" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{artigoBean.artigo.nomeClassificacao}" />
+
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa Classificacao" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqClassificacao').show();">
+
+							<p:resetInput target="classificacao" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document"
+							title="Novo Classificacao" process="@this"
+							update=":formCadastroClassificacao:painelClassificacao"
+							oncomplete="PF('dialogoClassificacao').show();">
+
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+					</h:panelGroup>
 
 					<p:outputLabel for="palavra" value="Palavras Chaves" />
 					<p:inputTextarea id="palavra" rows="6" cols="60" required="true"
@@ -260,14 +281,14 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Nivel" widgetVar="dialogoNivel"
-			draggable="false" resizable="false"  closable="true">
+		<p:dialog header="Cadastro de Nível" widgetVar="dialogoNivel"
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastroNivel">
 				<h:panelGrid id="painelNivel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{artigoBean.nivel.nome}" /> 
+						value="#{artigoBean.nivel.nome}" />
 
 					<p:outputLabel for="publico" value="Público" />
 					<p:selectBooleanCheckbox id="publico"
@@ -279,7 +300,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{artigoBean.salvarNivel}" 
+						actionListener="#{artigoBean.salvarNivel}"
 						update=":formCadastroNivel:painelNivel :formCadastro:nivel"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -289,24 +310,26 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
-		
-		<p:dialog header="Cadastro de Classificação" widgetVar="dialogoClassificacao" 
-			draggable="false" resizable="false"  closable="true">
+
+		<p:dialog header="Cadastro de Classificação"
+			widgetVar="dialogoClassificacao" draggable="false" resizable="false"
+			closable="true">
 			<h:form id="formCadastroClassificacao">
-				<h:panelGrid id="painelClassificacao" columns="3" class="ui-noborder">
+				<h:panelGrid id="painelClassificacao" columns="3"
+					class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{artigoBean.classificacao.nome}" />   
+						value="#{artigoBean.classificacao.nome}" />
 				</h:panelGrid>
- 
+
 				<br></br>
 				<p:separator />
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{artigoBean.salvarClassificacao}"
-						update=":formCadastro:painel :formCadastro:classficacao"
+						update=":formCadastro:painel :formCadastroClassificacao:nome"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -314,7 +337,88 @@
 						oncomplete="PF('dialogo').hide();" />
 				</h:panelGrid>
 			</h:form>
-		</p:dialog>		
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Nível" width="800" height="600"
+			widgetVar="dialogoPesqNivel" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formPesqNivel">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45" value="#{artigoBean.buscaNivel}"
+						placeholder="Informe o Nome do Nivel" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{artigoBean.pesquisarNivel}" update="tabelaNivel" />
+				</div>
+
+				<p:dataTable id="tabelaNivel" value="#{artigoBean.niveis}"
+					var="nivel" emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{nivel.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{artigoBean.selecionarNivel}"
+							update=":formCadastro:nivel">
+							<f:attribute name="nivelSelecionado" value="#{nivel}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Pesquisa de Classificação" width="800" height="600"
+			widgetVar="dialogoPesqClassificacao" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqClassificacao">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{artigoBean.buscaClassificacao}"
+						placeholder="Informe o Nome do Classificacao" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{artigoBean.pesquisarClassificacao}"
+						update="tabelaClassificacao" />
+				</div>
+
+				<p:dataTable id="tabelaClassificacao"
+					value="#{artigoBean.classificacoes}" var="classificacao"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{classificacao.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{artigoBean.selecionarClassificacao}"
+							update=":formCadastro:classificacao">
+							<f:attribute name="classificacaoSelecionado"
+								value="#{classificacao}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
 
 	</ui:define>
 </ui:composition>

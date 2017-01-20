@@ -68,5 +68,6 @@
 		<nature>org.jboss.tools.cdi.core.cdinature</nature>
 		<nature>org.jboss.tools.jsf.jsfnature</nature>
 		<nature>org.jboss.tools.ws.jaxrs.nature</nature>
+		<nature>com.jaspersoft.studio.babel.editor.rbeNature</nature>
 	</natures>
 </projectDescription>

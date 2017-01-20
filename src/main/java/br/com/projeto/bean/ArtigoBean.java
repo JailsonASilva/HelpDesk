@@ -11,7 +11,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -49,7 +48,10 @@ public class ArtigoBean implements Serializable {
 	private Classificacao classificacao;
 
 	private FacesMessage message;
+
 	private String busca;
+	private String buscaNivel;
+	private String buscaClassificacao;
 
 	private StreamedContent arquivo;
 
@@ -144,25 +146,20 @@ public class ArtigoBean implements Serializable {
 		this.classificacao = classificacao;
 	}
 
-	@PostConstruct
-	public void abrirTabelas() {
-		try {
-			NivelDAO nivelDAO = new NivelDAO();
-			niveis = nivelDAO.listar("nome");
+	public String getBuscaNivel() {
+		return buscaNivel;
+	}
 
-			ClassificacaoDAO classificacaoDAO = new ClassificacaoDAO();
-			classificacoes = classificacaoDAO.listar("nome");
+	public void setBuscaNivel(String buscaNivel) {
+		this.buscaNivel = buscaNivel;
+	}
 
-		} catch (
+	public String getBuscaClassificacao() {
+		return buscaClassificacao;
+	}
 
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Tabelas.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
+	public void setBuscaClassificacao(String buscaClassificacao) {
+		this.buscaClassificacao = buscaClassificacao;
 	}
 
 	public void pesquisar() {
@@ -277,8 +274,6 @@ public class ArtigoBean implements Serializable {
 
 			nivel = new Nivel();
 
-			niveis = nivelDAO.listar("nome");
-
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
@@ -296,8 +291,6 @@ public class ArtigoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoClassificacao').hide();");
 
 			classificacao = new Classificacao();
-
-			classificacoes = classificacaoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -337,5 +330,93 @@ public class ArtigoBean implements Serializable {
 
 	public void onRowUnselect(UnselectEvent event) {
 		artigo = null;
+	}
+
+	public void pesquisarNivel() {
+		try {
+			NivelDAO nivelDAO = new NivelDAO();
+			niveis = nivelDAO.pesquisar(buscaNivel);
+
+			if (niveis.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarNivel(ActionEvent evento) {
+		try {
+
+			Nivel nivelPesq = (Nivel) evento.getComponent().getAttributes().get("nivelSelecionado");
+
+			artigo.setNivel(nivelPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqNivel').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:nivel");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarClassificacao() {
+		try {
+			ClassificacaoDAO classificacaoDAO = new ClassificacaoDAO();
+			classificacoes = classificacaoDAO.pesquisar(buscaClassificacao);
+
+			if (classificacoes.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarClassificacao(ActionEvent evento) {
+		try {
+
+			Classificacao classificacaoPesq = (Classificacao) evento.getComponent().getAttributes()
+					.get("classificacaoSelecionado");
+
+			artigo.setClassificacao(classificacaoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoPesqClassificacao').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:classificacao");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
 	}
 }
