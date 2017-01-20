@@ -186,7 +186,7 @@
 							<p:resetInput target="departamento" />
 						</p:commandButton>
 
-						<p:commandButton icon="fa fa fw fa-plus-circle" title="Novo Departamento"
+						<p:commandButton icon="ui-icon-document" title="Novo Departamento"
 							process="@this"
 							update=":formCadastroDepartamento:painelDepartamento"
 							oncomplete="PF('dialogoDepartamento').show();">
@@ -261,6 +261,12 @@
 						requiredMessage="Campo Obrigatório"
 						value="#{usuarioBean.departamento.nome}" />
 					<p:message for="nome" display="Nome" />
+
+					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:selectBooleanCheckbox id="atendimento"
+						value="#{usuarioBean.departamento.atendimento}"
+						required="true"
+						requiredMessage="O campo 'Atendimento' é obrigatório" />
 				</h:panelGrid>
 
 				<br></br>
@@ -284,7 +290,7 @@
 			<h:form id="formSenha">
 				<h:panelGrid id="painelSenha" columns="3" class="ui-noborder">
 					<p:outputLabel for="senha" value="Senha:" />
-					<p:password id="senha" maxlength="100" size="100"
+					<p:password id="senha" maxlength="100" size="35"
 						value="#{usuarioBean.usuario.senhaSemCriptografia}"
 						required="true" requiredMessage="O campo 'Senha' é obrigatório">
 					</p:password>
@@ -482,8 +488,6 @@
 					</p:column>
 
 				</p:dataTable>
-
-
 			</h:form>
 		</p:dialog>
 

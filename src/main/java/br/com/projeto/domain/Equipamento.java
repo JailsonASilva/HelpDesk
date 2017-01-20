@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -186,5 +187,45 @@ public class Equipamento extends GenericDomain {
 	public void setNumeroEtiqueta(String numeroEtiqueta) {
 		this.numeroEtiqueta = numeroEtiqueta;
 	}
+
+	@Transient
+	public String getNomeDepartamento() {
+		return getDepartamento() == null ? null : getDepartamento().getNome();
+	}
+
+	@Transient
+	public void setNomeDepartamento(String nomeDepartamento) {
+		departamento.setNome(nomeDepartamento);
+	}
+
+	@Transient
+	public String getNomeTipoEquipamento() {
+		return getTipoEquipamento() == null ? null : getTipoEquipamento().getNome();
+	}
+
+	@Transient
+	public void setNomeTipoEquipamento(String nomeTipoEquipamento) {
+		tipoEquipamento.setNome(nomeTipoEquipamento);
+	}
+
+	@Transient
+	public String getNomeMarca() {
+		return getMarca() == null ? null : getMarca().getNome();
+	}
+
+	@Transient
+	public void setNomeMarca(String nomeMarca) {
+		marca.setNome(nomeMarca);
+	}
+	
+	@Transient
+	public String getNomeLocalEquipamento() {
+		return getLocalEquipamento() == null ? null : getLocalEquipamento().getNome();
+	}
+
+	@Transient
+	public void setNomeLocalEquipamento(String nomeLocalEquipamento) {
+		localEquipamento.setNome(nomeLocalEquipamento);
+	}	
 
 }

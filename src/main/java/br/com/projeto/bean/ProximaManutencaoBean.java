@@ -23,13 +23,13 @@ import br.com.projeto.dao.EquipamentoDAO;
 import br.com.projeto.dao.ManutencaoDAO;
 import br.com.projeto.dao.MarcaDAO;
 import br.com.projeto.dao.TipoEquipamentoDAO;
-import br.com.projeto.dao.UsuarioDAO;
+import br.com.projeto.dao.TecnicoDAO;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Manutencao;
 import br.com.projeto.domain.Marca;
 import br.com.projeto.domain.TipoEquipamento;
-import br.com.projeto.domain.Usuario;
+import br.com.projeto.domain.Tecnico;
 import br.com.projeto.util.HibernateUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -49,17 +49,18 @@ public class ProximaManutencaoBean implements Serializable {
 	private List<TipoEquipamento> tipoEquipamentos;
 	private List<Departamento> departamentos;
 	private List<Marca> marcas;
-	private List<Usuario> usuarios;
+	private List<Tecnico> tecnicos;
 
 	private FacesMessage message;
 
 	private Date dataInicial;
 	private Date dataFinal;
+	
 	private String tipoEquipamento;
 	private String tipoManutencao;
 	private String departamento;
 	private String marca;
-	private String usuario;
+	private String tecnico;
 
 	public List<Manutencao> getManutencoes() {
 		return manutencoes;
@@ -85,12 +86,12 @@ public class ProximaManutencaoBean implements Serializable {
 		this.departamentos = departamentos;
 	}
 
-	public List<Usuario> getUsuarios() {
-		return usuarios;
+	public List<Tecnico> getTecnicos() {
+		return tecnicos;
 	}
 
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
+	public void setTecnicos(List<Tecnico> tecnicos) {
+		this.tecnicos = tecnicos;
 	}
 
 	public FacesMessage getMessage() {
@@ -181,12 +182,12 @@ public class ProximaManutencaoBean implements Serializable {
 		this.marca = marca;
 	}
 
-	public String getUsuario() {
-		return usuario;
+	public String getTecnico() {
+		return tecnico;
 	}
 
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
+	public void setTecnico(String tecnico) {
+		this.tecnico = tecnico;
 	}
 
 	@PostConstruct
@@ -204,8 +205,8 @@ public class ProximaManutencaoBean implements Serializable {
 			TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
 			tipoEquipamentos = tipoEquipamentoDAO.listar("nome");
 
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarios = usuarioDAO.listar("nome");
+			TecnicoDAO tecnicoDAO = new TecnicoDAO();
+			tecnicos = tecnicoDAO.listar("nome");
 
 			dataInicial = new java.util.Date();
 			dataFinal = new java.util.Date();
@@ -227,7 +228,7 @@ public class ProximaManutencaoBean implements Serializable {
 			ManutencaoDAO manutencaoEquipamentoDAO = new ManutencaoDAO();
 
 			manutencoes = manutencaoEquipamentoDAO.proximaManutencao(dataInicial, dataFinal, tipoEquipamento,
-					departamento, marca, usuario, tipoManutencao);
+					departamento, marca, tecnico, tipoManutencao);
 
 			manutencao = null;
 
@@ -268,7 +269,7 @@ public class ProximaManutencaoBean implements Serializable {
 			parametros.put("EQUIPAMENTO", "%" + tipoEquipamento + "%");
 			parametros.put("MARCA", "%" + marca + "%");
 			parametros.put("TIPO", "%" + tipoManutencao + "%");
-			parametros.put("USUARIO", "%" + usuario + "%");
+			parametros.put("TECNICO", "%" + tecnico + "%");
 			parametros.put("DATAINICIAL", dataInicial);
 			parametros.put("DATAFINAL", dataFinal);
 

@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -23,7 +24,7 @@ public class Manutencao extends GenericDomain {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
-	private Usuario usuario;
+	private Tecnico tecnico;
 
 	@Column(length = 500, nullable = false)
 	private String problema;
@@ -61,14 +62,6 @@ public class Manutencao extends GenericDomain {
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
-	}
-
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
 	}
 
 	public String getProblema() {
@@ -119,4 +112,33 @@ public class Manutencao extends GenericDomain {
 		this.dataHoraFinal = dataHoraFinal;
 	}
 
+	public Tecnico getTecnico() {
+		return tecnico;
+	}
+
+	public void setTecnico(Tecnico tecnico) {
+		this.tecnico = tecnico;
+	}
+
+	@Transient
+	public String getNomeEquipamento() {
+		return getEquipamento() == null ? null
+				: getEquipamento().getTipoEquipamento().getNome() + " / "
+						+ getEquipamento().getLocalEquipamento().getNome();
+	}
+
+	@Transient
+	public void setNomeEquipamento(String nomeEquipamento) {
+
+	}
+
+	@Transient
+	public String getNomeTecnico() {
+		return getTecnico() == null ? null : getTecnico().getNome();
+	}
+
+	@Transient
+	public void setNomeTecnico(String nomeTecnico) {
+
+	}
 }

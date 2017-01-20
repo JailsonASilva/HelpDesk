@@ -19,7 +19,7 @@ public class Artigo extends GenericDomain {
 	private String titulo;
 
 	@Column(length = 300, nullable = false)
-	private String palavraChave;
+	private String palavraChave; 
 
 	@ManyToOne
 	@JoinColumn(nullable = false)

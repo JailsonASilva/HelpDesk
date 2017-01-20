@@ -10,7 +10,7 @@
 
 		<!-- Configurações de Conexão com o Banco de Dados -->
 		<property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="connection.url">jdbc:mysql://Jailson:3307/helpdesk</property>
+		<property name="connection.url">jdbc:mysql://localhost:3307/helpdesk</property>
 		<property name="connection.username">root</property>
 		<property name="connection.password">tec2013</property>
 
@@ -61,7 +61,7 @@
 		<mapping class="br.com.projeto.domain.Material"/>
 		<mapping class="br.com.projeto.domain.Evento"/>
 		<mapping class="br.com.projeto.domain.EventoMaterial"/>
-		
+		<mapping class="br.com.projeto.domain.Tecnico"/>		
 
 	</session-factory>
 

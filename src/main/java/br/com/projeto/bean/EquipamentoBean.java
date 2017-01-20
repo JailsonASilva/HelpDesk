@@ -3,7 +3,6 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -29,22 +28,23 @@ import br.com.projeto.domain.TipoEquipamento;
 @ViewScoped
 public class EquipamentoBean implements Serializable {
 	private Equipamento equipamento;
-	private List<Equipamento> equipamentos;
-
 	private TipoEquipamento tipoEquipamento;
-	private List<TipoEquipamento> tipoEquipamentos;
-
 	private LocalEquipamento localEquipamento;
-	private List<LocalEquipamento> localEquipamentos;
-
 	private Marca marca;
-	private List<Marca> marcas;
-
 	private Departamento departamento;
+
+	private List<Equipamento> equipamentos;
+	private List<TipoEquipamento> tipoEquipamentos;
+	private List<LocalEquipamento> localEquipamentos;
+	private List<Marca> marcas;
 	private List<Departamento> departamentos;
 
 	private FacesMessage message;
 	private String busca;
+	private String buscaDepartamento;
+	private String buscaTipoEquipamento;
+	private String buscaLocalEquipamento;
+	private String buscaMarca;
 
 	public Equipamento getEquipamento() {
 		return equipamento;
@@ -142,31 +142,36 @@ public class EquipamentoBean implements Serializable {
 		this.localEquipamentos = localEquipamentos;
 	}
 
-	@PostConstruct
-	public void carregarTabelas() {
-		try {
-			MarcaDAO marcaDAO = new MarcaDAO();
-			marcas = marcaDAO.listar("nome");
+	public String getBuscaDepartamento() {
+		return buscaDepartamento;
+	}
 
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.listar("nome");
+	public void setBuscaDepartamento(String buscaDepartamento) {
+		this.buscaDepartamento = buscaDepartamento;
+	}
 
-			TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
-			tipoEquipamentos = tipoEquipamentoDAO.listar("nome");
-			
-			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
-			localEquipamentos = localEquipamentoDAO.listar("nome");
+	public String getBuscaTipoEquipamento() {
+		return buscaTipoEquipamento;
+	}
 
-		} catch (
+	public void setBuscaTipoEquipamento(String buscaTipoEquipamento) {
+		this.buscaTipoEquipamento = buscaTipoEquipamento;
+	}
 
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
-					"Erro: " + erro.getMessage());
+	public String getBuscaLocalEquipamento() {
+		return buscaLocalEquipamento;
+	}
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+	public void setBuscaLocalEquipamento(String buscaLocalEquipamento) {
+		this.buscaLocalEquipamento = buscaLocalEquipamento;
+	}
 
-			erro.printStackTrace();
-		}
+	public String getBuscaMarca() {
+		return buscaMarca;
+	}
+
+	public void setBuscaMarca(String buscaMarca) {
+		this.buscaMarca = buscaMarca;
 	}
 
 	public void pesquisar() {
@@ -280,8 +285,6 @@ public class EquipamentoBean implements Serializable {
 
 			departamento = new Departamento();
 
-			departamentos = departamentoDAO.listar("nome");
-
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
@@ -310,7 +313,7 @@ public class EquipamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarLocal() {
 		try {
 			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
@@ -330,7 +333,6 @@ public class EquipamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
 
 	public void onRowSelect(SelectEvent event) {
 
@@ -340,4 +342,198 @@ public class EquipamentoBean implements Serializable {
 		equipamento = null;
 	}
 
+	public void pesquisarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisar(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarDepartamento(ActionEvent evento) {
+		try {
+
+			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
+					.get("departamentoSelecionado");
+
+			equipamento.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:departamento");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarTipoEquipamento() {
+		try {
+			TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
+			tipoEquipamentos = tipoEquipamentoDAO.pesquisar(buscaTipoEquipamento);
+
+			if (tipoEquipamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarTipoEquipamento(ActionEvent evento) {
+		try {
+
+			TipoEquipamento tipoEquipamentoPesq = (TipoEquipamento) evento.getComponent().getAttributes()
+					.get("tipoEquipamentoSelecionado");
+
+			equipamento.setTipoEquipamento(tipoEquipamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoPesqTipoEquipamento').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:tipoEquipamento");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarMarca() {
+		try {
+			MarcaDAO marcaDAO = new MarcaDAO();
+			marcas = marcaDAO.pesquisar(buscaMarca);
+
+			if (marcas.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarMarca(ActionEvent evento) {
+		try {
+
+			Marca marcaPesq = (Marca) evento.getComponent().getAttributes().get("marcaSelecionado");
+
+			equipamento.setMarca(marcaPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqMarca').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:marca");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarLocalEquipamento() {
+		try {
+			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
+			localEquipamentos = localEquipamentoDAO.pesquisar(buscaLocalEquipamento);
+
+			if (localEquipamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarLocalEquipamento(ActionEvent evento) {
+		try {
+
+			LocalEquipamento localEquipamentoPesq = (LocalEquipamento) evento.getComponent().getAttributes()
+					.get("localEquipamentoSelecionado");
+
+			equipamento.setLocalEquipamento(localEquipamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoPesqLocalEquipamento').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:localEquipamento");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+	
+	public void salvarLocalEquipamento() {
+		try {
+			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
+			localEquipamentoDAO.merge(localEquipamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoLocalEquipamento').hide();");
+
+			localEquipamento = new LocalEquipamento();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
 }

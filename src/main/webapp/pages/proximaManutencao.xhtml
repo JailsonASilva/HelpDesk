@@ -72,16 +72,16 @@
 				</h:panelGrid>
 
 				<h:panelGrid columns="3" class="ui-noborder">
-					<p:outputLabel value="Usuário" />
+					<p:outputLabel value="Técnico" />
 					<p:selectOneMenu style="margin:0 42px" filter="true"
 						filterMatchMode="startsWith"
-						value="#{proximaManutencaoBean.usuario}"
+						value="#{proximaManutencaoBean.tecnico}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Todos os Registros" />
-						<f:selectItems value="#{proximaManutencaoBean.usuarios}"
-							var="usuario" itemValue="#{usuario.nome}"
-							itemLabel="#{usuario.nome}" />
+						<f:selectItems value="#{proximaManutencaoBean.tecnicos}"
+							var="tecnico" itemValue="#{tecnico.nome}"
+							itemLabel="#{tecnico.nome}" />
 					</p:selectOneMenu>
 
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
@@ -168,34 +168,36 @@
 							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Departamento" width="120"
+					<p:column headerText="Departamento" width="90"
+						style="text-align:center"
 						sortBy="#{manutencao.equipamento.departamento.nome}">
 						<h:outputText value="#{manutencao.equipamento.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Marca" width="120"
+					<p:column headerText="Marca" width="90" style="text-align:center"
 						sortBy="#{manutencao.equipamento.marca.nome}">
 						<h:outputText value="#{manutencao.equipamento.marca.nome}" />
 					</p:column>
 
-					<p:column headerText="Tipo" width="50" sortBy="#{manutencao.tipo}">
+					<p:column headerText="Tipo" width="50" sortBy="#{manutencao.tipo}"
+						style="text-align:center">
 						<h:outputText value="#{manutencao.tipo}" />
 					</p:column>
 
-					<p:column headerText="Responsável" width="90"
-						sortBy="#{manutencao.usuario.nome}">
-						<h:outputText value="#{manutencao.usuario.nome}" />
+					<p:column headerText="Técnico" width="90" style="text-align:center"
+						sortBy="#{manutencao.tecnico.nome}">
+						<h:outputText value="#{manutencao.tecnico.nome}" />
 					</p:column>
 
-					<p:column headerText="Data Manutenção" width="55"
-						sortBy="#{manutencao.dataManutencao}">
+					<p:column headerText="Data Manutenção" width="80"
+						style="text-align:center" sortBy="#{manutencao.dataManutencao}">
 						<h:outputText value="#{manutencao.dataManutencao}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Próxima Manutenção" width="65"
-						sortBy="#{manutencao.dataProxima}">
+					<p:column headerText="Próxima Manutenção" width="82"
+						style="text-align:center" sortBy="#{manutencao.dataProxima}">
 						<h:outputText value="#{manutencao.dataProxima}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 						</h:outputText>
@@ -222,7 +224,7 @@
 		</p:dialog>
 
 		<p:dialog header="Detalhes da Manutenção" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 
@@ -256,9 +258,9 @@
 						autoResize="false"
 						value="#{proximaManutencaoBean.manutencao.servico}" />
 
-					<p:outputLabel value="Responsável" />
+					<p:outputLabel value="Técnico" />
 					<p:inputText maxlength="40" size="53" readonly="true"
-						value="#{proximaManutencaoBean.manutencao.usuario.nome}" />
+						value="#{proximaManutencaoBean.manutencao.tecnico.nome}" />
 				</h:panelGrid>
 
 				<br></br>

@@ -30,7 +30,7 @@ public class EquipamentoDAO extends GenericDAO<Equipamento> {
 			throw erro;
 		} finally {
 			sessao.close();
-		}
+		} 
 	}
 	
 	@SuppressWarnings({ "unchecked"})	

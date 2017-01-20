@@ -1,52 +1,48 @@
 package br.com.projeto.bean;
 
-import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
-import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
 import br.com.projeto.dao.ManutencaoDAO;
-import br.com.projeto.dao.MarcaDAO;
-import br.com.projeto.dao.TipoEquipamentoDAO;
-import br.com.projeto.dao.UsuarioDAO;
+import br.com.projeto.dao.TecnicoDAO;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Manutencao;
 import br.com.projeto.domain.Marca;
+import br.com.projeto.domain.Tecnico;
 import br.com.projeto.domain.TipoEquipamento;
-import br.com.projeto.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ViewScoped
 @ManagedBean
 public class ManutencaoBean implements Serializable {
 	private Manutencao manutencao;
-	private List<Manutencao> manutencoes;
-
 	private Equipamento equipamento;
-	private List<Equipamento> equipamentos;
-
 	private TipoEquipamento tipoEquipamento;
-	private List<TipoEquipamento> tipoEquipamentos;
+	private Tecnico tecnico;
 
+	private List<Manutencao> manutencoes;
+	private List<Equipamento> equipamentos;
+	private List<TipoEquipamento> tipoEquipamentos;
 	private List<Departamento> departamentos;
 	private List<Marca> marcas;
-
-	private Usuario usuario;
-	private List<Usuario> usuarios;
+	private List<Tecnico> tecnicos;
 
 	private FacesMessage message;
+
+	private String buscaEquipamento;
+	private String buscaTecnico;
 
 	private Date dataInicial;
 	private Date dataFinal;
@@ -59,14 +55,6 @@ public class ManutencaoBean implements Serializable {
 		this.manutencao = manutencao;
 	}
 
-	public List<Manutencao> getManutencoes() {
-		return manutencoes;
-	}
-
-	public void setManutencoes(List<Manutencao> manutencoes) {
-		this.manutencoes = manutencoes;
-	}
-
 	public Equipamento getEquipamento() {
 		return equipamento;
 	}
@@ -75,20 +63,36 @@ public class ManutencaoBean implements Serializable {
 		this.equipamento = equipamento;
 	}
 
-	public List<Equipamento> getEquipamentos() {
-		return equipamentos;
-	}
-
-	public void setEquipamentos(List<Equipamento> equipamentos) {
-		this.equipamentos = equipamentos;
-	}
-
 	public TipoEquipamento getTipoEquipamento() {
 		return tipoEquipamento;
 	}
 
 	public void setTipoEquipamento(TipoEquipamento tipoEquipamento) {
 		this.tipoEquipamento = tipoEquipamento;
+	}
+
+	public Tecnico getTecnico() {
+		return tecnico;
+	}
+
+	public void setTecnico(Tecnico tecnico) {
+		this.tecnico = tecnico;
+	}
+
+	public List<Manutencao> getManutencoes() {
+		return manutencoes;
+	}
+
+	public void setManutencoes(List<Manutencao> manutencoes) {
+		this.manutencoes = manutencoes;
+	}
+
+	public List<Equipamento> getEquipamentos() {
+		return equipamentos;
+	}
+
+	public void setEquipamentos(List<Equipamento> equipamentos) {
+		this.equipamentos = equipamentos;
 	}
 
 	public List<TipoEquipamento> getTipoEquipamentos() {
@@ -107,20 +111,12 @@ public class ManutencaoBean implements Serializable {
 		this.departamentos = departamentos;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public List<Marca> getMarcas() {
+		return marcas;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
-
-	public List<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
+	public void setMarcas(List<Marca> marcas) {
+		this.marcas = marcas;
 	}
 
 	public FacesMessage getMessage() {
@@ -128,7 +124,15 @@ public class ManutencaoBean implements Serializable {
 	}
 
 	public void setMessage(FacesMessage message) {
-		this.message = message;
+		this.message = message;  
+	}
+
+	public String getBuscaEquipamento() {
+		return buscaEquipamento;
+	}
+
+	public void setBuscaEquipamento(String buscaEquipamento) {
+		this.buscaEquipamento = buscaEquipamento;
 	}
 
 	public Date getDataInicial() {
@@ -147,45 +151,20 @@ public class ManutencaoBean implements Serializable {
 		this.dataFinal = dataFinal;
 	}
 
-	public List<Marca> getMarcas() {
-		return marcas;
+	public List<Tecnico> getTecnicos() {
+		return tecnicos;
 	}
 
-	public void setMarcas(List<Marca> marcas) {
-		this.marcas = marcas;
+	public void setTecnicos(List<Tecnico> tecnicos) {
+		this.tecnicos = tecnicos;
 	}
 
-	@PostConstruct
-	public void carregarTabelas() {
-		try {
-			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
-			equipamentos = equipamentoDAO.listar();
+	public String getBuscaTecnico() {
+		return buscaTecnico;
+	}
 
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.listar("nome");
-
-			MarcaDAO marcaDao = new MarcaDAO();
-			marcas = marcaDao.listar("nome");
-
-			TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
-			tipoEquipamentos = tipoEquipamentoDAO.listar("nome");
-
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarios = usuarioDAO.listar("nome");
-
-			dataInicial = new java.util.Date();
-			dataFinal = new java.util.Date();
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
+	public void setBuscaTecnico(String buscaTecnico) {
+		this.buscaTecnico = buscaTecnico;
 	}
 
 	public void pesquisar() {
@@ -195,7 +174,7 @@ public class ManutencaoBean implements Serializable {
 			manutencoes = manutencaoEquipamentoDAO.pesquisarEquipamento(dataInicial, dataFinal);
 
 			equipamento = new Equipamento();
-			usuario = new Usuario();
+			tecnico = new Tecnico();
 
 			manutencao = null;
 
@@ -220,7 +199,7 @@ public class ManutencaoBean implements Serializable {
 
 	public void novo() {
 		equipamento = new Equipamento();
-		usuario = new Usuario();
+		tecnico = new Tecnico();
 
 		manutencao = new Manutencao();
 	}
@@ -285,8 +264,6 @@ public class ManutencaoBean implements Serializable {
 
 			equipamento = new Equipamento();
 
-			equipamentos = equipamentoDAO.pesquisarEquipamento("");
-
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
@@ -296,16 +273,98 @@ public class ManutencaoBean implements Serializable {
 		}
 	}
 
-	public void salvarUsuario() {
+	public void pesquisarEquipamento() {
 		try {
-			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarioDAO.merge(usuario);
+			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
+			equipamentos = equipamentoDAO.pesquisarEquipamento(buscaEquipamento);
 
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoUsuario').hide();");
+			if (equipamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
-			usuarios = usuarioDAO.listar("nome");
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
 
-			usuario = new Usuario();
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarEquipamento(ActionEvent evento) {
+		try {
+			Equipamento equipamentoPesq = (Equipamento) evento.getComponent().getAttributes()
+					.get("equipamentoSelecionado");
+
+			manutencao.setEquipamento(equipamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqEquipamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarTecnico() {
+		try {
+			TecnicoDAO tecnicoDAO = new TecnicoDAO();
+			tecnicos = tecnicoDAO.pesquisar(buscaTecnico);
+
+			if (tecnicos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void selecionarTecnico(ActionEvent evento) {
+		try {
+			Tecnico tecnicoPesq = (Tecnico) evento.getComponent().getAttributes().get("tecnicoSelecionado");
+
+			manutencao.setTecnico(tecnicoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqTecnico').hide();");
+			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:tecnico");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarTecnico() {
+		try {
+			TecnicoDAO tecnicoDAO = new TecnicoDAO();
+			tecnicoDAO.merge(tecnico);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoTecnico').hide();");
+
+			tecnico = new Tecnico();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -315,4 +374,5 @@ public class ManutencaoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+
 }

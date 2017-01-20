@@ -24,7 +24,7 @@
 				closable="true" collapsible="true" style="border:none;">
 
 				<p:panel
-					header="Help Desk 1.0.1.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
+					header="Help Desk 1.0.2.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 					<h:graphicImage url="/imagens/educa.png" width="111" height="42" />
 				</p:panel>
 
@@ -114,6 +114,10 @@
 									<p:menuitem value="Local" url="/pages/localEquipamento.xhtml"
 										icon="fa fa fw fa-angle-double-right"
 										rendered="#{autenticacaoBean.usuarioLogado.acesso.localEquipamento}" />
+
+									<p:menuitem value="Técnico" url="/pages/tecnico.xhtml"
+										icon="fa fa fw fa-angle-double-right"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.tecnico}" />
 
 									<p:menuitem value="Tipos de Equipamento"
 										url="/pages/tipoEquipamento.xhtml"

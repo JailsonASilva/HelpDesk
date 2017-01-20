@@ -46,14 +46,14 @@
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{manutencaoBean.novo}"
-							update=":formCadastro:painel1 :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4">
+							update=":formCadastro:painel1 :formCadastro:painel3 :formCadastro:painel4">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
 							disabled="#{manutencaoBean.manutencao == null}"
-							update=":formCadastro:painel1 :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+							update=":formCadastro:painel1 :formCadastro:painel3 :formCadastro:painel4"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -124,7 +124,7 @@
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{manutencaoBean.onRowSelect}" />
 
-					<p:column headerText="Equipamento" width="120"
+					<p:column headerText="Equipamento" width="117"
 						filterBy="#{manutencao.equipamento.tipoEquipamento.nome}"
 						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.tipoEquipamento.nome}">
@@ -147,7 +147,7 @@
 							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Departamento" width="120"
+					<p:column headerText="Departamento" width="90" style="text-align:center"
 						filterBy="#{manutencao.equipamento.departamento.nome}"
 						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.departamento.nome}">
@@ -169,29 +169,30 @@
 						<h:outputText value="#{manutencao.equipamento.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Marca" width="120"
+					<p:column headerText="Marca" width="90" style="text-align:center"
 						sortBy="#{manutencao.equipamento.marca.nome}">
 						<h:outputText value="#{manutencao.equipamento.marca.nome}" />
 					</p:column>
 
-					<p:column headerText="Tipo" width="50" sortBy="#{manutencao.tipo}">
+					<p:column headerText="Tipo" width="50" sortBy="#{manutencao.tipo}"
+						style="text-align:center">
 						<h:outputText value="#{manutencao.tipo}" />
 					</p:column>
 
-					<p:column headerText="Responsável" width="90"
-						sortBy="#{manutencao.usuario.nome}">
-						<h:outputText value="#{manutencao.usuario.nome}" />
+					<p:column headerText="Técnico" width="90" style="text-align:center"
+						sortBy="#{manutencao.tecnico.nome}">
+						<h:outputText value="#{manutencao.tecnico.nome}" />
 					</p:column>
 
-					<p:column headerText="Data Manutenção" width="55"
-						sortBy="#{manutencao.dataManutencao}">
+					<p:column headerText="Data Manutenção" width="80"
+						style="text-align:center" sortBy="#{manutencao.dataManutencao}">
 						<h:outputText value="#{manutencao.dataManutencao}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Próxima Manutenção" width="65"
-						sortBy="#{manutencao.dataProxima}">
+					<p:column headerText="Próxima Manutenção" width="82"
+						style="text-align:center" sortBy="#{manutencao.dataProxima}">
 						<h:outputText value="#{manutencao.dataProxima}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 						</h:outputText>
@@ -223,26 +224,46 @@
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel1" columns="2" class="ui-noborder">
 
-					<p:outputLabel for="equipamento" value="Equipamento" />
-					<p:selectOneMenu id="equipamento" filter="true"
-						filterMatchMode="startsWith"
-						value="#{manutencaoBean.manutencao.equipamento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{manutencaoBean.equipamentos}"
-							var="equipamento" itemValue="#{equipamento}"
-							itemLabel="#{equipamento.tipoEquipamento.nome} / Departamento: #{equipamento.departamento.nome} / Marca: #{equipamento.marca.nome} / Modelo: #{equipamento.modelo}" />
-					</p:selectOneMenu>
-				</h:panelGrid>
+					<p:outputLabel for="equipamento" value="Equipamento " />
+					<h:panelGroup>
+						<p:inputText id="equipamento" size="101" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{manutencaoBean.manutencao.nomeEquipamento}" />
+
+						<p:commandButton icon="ui-icon-search" title="Pesquisa"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqEquipamento').show();">
+
+							<p:resetInput target="equipamento" />
+						</p:commandButton>
+					</h:panelGroup>
 
 
-				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
+					<p:outputLabel for="tecnico" value="Técnico " />
+					<h:panelGroup>
+						<p:inputText id="tecnico" size="27" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{manutencaoBean.manutencao.nomeTecnico}" />
+
+						<p:commandButton icon="ui-icon-search" title="Pesquisa Tecnico"
+							process="@this" update="@none"
+							oncomplete="PF('dialogoPesqTecnico').show();">
+
+							<p:resetInput target="tecnico" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-document" title="Novo Tecnico"
+							process="@this" update=":formCadastroTecnico:painelTecnico"
+							oncomplete="PF('dialogoTecnico').show();">
+
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</h:panelGroup>
 
 					<p:outputLabel for="tipo" value="Tipo" />
 					<p:selectOneMenu id="tipo" filter="true" required="true"
-						style="margin:0 53px" requiredMessage="Campo Obrigatório!"
+						requiredMessage="Campo Obrigatório!"
 						converter="omnifaces.SelectItemsConverter"
 						value="#{manutencaoBean.manutencao.tipo}">
 						<f:selectItem noSelectionOption="true"
@@ -251,19 +272,6 @@
 						<f:selectItem itemValue="Emergência" itemLabel="Emergência" />
 						<f:selectItem itemValue="Preventiva" itemLabel="Preventiva" />
 						<f:selectItems />
-					</p:selectOneMenu>
-
-
-					<p:outputLabel for="usuario" value="Responsável" />
-					<p:selectOneMenu id="usuario" filter="true"
-						filterMatchMode="startsWith"
-						value="#{manutencaoBean.manutencao.usuario}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{manutencaoBean.usuarios}" var="usuario"
-							itemValue="#{usuario}" itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
 				</h:panelGrid>
 
@@ -330,30 +338,12 @@
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{manutencaoBean.salvar}"
-						update=":formCadastro:painel1 :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4 :formListagem:tabela :formListagem:tool"
+						update=":formCadastro:painel1 :formCadastro:painel3 :formCadastro:painel4 :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogo').hide();" />
-
-					<p:menuButton value="Opções" style="margin:0 50px 0 50px">
-
-						<p:menuitem value="Novo Equipamento"
-							oncomplete="PF('dialogoEquipamento').show();"
-							update=":formCadastroEquipamento:painelEquipamento">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-
-						<p:menuitem value="Novo Usuário"
-							oncomplete="PF('dialogoUsuario').show();"
-							update=":formCadastroUsuario:painelUsuario">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-
-					</p:menuButton>
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
@@ -466,52 +456,111 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Usuario" widgetVar="dialogoUsuario"
+		<p:dialog header="Pesquisa de Técnico" width="800" height="600"
+			widgetVar="dialogoPesqTecnico" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formPesqTecnico">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{manutencaoBean.buscaTecnico}"
+						placeholder="Informe o Nome do Tecnico" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{manutencaoBean.pesquisarTecnico}" update="tabelaTecnico" />
+				</div>
+
+				<p:dataTable id="tabelaTecnico" value="#{manutencaoBean.tecnicos}"
+					var="tecnico" emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{tecnico.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{manutencaoBean.selecionarTecnico}"
+							update=":formCadastro:tecnico">
+							<f:attribute name="tecnicoSelecionado" value="#{tecnico}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Técnico" widgetVar="dialogoTecnico"
 			draggable="false" resizable="false" closable="true">
-			<h:form id="formCadastroUsuario">
-				<h:panelGrid id="painelUsuario" columns="2" class="ui-noborder">
+			<h:form id="formCadastroTecnico">
+				<h:panelGrid id="painelTecnico" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{manutencaoBean.usuario.nome}" />
+						value="#{manutencaoBean.tecnico.nome}" />
 
-					<p:outputLabel for="email" value="E-mail " />
-					<p:inputText id="email" maxlength="100" size="60"
-						value="#{manutencaoBean.usuario.email}" />
-
-					<p:outputLabel for="departamento" value="Departamento " />
-					<p:selectOneMenu id="departamento" filter="true"
-						filterMatchMode="startsWith"
-						value="#{manutencaoBean.usuario.departamento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Selecione um Departamento" />
-						<f:selectItems value="#{manutencaoBean.departamentos}"
-							var="departamento" itemValue="#{departamento}"
-							itemLabel="#{departamento.nome}" />
-					</p:selectOneMenu>
-
-					<p:outputLabel for="ativo" value="Ativo:" />
-					<p:selectBooleanCheckbox id="ativo"
-						value="#{manutencaoBean.usuario.ativo}" required="true"
-						requiredMessage="O campo 'Ativo' é obrigatório" />
 				</h:panelGrid>
 
 				<br></br>
 				<p:separator />
 
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{manutencaoBean.salvarUsuario}"
-						update=":formCadastroUsuario:painelUsuario :formCadastro:usuario"
+						actionListener="#{manutencaoBean.salvarTecnico}"
+						update=":formCadastroTecnico:painelTecnico :formCadastro:tecnico"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogoUsuario').hide();" />
-
+						oncomplete="PF('dialogoTecnico').hide();" />
 				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Pesquisa de Equipamento" width="800" height="600"
+			widgetVar="dialogoPesqEquipamento" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formPesqEquipamento">
+
+				<div style="margin-top: 5px; margin-bottom: 20px">
+					<p:inputText id="nome" size="45"
+						value="#{manutencaoBean.buscaEquipamento}"
+						placeholder="Informe o Nome do Equipamento" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						action="#{manutencaoBean.pesquisarEquipamento}"
+						update="tabelaEquipamento" />
+				</div>
+
+				<p:dataTable id="tabelaEquipamento"
+					value="#{manutencaoBean.equipamentos}" var="equipamento"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
+					paginatorPosition="bottom">
+
+					<p:column headerText="Nome">
+						<h:outputText
+							value="#{equipamento.tipoEquipamento.nome} / #{equipamento.localEquipamento.nome}" />
+					</p:column>
+
+					<p:column style="width: 30px; text-align: center">
+						<p:commandButton icon="ui-icon-check" title="Selecionar"
+							actionListener="#{manutencaoBean.selecionarEquipamento}"
+							update=":formCadastro:equipamento">
+							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
 			</h:form>
 		</p:dialog>
 

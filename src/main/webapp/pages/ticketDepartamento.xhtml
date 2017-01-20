@@ -188,7 +188,7 @@
 					</p:column>
 
 					<p:column headerText="Solicitante" sortBy="#{ticket.cliente.nome}"
-						width="120">
+						width="60" style="text-align:center">
 						<h:outputText value="#{ticket.cliente.nome}" />
 					</p:column>
 
@@ -205,6 +205,12 @@
 					<p:column headerText="Categoria" sortBy="#{ticket.categoria.nome}"
 						style="text-align:center" width="60">
 						<h:outputText value="#{ticket.categoria.nome}" />
+					</p:column>
+
+					<p:column headerText="Responsável"
+						sortBy="#{ticket.usuarioAtendimento.nome}" width="60"
+						style="text-align:center">
+						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
 					</p:column>
 				</p:dataTable>
 

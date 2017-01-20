@@ -49,7 +49,8 @@ public class AutenticacaoBean {
 				return;
 			}
 
-			Faces.redirect("./pages/principal.xhtml");
+			Faces.redirect("./pages/ticketDepartamento.xhtml");
+			//Faces.redirect("./pages/principal.xhtml");
 
 		} catch (IOException erro) {
 			erro.printStackTrace();

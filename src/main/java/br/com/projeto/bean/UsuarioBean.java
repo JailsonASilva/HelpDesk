@@ -281,9 +281,7 @@ public class UsuarioBean implements Serializable {
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
 
-			departamento = new Departamento();
-
-			departamentos = departamentoDAO.listar("nome");
+			departamento = new Departamento();			
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -394,4 +392,7 @@ public class UsuarioBean implements Serializable {
 	public void onRowUnselect(UnselectEvent event) {
 		usuario = null;
 	}
+	
+
+
 }

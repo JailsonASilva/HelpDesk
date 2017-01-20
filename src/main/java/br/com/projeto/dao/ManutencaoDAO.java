@@ -38,7 +38,7 @@ public class ManutencaoDAO extends GenericDAO<Manutencao> {
 
 	@SuppressWarnings({ "unchecked", "unused", "deprecation" })
 	public List<Manutencao> proximaManutencao(Date DataInicio, Date DataFinal, String tipoEquipamento,
-			String departamento, String marca, String usuario, String tipoManutencao) {
+			String departamento, String marca, String tecnico, String tipoManutencao) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Manutencao.class);
@@ -48,7 +48,7 @@ public class ManutencaoDAO extends GenericDAO<Manutencao> {
 			Criteria consultaDepartamento = consultaEquipamento.createCriteria("departamento", "departamento",
 					Criteria.INNER_JOIN);
 			Criteria consultaMarca = consultaEquipamento.createCriteria("marca", "marca", Criteria.INNER_JOIN);
-			Criteria consultausuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN);
+			Criteria consultatecnico = consulta.createCriteria("tecnico", "tecnico", Criteria.INNER_JOIN);
 
 
 			consulta.add(Restrictions.between("dataProxima", DataInicio, DataFinal));
@@ -56,7 +56,7 @@ public class ManutencaoDAO extends GenericDAO<Manutencao> {
 			consulta.add(Restrictions.like("tipoEquipamento.nome", "%" + tipoEquipamento + "%"));
 			consulta.add(Restrictions.like("departamento.nome", "%" + departamento + "%"));
 			consulta.add(Restrictions.like("marca.nome", "%" + marca + "%"));
-			consulta.add(Restrictions.like("usuario.nome", "%" + usuario + "%"));			
+			consulta.add(Restrictions.like("tecnico.nome", "%" + tecnico + "%"));			
 			
 			consulta.addOrder(Order.asc("tipoEquipamento.nome"));
 

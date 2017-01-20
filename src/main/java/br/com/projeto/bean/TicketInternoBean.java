@@ -49,8 +49,7 @@ public class TicketInternoBean implements Serializable {
 	private String busca;
 	private String buscaDepartamento;
 	private String buscaCliente;
-	private String buscaCategoria;
-	private String buscaUsuario;
+	private String buscaCategoria;	private String buscaUsuario;
 	private String buscaEquipamento;
 
 	public FacesMessage getMessage() {

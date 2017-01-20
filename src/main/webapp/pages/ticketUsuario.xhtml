@@ -95,11 +95,11 @@
 						<span class="ui-separator"> <span
 							class="ui-icon ui-icon-grip-dotted-vertical" />
 						</span>
-						
-						<p:commandButton title="Novo Ticket" icon="ui-icon-document"
-							actionListener="#{ticketAtendimentoUsuarioBean.novoTicket}"> 
 
-						</p:commandButton>						
+						<p:commandButton title="Novo Ticket" icon="ui-icon-document"
+							actionListener="#{ticketAtendimentoUsuarioBean.novoTicket}">
+
+						</p:commandButton>
 
 						<p:commandButton title="Editar" process=":formListagem:tabela"
 							disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
@@ -188,7 +188,7 @@
 					</p:column>
 
 					<p:column headerText="Solicitante" sortBy="#{ticket.cliente.nome}"
-						width="120">
+						width="60" style="text-align:center">
 						<h:outputText value="#{ticket.cliente.nome}" />
 					</p:column>
 
