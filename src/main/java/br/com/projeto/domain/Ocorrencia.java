@@ -29,6 +29,9 @@ public class Ocorrencia extends GenericDomain {
 	@JoinColumn(nullable = false)
 	private Usuario usuario;
 
+	@Column(nullable = true)
+	private Boolean emailEnviado;
+
 	public String getOcorrencia() {
 		return ocorrencia;
 	}
@@ -59,6 +62,14 @@ public class Ocorrencia extends GenericDomain {
 
 	public void setTicket(Ticket ticket) {
 		this.ticket = ticket;
+	}
+
+	public Boolean getEmailEnviado() {
+		return emailEnviado;
+	}
+
+	public void setEmailEnviado(Boolean emailEnviado) {
+		this.emailEnviado = emailEnviado;
 	}
 
 }

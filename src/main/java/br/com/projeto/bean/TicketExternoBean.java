@@ -199,6 +199,30 @@ public class TicketExternoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void pesquisarDepartamentoCliente() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisarDepartamento(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}	
 
 	public void selecionarDepartamento(ActionEvent evento) {
 		try {

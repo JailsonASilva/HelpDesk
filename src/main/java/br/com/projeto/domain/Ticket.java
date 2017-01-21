@@ -55,6 +55,9 @@ public class Ticket extends GenericDomain {
 	@Column(length = 600, nullable = false)
 	private String solicitacao;
 
+	@Column(nullable = true)
+	private Boolean emailEnviado;
+
 	public Categoria getCategoria() {
 		return categoria;
 	}
@@ -141,6 +144,14 @@ public class Ticket extends GenericDomain {
 
 	public void setUsuarioAtendimento(Usuario usuarioAtendimento) {
 		this.usuarioAtendimento = usuarioAtendimento;
+	}
+
+	public Boolean getEmailEnviado() {
+		return emailEnviado;
+	}
+
+	public void setEmailEnviado(Boolean emailEnviado) {
+		this.emailEnviado = emailEnviado;
 	}
 
 	@Transient

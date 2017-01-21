@@ -21,7 +21,7 @@
 				closable="true" collapsible="true" style="border:none;">
 
 				<p:panel
-					header="Help Desk 1.0.5.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
+					header="Help Desk 1.0.6.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 					<h:graphicImage url="/imagens/educa.png" width="111" height="42" />
 				</p:panel>
 
@@ -195,11 +195,15 @@
 
 							<p:separator />
 
-							<p:menuitem value="Meus Ticket's"
-								url="/pages/meusTickets.xhtml"
+							<p:menuitem value="Meus Ticket's" url="/pages/meusTickets.xhtml"
 								icon="fa fa fw fa-angle-double-right" />
 
-							<p:menuitem value="Meus Atendimentos" url="/pages/ticketUsuario.xhtml"
+							<p:menuitem value="Meus Atendimentos"
+								url="/pages/ticketUsuario.xhtml"
+								icon="fa fa fw fa-angle-double-right" />
+
+							<p:menuitem value="Ticket's por Departamento"
+								url="/pages/ticketDepartamento.xhtml"
 								icon="fa fa fw fa-angle-double-right" />
 
 							<p:separator />

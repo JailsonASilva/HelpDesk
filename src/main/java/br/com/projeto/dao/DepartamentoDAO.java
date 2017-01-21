@@ -50,4 +50,23 @@ public class DepartamentoDAO extends GenericDAO<Departamento> {
 			sessao.close();
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Departamento> pesquisarDepartamento(String nome) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		try {
+			Criteria consulta = sessao.createCriteria(Departamento.class);
+			consulta.add(Restrictions.like("nome", "%" + nome + "%"));
+			consulta.addOrder(Order.asc("nome"));
+
+			List<Departamento> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}	
 }

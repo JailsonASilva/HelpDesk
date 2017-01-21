@@ -325,18 +325,6 @@
 								sortBy="#{ocorrencia.usuario.nome}" width="120">
 								<h:outputText value="#{ocorrencia.usuario.nome}" />
 							</p:column>
-
-							<p:column headerText="Opções" width="68"
-								style="text-align:center">
-								<p:commandButton icon="ui-icon-pencil"
-									actionListener="#{meusTicketsBean.editarOcorrencia}"
-									update=":formCadastroOcorrencia:painelOcorrencia"
-									oncomplete="PF('dialogoOcorrencia').show();">
-									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
-									<f:actionListener
-										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-								</p:commandButton>
-							</p:column>
 						</p:dataTable>
 
 					</p:tab>

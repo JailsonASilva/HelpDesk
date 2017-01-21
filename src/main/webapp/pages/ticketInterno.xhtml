@@ -216,7 +216,7 @@
 					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketInternoBean.pesquisarDepartamento}"
+						action="#{ticketInternoBean.pesquisarDepartamentoCliente}"
 						update="tabelaDepartamento" />
 				</div>
 
@@ -476,7 +476,7 @@
 				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="45" required="true"
+					<p:inputText id="nome" maxlength="100" size="40" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{ticketInternoBean.cliente.nome}" />
 

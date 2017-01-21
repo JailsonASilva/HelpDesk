@@ -4,7 +4,6 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -87,24 +86,6 @@ public class ClienteBean implements Serializable {
 
 	public void setBuscaDepartamento(String buscaDepartamento) {
 		this.buscaDepartamento = buscaDepartamento;
-	}
-
-	@PostConstruct
-	public void carregarTabelas() {
-		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.listar("nome");
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir as Tabelas.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
 	}
 
 	public void pesquisar() {
@@ -214,7 +195,7 @@ public class ClienteBean implements Serializable {
 	public void pesquisarDepartamento() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.pesquisarAtendimento(buscaDepartamento);
+			departamentos = departamentoDAO.pesquisarDepartamento(buscaDepartamento);
 
 			if (departamentos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,

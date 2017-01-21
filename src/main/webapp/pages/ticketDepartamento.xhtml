@@ -79,6 +79,19 @@
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
+						<p:commandButton value="Encaminhar"
+							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+							style="margin:0 3px"
+							actionListener="#{encaminharTicket.atenderTicket}"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							update="formListagem:tabela" icon="fa fa-fw fa-user-md">
+							<p:confirm header="Confirmação"
+								message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
 						<p:commandButton value="Ocorrência"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
 							icon="fa fa fw fa-sitemap" style="margin:0 3px"
@@ -559,7 +572,7 @@
 					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketAtendimentoDepartamentoBean.pesquisarDepartamento}"
+						action="#{ticketAtendimentoDepartamentoBean.pesquisarDepartamentoCliente}"
 						update="tabelaDepartamento" />
 				</div>
 
@@ -820,7 +833,7 @@
 				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="45" required="true"
+					<p:inputText id="nome" maxlength="100" size="40" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{ticketAtendimentoDepartamentoBean.cliente.nome}" />
 
@@ -853,6 +866,14 @@
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoCliente').hide();" />
 				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Encaminhar Ticket" widgetVar="dialogoEncaminhar"
+			width="1000" height="600" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formEncaminhar">
+
 			</h:form>
 		</p:dialog>
 

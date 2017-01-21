@@ -424,6 +424,38 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void encaminharTicket() throws EmailException {
+		try {
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket em Atendimento!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Pendente");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+			
+			enviarEmail();
+
+			listarPendentes();
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Atendido com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
 
 	public void suspenderTicket() throws EmailException {
 		try {
@@ -582,6 +614,30 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void pesquisarDepartamentoCliente() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.pesquisarDepartamento(buscaDepartamento);
+
+			if (departamentos.isEmpty() == true) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+
+				RequestContext.getCurrentInstance().showMessageInDialog(message);
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}	
 
 	public void selecionarDepartamento(ActionEvent evento) {
 		try {
