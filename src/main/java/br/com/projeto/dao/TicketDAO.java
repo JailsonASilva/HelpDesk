@@ -25,7 +25,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			consulta.add(Restrictions.eq("status", status));
 			
 			consulta.addOrder(Order.asc("prioridade"));
-			consulta.addOrder(Order.asc("dataAbertura"));
+			consulta.addOrder(Order.desc("dataAbertura"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;

@@ -230,4 +230,14 @@ public class Ticket extends GenericDomain {
 
 	}
 
+	@Transient
+	public String getNomeUsuarioAtendimento() {
+		return getUsuarioAtendimento() == null ? null : getUsuarioAtendimento().getNome();
+	}
+
+	@Transient
+	public void setNomeUsuarioAtendimento(String nomeUsuarioAtendimento) {
+		usuarioAtendimento.setNome(nomeUsuarioAtendimento);
+	}
+
 }

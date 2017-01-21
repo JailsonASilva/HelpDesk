@@ -40,9 +40,30 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 
 		try {
 			Criteria consulta = sessao.createCriteria(Usuario.class);
-			
-			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento",
-					Criteria.INNER_JOIN, Restrictions.like("departamento.codigo", departamento));		
+
+			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
+					Restrictions.like("departamento.codigo", departamento));
+
+			List<Usuario> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "deprecation", "unused" })
+	public List<Usuario> pesquisarUsuarioDepartamento(Long departamento, String usuario) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		try {
+			Criteria consulta = sessao.createCriteria(Usuario.class);
+			consulta.add(Restrictions.like("nome", "%" + usuario + "%"));
+
+			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
+					Restrictions.like("departamento.codigo", departamento));
 
 			List<Usuario> resultado = consulta.list();
 			return resultado;

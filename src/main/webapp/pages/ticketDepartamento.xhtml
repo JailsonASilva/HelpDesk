@@ -81,13 +81,10 @@
 
 						<p:commandButton value="Encaminhar"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-							style="margin:0 3px"
-							actionListener="#{encaminharTicket.atenderTicket}"
+							style="margin:0 3px" oncomplete="PF('dialogoEncaminhar').show()"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							update="formListagem:tabela" icon="fa fa-fw fa-user-md">
-							<p:confirm header="Confirmação"
-								message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -684,7 +681,7 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Pesquisa de Usuario" width="800" height="600"
+		<p:dialog header="Pesquisa de Atendente" width="800" height="600"
 			widgetVar="dialogoPesqUsuario" draggable="false" resizable="false"
 			closable="true">
 			<h:form id="formPesqUsuario">
@@ -716,7 +713,7 @@
 					<p:column style="width: 30px; text-align: center">
 						<p:commandButton icon="ui-icon-check" title="Selecionar"
 							actionListener="#{ticketAtendimentoDepartamentoBean.selecionarUsuario}"
-							update=":formCadastro:usuario">
+							update=":formEncaminhar:usuario">
 							<f:attribute name="usuarioSelecionado" value="#{usuario}" />
 						</p:commandButton>
 					</p:column>
@@ -870,10 +867,38 @@
 		</p:dialog>
 
 		<p:dialog header="Encaminhar Ticket" widgetVar="dialogoEncaminhar"
-			width="1000" height="600" draggable="false" resizable="false"
-			closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formEncaminhar">
 
+				<h:panelGrid id="painelUsuario" columns="2" class="ui-noborder">
+					<p:outputLabel for="usuario" value="Atendente" />
+					<h:panelGroup>
+						<p:inputText id="usuario" size="34" required="true"
+							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
+							value="#{ticketAtendimentoDepartamentoBean.ticket.nomeUsuarioAtendimento}" />
+
+						<p:commandButton icon="ui-icon-search"
+							title="Pesquisa de Atendente" process="@this" update="@none"
+							oncomplete="PF('dialogoPesqUsuario').show();">
+
+							<p:resetInput target="usuario" />
+						</p:commandButton>
+
+					</h:panelGroup>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" class="ui-noborder">
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicket}"
+							update="formListagem:tabela :formEncaminhar:usuario"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoEncaminhar').hide();" />
+					</h:panelGrid>
+				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 

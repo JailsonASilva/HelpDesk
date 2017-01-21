@@ -406,7 +406,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-			
+
 			enviarEmail();
 
 			listarPendentes();
@@ -424,22 +424,23 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void encaminharTicket() throws EmailException {
 		try {
 			novaOcorrencia();
-			ocorrencia.setOcorrencia("Ticket em Atendimento!");
+			ocorrencia.setOcorrencia("Ticket em Encaminhado para " + ticket.getUsuarioAtendimento().getNome());
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
 
 			ticket.setStatus("Pendente");
-			ticket.setUsuarioAtendimento(usuario);
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-			
+
 			enviarEmail();
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEncaminhar').hide();");
 
 			listarPendentes();
 
@@ -455,7 +456,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void suspenderTicket() throws EmailException {
 		try {
@@ -470,7 +471,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-			
+
 			enviarEmail();
 
 			listarPendentes();
@@ -502,7 +503,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-			
+
 			enviarEmail();
 
 			listarPendentes();
@@ -614,7 +615,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void pesquisarDepartamentoCliente() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
@@ -637,7 +638,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void selecionarDepartamento(ActionEvent evento) {
 		try {
@@ -762,7 +763,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	public void pesquisarUsuario() {
 		try {
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
-			usuarios = usuarioDAO.pesquisar(buscaUsuario);
+			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(ticket.getDepartamento().getCodigo(), buscaUsuario);
 
 			if (usuarios.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -787,7 +788,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		try {
 			Usuario usuarioPesq = (Usuario) evento.getComponent().getAttributes().get("usuarioSelecionado");
 
-			ticket.setUsuario(usuarioPesq);
+			ticket.setUsuarioAtendimento(usuarioPesq);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqUsuario').hide();");
 
@@ -910,7 +911,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		try {
 			String mensagem = "Registro de Ocorrência " + "\n" + "\n" + "Data Ocorrência: " + ocorrencia.getData()
 					+ "\n" + "Atendente: " + ocorrencia.getUsuario().getNome() + "\n" + "Ocorrência: "
-					+ ocorrencia.getOcorrencia() + "\n" + "" +
+					+ ocorrencia.getOcorrencia() + "\n" + "" + "\n" +
 
 					"Dados do Ticket " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
 					+ ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n" + "" + "\n"
