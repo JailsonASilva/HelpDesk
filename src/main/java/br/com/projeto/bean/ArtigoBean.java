@@ -419,4 +419,35 @@ public class ArtigoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void duploCliqueNivel(SelectEvent evento) {
+		try {
+			artigo.setNivel(nivel);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqNivel').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+	
+	public void duploCliqueClassificacao(SelectEvent evento) {
+		try {
+			artigo.setClassificacao(classificacao);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqClassificacao').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
+
 }

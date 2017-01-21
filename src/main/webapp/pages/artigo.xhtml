@@ -357,9 +357,16 @@
 				</div>
 
 				<p:dataTable id="tabelaNivel" value="#{artigoBean.niveis}"
-					var="nivel" emptyMessage="Nenhum Registro Encontrado." rows="10"
+					selection="#{artigoBean.nivel}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{nivel.codigo}" var="nivel"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{artigoBean.duploCliqueNivel}"
+						update=":formCadastro:nivel" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{nivel.nome}" />
@@ -398,10 +405,17 @@
 				</div>
 
 				<p:dataTable id="tabelaClassificacao"
+					selection="#{artigoBean.classificacao}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{classificacao.codigo}"
 					value="#{artigoBean.classificacoes}" var="classificacao"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{artigoBean.duploCliqueClassificacao}"
+						update=":formCadastro:classificacao" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{classificacao.nome}" />

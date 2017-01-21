@@ -54,8 +54,8 @@
 						</p:selectOneMenu>
 
 						<p:outputLabel for="assunto" value="Assunto" />
-						<p:inputText id="assunto" maxlength="100" size="63" required="true"
-							requiredMessage="Campo Obrigatório!"
+						<p:inputText id="assunto" maxlength="100" size="63"
+							required="true" requiredMessage="Campo Obrigatório!"
 							value="#{ticketExternoBean.ticket.assunto}" />
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
@@ -100,10 +100,17 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
+					selection="#{ticketExternoBean.departamento}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{departamento.codigo}"
 					value="#{ticketExternoBean.departamentos}" var="departamento"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketExternoBean.duploCliqueDepartamento}"
+						update=":formListagem:formCadastro:departamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{departamento.nome}" />
@@ -139,7 +146,7 @@
 						requiredMessage="O campo 'Atendimento' é obrigatório" />
 				</h:panelGrid>
 
-				<br></br> 
+				<br></br>
 				<p:separator />
 
 				<h:panelGrid columns="2">

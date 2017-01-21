@@ -179,10 +179,17 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
+					selection="#{ticketInternoBean.departamento}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{departamento.codigo}"
 					value="#{ticketInternoBean.departamentos}" var="departamento"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketInternoBean.duploCliqueDepartamento}"
+						update=":formListagem:formCadastro:departamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{departamento.nome}" />
@@ -221,10 +228,17 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
+					selection="#{ticketInternoBean.departamentoCliente}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{departamentoCliente.codigo}"
 					value="#{ticketInternoBean.departamentos}" var="departamento"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketInternoBean.duploCliqueDepartamentoCliente}"
+						update=":formCadastroCliente:departamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{departamento.nome}" />
@@ -266,10 +280,16 @@
 				</div>
 
 				<p:dataTable id="tabelaCliente"
-					value="#{ticketInternoBean.clientes}" var="cliente"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					selection="#{ticketInternoBean.cliente}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{cliente.codigo}" value="#{ticketInternoBean.clientes}"
+					var="cliente" emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketInternoBean.duploCliqueCliente}"
+						update=":formListagem:formCadastro:cliente" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{cliente.nome}" />
@@ -307,10 +327,17 @@
 				</div>
 
 				<p:dataTable id="tabelaCategoria"
+					selection="#{ticketInternoBean.categoria}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{categoria.codigo}"
 					value="#{ticketInternoBean.categorias}" var="categoria"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketInternoBean.duploCliqueCategoria}"
+						update=":formListagem:formCadastro:categoria" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{categoria.nome}" />
@@ -348,10 +375,15 @@
 				</div>
 
 				<p:dataTable id="tabelaUsuario"
-					value="#{ticketInternoBean.usuarios}" var="usuario"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					selection="#{ticketInternoBean.usuario}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{usuario.codigo}" value="#{ticketInternoBean.usuarios}"
+					var="usuario" emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketInternoBean.duploCliqueUsuario}" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{usuario.nome}" />
@@ -389,10 +421,18 @@
 				</div>
 
 				<p:dataTable id="tabelaEquipamento"
+					selection="#{ticketInternoBean.equipamento}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{equipamento.codigo}"
 					value="#{ticketInternoBean.equipamentos}" var="equipamento"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketInternoBean.duploCliqueEquipamento}"
+						update=":formListagem:formCadastro:equipamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText

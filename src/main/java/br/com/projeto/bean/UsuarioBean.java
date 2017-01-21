@@ -393,6 +393,34 @@ public class UsuarioBean implements Serializable {
 		usuario = null;
 	}
 	
+	public void duploCliqueDepartamento(SelectEvent evento) {
+		try {
+			usuario.setDepartamento(departamento);
 
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+	
+	public void duploCliqueAcesso(SelectEvent evento) {
+		try {
+			usuario.setAcesso(acesso);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqAcesso').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
 
 }

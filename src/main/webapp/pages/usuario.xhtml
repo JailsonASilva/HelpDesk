@@ -440,10 +440,17 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
+					selection="#{usuarioBean.departamento}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{departamento.codigo}"
 					value="#{usuarioBean.departamentos}" var="departamento"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{usuarioBean.duploCliqueDepartamento}"
+						update=":formCadastro:departamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{departamento.nome}" />
@@ -480,9 +487,16 @@
 				</div>
 
 				<p:dataTable id="tabelaAcesso" value="#{usuarioBean.acessos}"
-					var="acesso" emptyMessage="Nenhum Registro Encontrado." rows="10"
+					selection="#{usuarioBean.acesso}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{acesso.codigo}" var="acesso"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{usuarioBean.duploCliqueAcesso}"
+						update=":formCadastro:acesso" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{acesso.nome}" />

@@ -124,7 +124,7 @@ public class ManutencaoBean implements Serializable {
 	}
 
 	public void setMessage(FacesMessage message) {
-		this.message = message;  
+		this.message = message;
 	}
 
 	public String getBuscaEquipamento() {
@@ -375,4 +375,33 @@ public class ManutencaoBean implements Serializable {
 		}
 	}
 
+	public void duploCliqueEquipamento(SelectEvent evento) {
+		try {
+			manutencao.setEquipamento(equipamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqEquipamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void duploCliqueTecnico(SelectEvent evento) {
+		try {
+			manutencao.setTecnico(tecnico);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqTecnico').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
 }

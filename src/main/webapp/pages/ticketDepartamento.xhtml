@@ -532,10 +532,17 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
+					selection="#{ticketAtendimentoDepartamentoBean.departamento}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{departamento.codigo}"
 					value="#{ticketAtendimentoDepartamentoBean.departamentos}"
 					var="departamento" emptyMessage="Nenhum Registro Encontrado."
 					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueDepartamento}"
+						update=":formCadastro:departamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{departamento.nome}" />
@@ -574,10 +581,17 @@
 				</div>
 
 				<p:dataTable id="tabelaDepartamento"
+					selection="#{ticketAtendimentoDepartamentoBean.departamentoCliente}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{departamentoCliente.codigo}"
 					value="#{ticketAtendimentoDepartamentoBean.departamentos}"
 					var="departamento" emptyMessage="Nenhum Registro Encontrado."
 					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueDepartamentoCliente}"
+						update=":formCadastroCliente:departamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{departamento.nome}" />
@@ -593,6 +607,7 @@
 
 						</p:commandButton>
 					</p:column>
+
 
 				</p:dataTable>
 			</h:form>
@@ -619,10 +634,17 @@
 				</div>
 
 				<p:dataTable id="tabelaCliente"
+					selection="#{ticketAtendimentoDepartamentoBean.cliente}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{cliente.codigo}"
 					value="#{ticketAtendimentoDepartamentoBean.clientes}" var="cliente"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueCliente}"
+						update=":formCadastro:cliente" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{cliente.nome}" />
@@ -660,23 +682,30 @@
 				</div>
 
 				<p:dataTable id="tabelaCategoria"
+					selection="#{ticketAtendimentoDepartamentoBean.categoria}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{categoria.codigo}"
 					value="#{ticketAtendimentoDepartamentoBean.categorias}"
 					var="categoria" emptyMessage="Nenhum Registro Encontrado."
 					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueCategoria}"
+						update=":formCadastro:categoria" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{categoria.nome}" />
 					</p:column>
 
 					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
+						<p:commandButton id="selecionar" icon="ui-icon-check"
+							title="Selecionar"
 							actionListener="#{ticketAtendimentoDepartamentoBean.selecionarCategoria}"
 							update=":formCadastro:categoria">
 							<f:attribute name="categoriaSelecionado" value="#{categoria}" />
 						</p:commandButton>
 					</p:column>
-
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
@@ -701,10 +730,17 @@
 				</div>
 
 				<p:dataTable id="tabelaUsuario"
+					selection="#{ticketAtendimentoDepartamentoBean.usuario}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{usuario.codigo}"
 					value="#{ticketAtendimentoDepartamentoBean.usuarios}" var="usuario"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueUsuario}"
+						update=":formCadastro:usuario" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{usuario.nome}" />
@@ -717,7 +753,6 @@
 							<f:attribute name="usuarioSelecionado" value="#{usuario}" />
 						</p:commandButton>
 					</p:column>
-
 				</p:dataTable>
 			</h:form>
 		</p:dialog>
@@ -742,10 +777,17 @@
 				</div>
 
 				<p:dataTable id="tabelaEquipamento"
+					selection="#{ticketAtendimentoDepartamentoBean.equipamento}"
+					selectionMode="single" draggableColumns="true"
+					resizableColumns="true" rowKey="#{equipamento.codigo}"
 					value="#{ticketAtendimentoDepartamentoBean.equipamentos}"
 					var="equipamento" emptyMessage="Nenhum Registro Encontrado."
 					rows="10" paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueEquipamento}"
+						update=":formCadastro:equipamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText
@@ -871,7 +913,7 @@
 			<h:form id="formEncaminhar">
 
 				<h:panelGrid id="painelUsuario" columns="2" class="ui-noborder">
-					<p:outputLabel for="usuario" value="Atendente" />
+					<p:outputLabel for="usuario" value="Para: " />
 					<h:panelGroup>
 						<p:inputText id="usuario" size="34" required="true"
 							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
@@ -889,7 +931,7 @@
 
 				<h:panelGrid columns="2" class="ui-noborder">
 					<h:panelGrid columns="2">
-						<p:commandButton value="Salvar" icon="ui-icon-disk"
+						<p:commandButton value="Encaminhar" icon="ui-icon-disk"
 							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicket}"
 							update="formListagem:tabela :formEncaminhar:usuario"
 							onstart="PF('iconeDeProcessamento').show()"

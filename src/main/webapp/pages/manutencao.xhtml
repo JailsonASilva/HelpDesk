@@ -147,7 +147,8 @@
 							value="#{manutencao.equipamento.tipoEquipamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Departamento" width="90" style="text-align:center"
+					<p:column headerText="Departamento" width="90"
+						style="text-align:center"
 						filterBy="#{manutencao.equipamento.departamento.nome}"
 						filterMatchMode="in"
 						sortBy="#{manutencao.equipamento.departamento.nome}">
@@ -475,9 +476,16 @@
 				</div>
 
 				<p:dataTable id="tabelaTecnico" value="#{manutencaoBean.tecnicos}"
-					var="tecnico" emptyMessage="Nenhum Registro Encontrado." rows="10"
+					selection="#{manutencaoBean.tecnico}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{tecnico.codigo}" var="tecnico"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{manutencaoBean.duploCliqueTecnico}"
+						update=":formCadastro:tecnico" />
 
 					<p:column headerText="Nome">
 						<h:outputText value="#{tecnico.nome}" />
@@ -542,10 +550,17 @@
 				</div>
 
 				<p:dataTable id="tabelaEquipamento"
+					selection="#{manutencaoBean.equipamento}" selectionMode="single"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{equipamento.codigo}"
 					value="#{manutencaoBean.equipamentos}" var="equipamento"
 					emptyMessage="Nenhum Registro Encontrado." rows="10"
 					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{manutencaoBean.duploCliqueEquipamento}"
+						update=":formCadastro:equipamento" />
 
 					<p:column headerText="Nome">
 						<h:outputText

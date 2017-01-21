@@ -12,6 +12,7 @@ import javax.faces.event.ActionEvent;
 import org.apache.commons.mail.EmailException;
 import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.TicketDAO;
@@ -148,6 +149,7 @@ public class TicketExternoBean implements Serializable {
 		ticket.setDataAbertura(new java.util.Date());
 		ticket.setStatus("Pendente");
 		ticket.setPrioridade("Normal");
+		ticket.setEmailEnviado(false);
 	}
 
 	public void salvar() throws EmailException {
@@ -199,7 +201,22 @@ public class TicketExternoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
+	public void duploCliqueDepartamento(SelectEvent evento) {
+		try {
+			ticket.setDepartamento(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void pesquisarDepartamentoCliente() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
@@ -222,7 +239,7 @@ public class TicketExternoBean implements Serializable {
 
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void selecionarDepartamento(ActionEvent evento) {
 		try {

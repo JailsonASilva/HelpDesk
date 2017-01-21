@@ -43,7 +43,10 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private Usuario usuario;
 	private Categoria categoria;
 	private Departamento departamento;
+	private Departamento departamentoCliente;
+
 	private Cliente cliente;
+	private Equipamento equipamento;
 
 	private List<Ocorrencia> ocorrencias;
 	private List<Ticket> tickets;
@@ -248,6 +251,22 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.departamentoPesq = departamentoPesq;
 	}
 
+	public Equipamento getEquipamento() {
+		return equipamento;
+	}
+
+	public void setEquipamento(Equipamento equipamento) {
+		this.equipamento = equipamento;
+	}
+
+	public Departamento getDepartamentoCliente() {
+		return departamentoCliente;
+	}
+
+	public void setDepartamentoCliente(Departamento departamentoCliente) {
+		this.departamentoCliente = departamentoCliente;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -255,7 +274,9 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			categoria = new Categoria();
 			departamento = new Departamento();
+			departamentoCliente = new Departamento();
 			cliente = new Cliente();
+			equipamento = new Equipamento();
 
 		} catch (
 
@@ -658,12 +679,43 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
+	public void duploCliqueDepartamento(SelectEvent evento) {
+		try {
+			ticket.setDepartamento(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void selecionarDepartamentoCliente(ActionEvent evento) {
 		try {
 			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
 					.get("departamentoSelecionado");
 
 			cliente.setDepartamento(departamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoPesqDepartamentoCliente').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void duploCliqueDepartamentoCliente(SelectEvent evento) {
+		try {
+			ticket.setDepartamento(departamentoCliente);
 
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoPesqDepartamentoCliente').hide();");
@@ -719,6 +771,22 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
+	public void duploCliqueCliente(SelectEvent evento) {
+		try {
+
+			ticket.setCliente(cliente);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqCliente').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void pesquisarCategoria() {
 		try {
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
@@ -748,6 +816,21 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			Categoria categoriaPesq = (Categoria) evento.getComponent().getAttributes().get("categoriaSelecionado");
 
 			ticket.setCategoria(categoriaPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqCategoria').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void duploCliqueCategoria(SelectEvent evento) {
+		try {
+			ticket.setCategoria(categoria);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqCategoria').hide();");
 
@@ -801,6 +884,21 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
+	public void duploCliqueUsuario(SelectEvent evento) {
+		try {
+			ticket.setUsuarioAtendimento(usuario);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqUsuario').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void pesquisarEquipamento() {
 		try {
 			EquipamentoDAO equipamentoDAO = new EquipamentoDAO();
@@ -831,6 +929,21 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 					.get("equipamentoSelecionado");
 
 			ticket.setEquipamento(equipamentoPesq);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqEquipamento').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void duploCliqueEquipamento(SelectEvent evento) {
+		try {
+			ticket.setEquipamento(equipamento);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqEquipamento').hide();");
 
