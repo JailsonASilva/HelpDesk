@@ -22,14 +22,14 @@ import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
 import br.com.projeto.dao.ManutencaoDAO;
 import br.com.projeto.dao.MarcaDAO;
-import br.com.projeto.dao.TipoEquipamentoDAO;
 import br.com.projeto.dao.TecnicoDAO;
+import br.com.projeto.dao.TipoEquipamentoDAO;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Manutencao;
 import br.com.projeto.domain.Marca;
-import br.com.projeto.domain.TipoEquipamento;
 import br.com.projeto.domain.Tecnico;
+import br.com.projeto.domain.TipoEquipamento;
 import br.com.projeto.util.HibernateUtil;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -273,8 +273,8 @@ public class ProximaManutencaoBean implements Serializable {
 			parametros.put("DATAINICIAL", dataInicial);
 			parametros.put("DATAFINAL", dataFinal);
 
-			Connection conexao = HibernateUtil.getConexao();
-
+			Connection conexao = (Connection) HibernateUtil.getFabricaDeSessoes().openSession();
+			
 			JasperPrint relatorio = JasperFillManager.fillReport(caminho, parametros, conexao);
 
 			JasperPrintManager.printReport(relatorio, true);
