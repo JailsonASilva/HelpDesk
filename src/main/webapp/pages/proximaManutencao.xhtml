@@ -87,7 +87,7 @@
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
 						icon="ui-icon-script" style="margin:0 -37px"
 						actionListener="#{proximaManutencaoBean.pesquisar}"
-						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool"
+						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>

@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.apache.commons.mail.EmailException;
@@ -122,7 +123,9 @@ public class TicketExternoBean implements Serializable {
 
 	@PostConstruct
 	public void inicializar() {
-		try {
+		try {			
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.listarAtendimento();
 
 			novo();
 
@@ -156,16 +159,14 @@ public class TicketExternoBean implements Serializable {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!", "Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's"));
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
-					"Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's");
-
-			enviarEmailDepartamento();
-			enviarEmailSolicitante();
+			//enviarEmailDepartamento();
+			//enviarEmailSolicitante();
 
 			novo();
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
 		} catch (
 

@@ -45,6 +45,7 @@ public class TicketInternoBean implements Serializable {
 	private List<Ticket> tickets;
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
+	private List<Departamento> departamentosCliente;
 	private List<Categoria> categorias;
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
@@ -226,11 +227,29 @@ public class TicketInternoBean implements Serializable {
 		this.equipamento = equipamento;
 	}
 
+	public List<Departamento> getDepartamentosCliente() {
+		return departamentosCliente;
+	}
+
+	public void setDepartamentosCliente(List<Departamento> departamentosCliente) {
+		this.departamentosCliente = departamentosCliente;
+	}
+
 	@PostConstruct
 	public void inicializar() {
 		try {
 
 			novo();
+
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.listarAtendimento();
+			departamentosCliente = departamentoDAO.listar("nome");			
+
+			ClienteDAO clienteDAO = new ClienteDAO();
+			clientes = clienteDAO.listar("nome");
+
+			CategoriaDAO categoriaDAO = new CategoriaDAO();
+			categorias = categoriaDAO.listar("nome");
 
 		} catch (
 
@@ -292,8 +311,8 @@ public class TicketInternoBean implements Serializable {
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
 					"Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's");
 
-			enviarEmailDepartamento();
-			enviarEmailSolicitante();
+			//enviarEmailDepartamento();
+			//enviarEmailSolicitante();
 
 			novo();
 
@@ -659,6 +678,8 @@ public class TicketInternoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCategoria').hide();");
 
 			categoria = new Categoria();
+			
+			categorias = categoriaDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -677,6 +698,9 @@ public class TicketInternoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
 
 			departamento = new Departamento();
+						
+			departamentos = departamentoDAO.listarAtendimento();
+			departamentosCliente = departamentoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -695,6 +719,8 @@ public class TicketInternoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCliente').hide();");
 
 			cliente = new Cliente();
+			
+			clientes = clienteDAO.listar("nome");			
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",

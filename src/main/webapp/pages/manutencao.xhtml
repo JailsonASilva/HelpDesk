@@ -30,7 +30,7 @@
 
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
 						icon="ui-icon-script" actionListener="#{manutencaoBean.pesquisar}"
-						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool"
+						update="formListagem:tabela :formPesquisa:painelBusca :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -339,7 +339,7 @@
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{manutencaoBean.salvar}"
-						update=":formCadastro:painel1 :formCadastro:painel3 :formCadastro:painel4 :formListagem:tabela :formListagem:tool"
+						update=":formCadastro:painel1 :formCadastro:painel3 :formCadastro:painel4 :formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

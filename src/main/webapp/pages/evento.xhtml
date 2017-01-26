@@ -19,7 +19,7 @@
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
 					actionListener="#{eventoBean.pesquisar}"
-					update="formListagem:tabela :formListagem:tool"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -232,7 +232,7 @@
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{eventoBean.salvar}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formListagem:tabela :formListagem:tool"
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

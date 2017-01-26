@@ -19,7 +19,7 @@
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
 					actionListener="#{marcaBean.pesquisar}"
-					update="formListagem:tabela :formListagem:tool"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -147,7 +147,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{marcaBean.salvar}"
-						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.projeto.domain.Usuario;
@@ -74,4 +75,26 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 			sessao.close();
 		}
 	}
+	
+	@SuppressWarnings({ "unchecked", "deprecation", "unused" })
+	public List<Usuario> pesquisarUsuarioDepartamento(Long departamento) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		try {
+			Criteria consulta = sessao.createCriteria(Usuario.class);			
+
+			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
+					Restrictions.like("departamento.codigo", departamento));
+			
+			consulta.addOrder(Order.asc("nome"));
+
+			List<Usuario> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}	
 }

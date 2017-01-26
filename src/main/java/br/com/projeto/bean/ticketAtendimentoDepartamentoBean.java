@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.apache.commons.mail.EmailException;
@@ -52,6 +53,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Ticket> tickets;
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
+	private List<Departamento> departamentosCliente;
 	private List<Categoria> categorias;
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
@@ -267,6 +269,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.departamentoCliente = departamentoCliente;
 	}
 
+	public List<Departamento> getDepartamentosCliente() {
+		return departamentosCliente;
+	}
+
+	public void setDepartamentosCliente(List<Departamento> departamentosCliente) {
+		this.departamentosCliente = departamentosCliente;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -277,6 +287,22 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			departamentoCliente = new Departamento();
 			cliente = new Cliente();
 			equipamento = new Equipamento();
+
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.listarAtendimento();
+			departamentosCliente = departamentoDAO.listar("nome");
+
+			ClienteDAO clienteDAO = new ClienteDAO();
+			clientes = clienteDAO.listar("nome");
+
+			CategoriaDAO categoriaDAO = new CategoriaDAO();
+			categorias = categoriaDAO.listar("nome");
+
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(usuario.getDepartamento().getCodigo());
 
 		} catch (
 
@@ -300,13 +326,17 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			tickets = ticketDAO.pesquisarDepartamento(departamentoPesq, status);
 
+			if (status.equals("Aberto")) {
+				tickets = ticketDAO.pesquisarDepartamento(departamentoPesq);
+			} else {
+				tickets = ticketDAO.pesquisarDepartamento(departamentoPesq, status);
+			}
+
 			ticket = null;
 
 			if (tickets.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
 			}
 
 		} catch (
@@ -330,7 +360,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			departamentoPesq = usuario.getDepartamento().getNome();
 
 			TicketDAO ticketDAO = new TicketDAO();
-			tickets = ticketDAO.pesquisarDepartamento(departamentoPesq, "Pendente");
+			tickets = ticketDAO.pesquisarDepartamento(departamentoPesq);
 
 		} catch (
 
@@ -397,7 +427,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
 
-			enviarEmail();
+			// enviarEmail();
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -422,13 +452,13 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
 
-			ticket.setStatus("Pendente");
+			ticket.setStatus("Em Atendimento");
 			ticket.setUsuarioAtendimento(usuario);
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			enviarEmail();
+			// enviarEmail();
 
 			listarPendentes();
 
@@ -459,14 +489,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			enviarEmail();
+			// enviarEmail();
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEncaminhar').hide();");
 
 			listarPendentes();
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Atendido com Sucesso!",
-					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!");
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Encaminhado com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Encaminhado!");
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
@@ -493,7 +523,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			enviarEmail();
+			// enviarEmail();
 
 			listarPendentes();
 
@@ -525,7 +555,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			enviarEmail();
+			// enviarEmail();
 
 			listarPendentes();
 

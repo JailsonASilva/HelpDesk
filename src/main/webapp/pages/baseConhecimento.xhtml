@@ -19,7 +19,7 @@
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="ui-icon-script"
 					actionListener="#{baseConhecimentoBean.pesquisar}"
-					update="formListagem:tabela "
+					update="formListagem:tabela :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
 

@@ -21,19 +21,19 @@
 				closable="true" collapsible="true" style="border:none;">
 
 				<p:panel
-					header="Help Desk 1.0.9.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
+					header="Help Desk 1.1.0.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 					<h:graphicImage url="/imagens/educa.png" width="111" height="42" />
 				</p:panel>
 
 			</p:layoutUnit>
 
-			<p:layoutUnit position="west" size="240" resizable="true"
+			<p:layoutUnit position="west" size="235" resizable="true"
 				closable="true" collapsible="true" style="border:none;">
 
 				<ui:insert name="menu">
 					<h:form>
 
-						<p:slideMenu style="width: 210px;height: 280px" rendered="true"
+						<p:slideMenu style="width: 210px;height: 360px" rendered="true"
 							backLabel="Voltar">
 							<p:submenu label="Sistemas" icon="fa fa fw fa-user">
 
@@ -192,6 +192,17 @@
 										rendered="#{autenticacaoBean.usuarioLogado.acesso.baseConhecimento}" />
 								</p:submenu>
 							</p:submenu>
+
+							<p:separator />
+							<p:menuitem value="Novo Ticket (Interno)"
+								url="/pages/ticketInterno.xhtml"
+								icon="fa fa fw fa-angle-double-right"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
+
+							<p:menuitem value="Novo Ticket (Externo)"
+								url="/pages/ticketExterno.xhtml"
+								icon="fa fa fw fa-angle-double-right"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
 
 							<p:separator />
 

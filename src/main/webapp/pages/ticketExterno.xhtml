@@ -10,6 +10,7 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
+			<p:growl id="messages" showDetail="true" />
 			<p:dialog widgetVar="iconeDeProcessamento">
 				<f:facet name="header">
 					<h:graphicImage value="/imagens/ampulheta.png" />
@@ -17,25 +18,22 @@
 						value="Aguarde... Estamos Processando sua Informação..." />
 				</f:facet>
 			</p:dialog>
-
 			<p:dialog header="Novo Ticket" widgetVar="dialogo" visible="true"
 				draggable="false" resizable="false" modal="false" closable="true">
 				<h:form id="formCadastro">
 					<h:panelGrid id="painel" columns="1" class="ui-noborder">
 
 						<p:outputLabel for="departamento" value="Departamento " />
-						<h:panelGroup>
-							<p:inputText id="departamento" size="32" required="true"
-								readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-								value="#{ticketExternoBean.ticket.nomeDepartamento}" />
-
-							<p:commandButton icon="ui-icon-search"
-								title="Pesquisa Departamento" process="@this" update="@none"
-								oncomplete="PF('dialogoPesqDepartamento').show();">
-
-								<p:resetInput target="departamento" />
-							</p:commandButton>
-						</h:panelGroup>
+						<p:selectOneMenu id="departamento" filter="true"
+							value="#{ticketExternoBean.ticket.departamento}" required="true"
+							requiredMessage="O campo 'Departamento' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{ticketExternoBean.departamentos}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
 
 						<p:outputLabel for="prioridade" value="Prioridade" />
 						<p:selectOneMenu id="prioridade" filter="true" required="true"
@@ -72,62 +70,13 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Salvar" icon="ui-icon-disk"
 							actionListener="#{ticketExternoBean.salvar}"
-							update=":formListagem:formCadastro:painel"
+							update=":formListagem:formCadastro:painel :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
 					</h:panelGrid>
 				</h:form>
 			</p:dialog>
 		</h:form>
-
-		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
-			widgetVar="dialogoPesqDepartamento" draggable="false"
-			resizable="false" closable="true">
-			<h:form id="formPesqDepartamento">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{ticketExternoBean.buscaDepartamento}"
-						placeholder="Informe o Nome do Departamento" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketExternoBean.pesquisarDepartamento}"
-						update="tabelaDepartamento" />
-				</div>
-
-				<p:dataTable id="tabelaDepartamento"
-					selection="#{ticketExternoBean.departamento}"
-					selectionMode="single" draggableColumns="true"
-					resizableColumns="true" rowKey="#{departamento.codigo}"
-					value="#{ticketExternoBean.departamentos}" var="departamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{ticketExternoBean.duploCliqueDepartamento}"
-						update=":formListagem:formCadastro:departamento" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{departamento.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketExternoBean.selecionarDepartamento}"
-							update=":formListagem:formCadastro:departamento">
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
 
 		<p:dialog header="Cadastro de Departamento"
 			widgetVar="dialogoDepartamento" draggable="false" resizable="false"

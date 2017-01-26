@@ -10,6 +10,7 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
+			<p:growl id="messages" showDetail="true" />
 			<p:dialog widgetVar="iconeDeProcessamento">
 				<f:facet name="header">
 					<h:graphicImage value="/imagens/ampulheta.png" />
@@ -21,47 +22,44 @@
 			<p:dialog header="Novo Ticket" widgetVar="dialogo" visible="true"
 				draggable="false" resizable="false" modal="false" closable="true">
 				<h:form id="formCadastro">
+
 					<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
 
 						<p:outputLabel for="cliente" value="Solicitante " />
 						<h:panelGroup>
-							<p:inputText id="cliente" size="32" required="true"
-								readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-								value="#{ticketInternoBean.ticket.nomeCliente}" />
-
-							<p:commandButton icon="ui-icon-search" title="Pesquisa Cliente"
-								process="@this" update="@none"
-								oncomplete="PF('dialogoPesqCliente').show();">
-
-								<p:resetInput target="cliente" />
-							</p:commandButton>
+							<p:selectOneMenu id="cliente" filter="true"
+								value="#{ticketInternoBean.ticket.cliente}" required="true"
+								requiredMessage="O campo 'Cliente' é obrigatório"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Nenhum Registro Selecionado" />
+								<f:selectItems value="#{ticketInternoBean.clientes}"
+									var="cliente" itemValue="#{cliente}"
+									itemLabel="#{cliente.nome}" />
+							</p:selectOneMenu>
 
 							<p:commandButton icon="ui-icon-document" title="Novo Cliente"
+								style="display: inline-block; vertical-align: top;"
 								oncomplete="PF('dialogoCliente').show();" />
-
-							<p:outputLabel for="data" value="Data Abertura"
-								style="margin:0 10px 0 10px" />
-							<p:calendar id="data" mask="99/99/99" required="true"
-								showOn="button" requiredMessage="Campo Obrigatório!"
-								yearRange="1900:2222"
-								value="#{ticketInternoBean.ticket.dataAbertura}" size="12"
-								locale="pt_BR" showButtonPanel="true" navigator="true" />
 						</h:panelGroup>
+
 
 						<p:outputLabel for="departamento" value="Departamento " />
 						<h:panelGroup>
-							<p:inputText id="departamento" size="32" required="true"
-								readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-								value="#{ticketInternoBean.ticket.nomeDepartamento}" />
-
-							<p:commandButton icon="ui-icon-search"
-								title="Pesquisa Departamento" process="@this" update="@none"
-								oncomplete="PF('dialogoPesqDepartamento').show();">
-
-								<p:resetInput target="departamento" />
-							</p:commandButton>
+							<p:selectOneMenu id="departamento" filter="true"
+								value="#{ticketInternoBean.ticket.departamento}" required="true"
+								requiredMessage="O campo 'Departamento' é obrigatório"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Nenhum Registro Selecionado" />
+								<f:selectItems value="#{ticketInternoBean.departamentos}"
+									var="departamento" itemValue="#{departamento}"
+									itemLabel="#{departamento.nome}" />
+							</p:selectOneMenu>
 
 							<p:commandButton icon="ui-icon-document"
+								style="display: inline-block; vertical-align: top;"
 								title="Novo Departamento"
 								oncomplete="PF('dialogoDepartamento').show();" />
 						</h:panelGroup>
@@ -69,23 +67,32 @@
 
 						<p:outputLabel for="categoria" value="Categoria " />
 						<h:panelGroup>
-							<p:inputText id="categoria" size="32" required="true"
-								readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-								value="#{ticketInternoBean.ticket.nomeCategoria}" />
-
-							<p:commandButton icon="ui-icon-search"
-								title="Pesquisa Departamento" process="@this" update="@none"
-								oncomplete="PF('dialogoPesqCategoria').show();">
-
-								<p:resetInput target="categoria" />
-							</p:commandButton>
+							<p:selectOneMenu id="categoria" filter="true"
+								value="#{ticketInternoBean.ticket.categoria}" required="true"
+								requiredMessage="O campo 'Categoria' é obrigatório"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Nenhum Registro Selecionado" />
+								<f:selectItems value="#{ticketInternoBean.categorias}"
+									var="categoria" itemValue="#{categoria}"
+									itemLabel="#{categoria.nome}" />
+							</p:selectOneMenu>
 
 							<p:commandButton icon="ui-icon-document"
+								style="display: inline-block; vertical-align: top;"
 								title="Novo Departamento"
 								oncomplete="PF('dialogoCategoria').show();">
 
 							</p:commandButton>
 						</h:panelGroup>
+
+						<p:outputLabel for="data" value="Data Abertura" />
+						<p:calendar id="data" mask="99/99/99" required="true"
+							showOn="button"
+							requiredMessage="Campo Data Abertura Obrigatório!"
+							yearRange="1900:2222"
+							value="#{ticketInternoBean.ticket.dataAbertura}" size="12"
+							locale="pt_BR" showButtonPanel="true" navigator="true" />
 					</h:panelGrid>
 
 					<p:separator />
@@ -151,255 +158,13 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Salvar" icon="ui-icon-disk"
 							actionListener="#{ticketInternoBean.salvar}"
-							update=":formListagem:formCadastro:painel :formListagem:formCadastro:painel2 :formListagem:formCadastro:painel3 :formListagem:formCadastro:painel4"
+							update=":formListagem:formCadastro:painel :formListagem:formCadastro:painel2 :formListagem:formCadastro:painel3 :formListagem:formCadastro:painel4 :formListagem:messages "
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
 					</h:panelGrid>
 				</h:form>
 			</p:dialog>
 		</h:form>
-
-		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
-			widgetVar="dialogoPesqDepartamento" draggable="false"
-			resizable="false" closable="true">
-			<h:form id="formPesqDepartamento">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{ticketInternoBean.buscaDepartamento}"
-						placeholder="Informe o Nome do Departamento" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketInternoBean.pesquisarDepartamento}"
-						update="tabelaDepartamento" />
-				</div>
-
-				<p:dataTable id="tabelaDepartamento"
-					selection="#{ticketInternoBean.departamento}"
-					selectionMode="single" draggableColumns="true"
-					resizableColumns="true" rowKey="#{departamento.codigo}"
-					value="#{ticketInternoBean.departamentos}" var="departamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{ticketInternoBean.duploCliqueDepartamento}"
-						update=":formListagem:formCadastro:departamento" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{departamento.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketInternoBean.selecionarDepartamento}"
-							update=":formListagem:formCadastro:departamento">
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
-			widgetVar="dialogoPesqDepartamentoCliente" draggable="false"
-			resizable="false" closable="true">
-			<h:form id="formPesqDepartamentoCliente">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{ticketInternoBean.buscaDepartamento}"
-						placeholder="Informe o Nome do Departamento" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketInternoBean.pesquisarDepartamentoCliente}"
-						update="tabelaDepartamento" />
-				</div>
-
-				<p:dataTable id="tabelaDepartamento"
-					selection="#{ticketInternoBean.departamentoCliente}"
-					selectionMode="single" draggableColumns="true"
-					resizableColumns="true" rowKey="#{departamentoCliente.codigo}"
-					value="#{ticketInternoBean.departamentos}" var="departamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{ticketInternoBean.duploCliqueDepartamentoCliente}"
-						update=":formCadastroCliente:departamento" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{departamento.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketInternoBean.selecionarDepartamentoCliente}"
-							update=":formCadastroCliente:departamento">
-
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
-
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-
-		<p:dialog header="Pesquisa de Solicitante" width="800" height="600"
-			widgetVar="dialogoPesqCliente" draggable="false" resizable="false"
-			closable="true">
-			<h:form id="formPesqCliente">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{ticketInternoBean.buscaCliente}"
-						placeholder="Informe o Nome do Cliente" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketInternoBean.pesquisarCliente}"
-						update="tabelaCliente" />
-				</div>
-
-				<p:dataTable id="tabelaCliente"
-					selection="#{ticketInternoBean.cliente}" selectionMode="single"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{cliente.codigo}" value="#{ticketInternoBean.clientes}"
-					var="cliente" emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{ticketInternoBean.duploCliqueCliente}"
-						update=":formListagem:formCadastro:cliente" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{cliente.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketInternoBean.selecionarCliente}"
-							update=":formListagem:formCadastro:cliente">
-							<f:attribute name="clienteSelecionado" value="#{cliente}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Pesquisa de Categoria" width="800" height="600"
-			widgetVar="dialogoPesqCategoria" draggable="false" resizable="false"
-			closable="true">
-			<h:form id="formPesqCategoria">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{ticketInternoBean.buscaCategoria}"
-						placeholder="Informe o Nome do Categoria" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketInternoBean.pesquisarCategoria}"
-						update="tabelaCategoria" />
-				</div>
-
-				<p:dataTable id="tabelaCategoria"
-					selection="#{ticketInternoBean.categoria}" selectionMode="single"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{categoria.codigo}"
-					value="#{ticketInternoBean.categorias}" var="categoria"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{ticketInternoBean.duploCliqueCategoria}"
-						update=":formListagem:formCadastro:categoria" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{categoria.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketInternoBean.selecionarCategoria}"
-							update=":formListagem:formCadastro:categoria">
-							<f:attribute name="categoriaSelecionado" value="#{categoria}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Pesquisa de Usuario" width="800" height="600"
-			widgetVar="dialogoPesqUsuario" draggable="false" resizable="false"
-			closable="true">
-			<h:form id="formPesqUsuario">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{ticketInternoBean.buscaUsuario}"
-						placeholder="Informe o Nome do Usuario" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketInternoBean.pesquisarUsuario}"
-						update="tabelaUsuario" />
-				</div>
-
-				<p:dataTable id="tabelaUsuario"
-					selection="#{ticketInternoBean.usuario}" selectionMode="single"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{usuario.codigo}" value="#{ticketInternoBean.usuarios}"
-					var="usuario" emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{ticketInternoBean.duploCliqueUsuario}" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{usuario.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketInternoBean.selecionarUsuario}"
-							update=":formListagem:formCadastro:usuario">
-							<f:attribute name="usuarioSelecionado" value="#{usuario}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
 
 		<p:dialog header="Pesquisa de Equipamento" width="800" height="600"
 			widgetVar="dialogoPesqEquipamento" draggable="false"
@@ -523,16 +288,18 @@
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
-						<p:inputText id="departamento" size="34" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{ticketInternoBean.cliente.nomeDepartamento}" />
+						<p:selectOneMenu id="departamento" filter="true"
+							value="#{ticketInternoBean.cliente.departamento.nome}"
+							required="true"
+							requiredMessage="O campo 'Departamento' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{ticketInternoBean.departamentosCliente}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
 
-						<p:commandButton icon="ui-icon-search"
-							title="Pesquisa Departamento" process="@this" update="@none"
-							oncomplete="PF('dialogoPesqDepartamentoCliente').show();">
-
-							<p:resetInput target="departamento" />
-						</p:commandButton>
 					</h:panelGroup>
 				</h:panelGrid>
 
