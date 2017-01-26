@@ -49,7 +49,7 @@ public class Ticket extends GenericDomain {
 	@Column(length = 40, nullable = false)
 	private String prioridade;
 
-	@Column(length = 40, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String assunto;
 
 	@Column(length = 600, nullable = false)

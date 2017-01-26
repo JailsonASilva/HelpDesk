@@ -100,7 +100,7 @@
 					<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 						<p:outputLabel for="assunto" value="Assunto" />
-						<p:inputText id="assunto" maxlength="47" size="37" required="true"
+						<p:inputText id="assunto" maxlength="100" size="37" required="true"
 							style="margin:0 39px 0 39px" requiredMessage="Campo Obrigatório!"
 							value="#{ticketInternoBean.ticket.assunto}" />
 
@@ -289,7 +289,7 @@
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
 						<p:selectOneMenu id="departamento" filter="true"
-							value="#{ticketInternoBean.cliente.departamento.nome}"
+							value="#{ticketInternoBean.cliente.departamento}"
 							required="true"
 							requiredMessage="O campo 'Departamento' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">

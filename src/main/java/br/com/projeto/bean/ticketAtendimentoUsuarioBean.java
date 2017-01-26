@@ -429,10 +429,10 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			listarPendentes();
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Atendido com Sucesso!",
-					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!");
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
@@ -460,12 +460,10 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEncaminhar').hide();");
 
-			listarPendentes();
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Encaminhado com Sucesso!",
-					"Ticket Nº " + ticket.getCodigo() + " Encaminhado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null, new FacesMessage("Ticket Encaminhado com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Encaminhado!"));
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
@@ -492,12 +490,10 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			// enviarEmail();
 
-			listarPendentes();
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Suspenso com Sucesso!",
-					"Ticket Nº " + ticket.getCodigo() + " Suspenso!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null,
+					new FacesMessage("Ticket Suspenso com Sucesso!", "Ticket Nº " + ticket.getCodigo() + " Suspenso!"));
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Suspender este Ticket.",
@@ -524,12 +520,10 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			// enviarEmail();
 
-			listarPendentes();
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Concluído com Sucesso!",
-					"Ticket Nº " + ticket.getCodigo() + " Concluído!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
@@ -552,6 +546,19 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void duploTicket(SelectEvent evento) {
+		try {
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
 
 	public void excluirTicket(ActionEvent evento) {
 		try {

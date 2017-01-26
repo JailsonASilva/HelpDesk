@@ -50,7 +50,8 @@
 							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicket}"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							update="formListagem:tabela" icon="fa fa-fw fa-user-md">
+							update="formListagem:tabela :formListagem:messages"
+							icon="fa fa-fw fa-user-md">
 							<p:confirm header="Confirmação"
 								message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
 							<f:actionListener
@@ -60,7 +61,8 @@
 						<p:commandButton value="Suspender"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
 							actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicket}"
-							style="margin:0 3px" update="formListagem:tabela"
+							style="margin:0 3px"
+							update="formListagem:tabela :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							icon="fa fa-fw fa-ban">
@@ -73,7 +75,8 @@
 						<p:commandButton value="Concluir"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
 							actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicket}"
-							style="margin:0 3px" update="formListagem:tabela"
+							style="margin:0 3px"
+							update="formListagem:tabela :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							icon="fa fa-fw fa-check-circle">
@@ -88,7 +91,7 @@
 							style="margin:0 3px" oncomplete="PF('dialogoEncaminhar').show()"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							update="formListagem:tabela formEncaminhar:usuario"
+							update="formListagem:tabela formEncaminhar:usuario :formListagem:messages"
 							icon="fa fa-fw fa-user-md">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -176,6 +179,10 @@
 					value="#{ticketAtendimentoDepartamentoBean.tickets}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="20" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploTicket}"
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
@@ -703,7 +710,7 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Encaminhar" icon="ui-icon-disk"
 							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicket}"
-							update="formListagem:tabela :formEncaminhar:usuario"
+							update="formListagem:tabela :formEncaminhar:usuario :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
 
