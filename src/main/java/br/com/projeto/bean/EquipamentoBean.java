@@ -3,6 +3,7 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -172,6 +173,33 @@ public class EquipamentoBean implements Serializable {
 
 	public void setBuscaMarca(String buscaMarca) {
 		this.buscaMarca = buscaMarca;
+	}
+
+	@PostConstruct
+	public void abrirTabelas() {
+		try {
+			TipoEquipamentoDAO tipoEquipamentoDAO = new TipoEquipamentoDAO();
+			tipoEquipamentos = tipoEquipamentoDAO.listar("nome");
+
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.listar("nome");
+
+			MarcaDAO marcaDAO = new MarcaDAO();
+			marcas = marcaDAO.listar("nome");
+
+			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
+			localEquipamentos = localEquipamentoDAO.listar("nome");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Tabelas.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
 	}
 
 	public void pesquisar() {
@@ -518,7 +546,7 @@ public class EquipamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarLocalEquipamento() {
 		try {
 			LocalEquipamentoDAO localEquipamentoDAO = new LocalEquipamentoDAO();
@@ -535,5 +563,5 @@ public class EquipamentoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 }

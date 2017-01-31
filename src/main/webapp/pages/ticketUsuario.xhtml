@@ -223,11 +223,6 @@
 						sortBy="#{ticket.prioridadeFormatada}" width="40">
 						<h:outputText value="#{ticket.prioridadeFormatada}" />
 					</p:column>
-
-					<p:column headerText="Categoria" sortBy="#{ticket.categoria.nome}"
-						style="text-align:center" width="60">
-						<h:outputText value="#{ticket.categoria.nome}" />
-					</p:column>
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -336,14 +331,9 @@
 						</p:commandButton>
 					</h:panelGroup>
 
-
 					<p:outputLabel for="usuario" value="Usuario " />
-					<h:panelGroup>
-						<p:inputText id="usuario" size="37" required="true"
-							readonly="true"
-							value="#{ticketAtendimentoUsuarioBean.ticket.nomeUsuario}" />
-					</h:panelGroup>
-
+					<p:inputText id="usuario" size="37" required="true" readonly="true"
+						value="#{ticketAtendimentoUsuarioBean.ticket.nomeUsuario}" />
 				</h:panelGrid>
 
 				<p:separator />
@@ -400,7 +390,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoUsuarioBean.salvar}"
-						update=":formListagem:tabela :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -424,6 +414,34 @@
 									icon="ui-icon-document"
 									actionListener="#{ticketAtendimentoUsuarioBean.novaOcorrencia}"
 									update=":formCadastroOcorrencia:painelOcorrencia">
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+
+								<p:commandButton value="Suspender"
+									disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
+									actionListener="#{ticketAtendimentoUsuarioBean.suspenderTicket}"
+									style="margin:0 3px"
+									update="formListagem:tabela :formListagem:messages :formListagem:tool"
+									onstart="PF('iconeDeProcessamento').show()"
+									onsuccess="PF('iconeDeProcessamento').hide()"
+									icon="fa fa-fw fa-ban">
+									<p:confirm header="Confirmação"
+										message="Deseja Suspender este Ticket?" icon="ui-icon-alert" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+
+								<p:commandButton value="Concluir"
+									disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
+									actionListener="#{ticketAtendimentoUsuarioBean.concluirTicket}"
+									style="margin:0 3px"
+									update="formListagem:tabela :formListagem:messages"
+									onstart="PF('iconeDeProcessamento').show()"
+									onsuccess="PF('iconeDeProcessamento').hide()"
+									icon="fa fa-fw fa-check-circle">
+									<p:confirm header="Confirmação"
+										message="Deseja Concluir este Ticket?" icon="ui-icon-alert" />
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
@@ -841,29 +859,32 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Solicitante" widgetVar="dialogoCliente"
+				<p:dialog header="Cadastro de Solicitante" widgetVar="dialogoCliente"
 			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastroCliente">
 				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="45" required="true"
+					<p:inputText id="nome" maxlength="100" size="40" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{ticketAtendimentoUsuarioBean.cliente.nome}" />
 
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
-						<p:inputText id="departamento" size="34" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{ticketAtendimentoUsuarioBean.cliente.nomeDepartamento}" />
+						<p:selectOneMenu id="departamento" filter="true"
+							value="#{ticketAtendimentoUsuarioBean.cliente.departamento}"
+							required="true"
+							requiredMessage="O campo 'Departamento' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems
+								value="#{ticketAtendimentoUsuarioBean.departamentosCliente}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
 
-						<p:commandButton icon="ui-icon-search"
-							title="Pesquisa Departamento" process="@this" update="@none"
-							oncomplete="PF('dialogoPesqDepartamentoCliente').show();">
-
-							<p:resetInput target="departamento" />
-						</p:commandButton>
 					</h:panelGroup>
 				</h:panelGrid>
 
@@ -882,7 +903,7 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
-
+		
 		<p:dialog header="Encaminhar Ticket" widgetVar="dialogoEncaminhar"
 			draggable="false" resizable="false" closable="true">
 			<h:form id="formEncaminhar">

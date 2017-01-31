@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -165,6 +166,24 @@ public class ManutencaoBean implements Serializable {
 
 	public void setBuscaTecnico(String buscaTecnico) {
 		this.buscaTecnico = buscaTecnico;
+	}
+	
+	@PostConstruct
+	public void abrirTabelas() {
+		try {
+			TecnicoDAO tecnicoDAO = new TecnicoDAO();
+			tecnicos = tecnicoDAO.listar("nome");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Registros.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
 	}
 
 	public void pesquisar() {

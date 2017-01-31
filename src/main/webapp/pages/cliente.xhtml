@@ -147,18 +147,20 @@
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
-						<p:inputText id="departamento" size="34" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{clienteBean.cliente.nomeDepartamento}" />
+						<p:selectOneMenu id="departamento" filter="true"
+							value="#{clienteBean.cliente.departamento}" required="true"
+							requiredMessage="O campo 'Departamento' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{clienteBean.departamentos}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
 
-						<p:commandButton icon="ui-icon-search"
-							title="Pesquisa Departamento" process="@this" update="@none"
-							oncomplete="PF('dialogoPesqDepartamento').show();">
-
-							<p:resetInput target="departamento" />
-						</p:commandButton>
-
-						<p:commandButton icon="ui-icon-document" title="Novo Departamento"
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Departamento"
 							oncomplete="PF('dialogoDepartamento').show();" />
 					</h:panelGroup>
 

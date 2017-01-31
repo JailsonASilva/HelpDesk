@@ -239,27 +239,21 @@
 						</p:commandButton>
 					</h:panelGroup>
 
-
-					<p:outputLabel for="tecnico" value="Técnico " />
+					<p:outputLabel for="tecnico" value="Tecnico " />
 					<h:panelGroup>
-						<p:inputText id="tecnico" size="27" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{manutencaoBean.manutencao.nomeTecnico}" />
+						<p:selectOneMenu id="tecnico" filter="true"
+							value="#{manutencaoBean.manutencao.tecnico}" required="true"
+							requiredMessage="O campo 'Tecnico' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{manutencaoBean.tecnicos}" var="tecnico"
+								itemValue="#{tecnico}" itemLabel="#{tecnico.nome}" />
+						</p:selectOneMenu>
 
-						<p:commandButton icon="ui-icon-search" title="Pesquisa Tecnico"
-							process="@this" update="@none"
-							oncomplete="PF('dialogoPesqTecnico').show();">
-
-							<p:resetInput target="tecnico" />
-						</p:commandButton>
-
-						<p:commandButton icon="ui-icon-document" title="Novo Tecnico"
-							process="@this" update=":formCadastroTecnico:painelTecnico"
-							oncomplete="PF('dialogoTecnico').show();">
-
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Tecnico" oncomplete="PF('dialogoTecnico').show();" />
 					</h:panelGroup>
 
 					<p:outputLabel for="tipo" value="Tipo" />

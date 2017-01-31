@@ -176,50 +176,39 @@
 						requiredMessage="Campo Obrigatório"
 						value="#{artigoBean.artigo.titulo}" />
 
-					<p:outputLabel for="nivel" value="Nível " />
+					<p:outputLabel for="nivel" value="Nivel " />
 					<h:panelGroup>
-						<p:inputText id="nivel" size="34" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{artigoBean.artigo.nomeNivel}" />
+						<p:selectOneMenu id="nivel" filter="true"
+							value="#{artigoBean.artigo.nivel}" required="true"
+							requiredMessage="O campo 'Nivel' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{artigoBean.niveis}" var="nivel"
+								itemValue="#{nivel}" itemLabel="#{nivel.nome}" />
+						</p:selectOneMenu>
 
-						<p:commandButton icon="ui-icon-search" title="Pesquisa Nivel"
-							process="@this" update="@none"
-							oncomplete="PF('dialogoPesqNivel').show();">
-
-							<p:resetInput target="nivel" />
-						</p:commandButton>
-
-						<p:commandButton icon="ui-icon-document" title="Novo Nivel"
-							process="@this" update=":formCadastroNivel:painelNivel"
-							oncomplete="PF('dialogoNivel').show();">
-
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Nivel" oncomplete="PF('dialogoNivel').show();" />
 					</h:panelGroup>
 
 					<p:outputLabel for="classificacao" value="Classificação " />
 					<h:panelGroup>
-						<p:inputText id="classificacao" size="34" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{artigoBean.artigo.nomeClassificacao}" />
-
-						<p:commandButton icon="ui-icon-search"
-							title="Pesquisa Classificacao" process="@this" update="@none"
-							oncomplete="PF('dialogoPesqClassificacao').show();">
-
-							<p:resetInput target="classificacao" />
-						</p:commandButton>
+						<p:selectOneMenu id="classificacao" filter="true"
+							value="#{artigoBean.artigo.classificacao}" required="true"
+							requiredMessage="O campo 'Nivel' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{artigoBean.classificacoes}"
+								var="classificacao" itemValue="#{classificacao}"
+								itemLabel="#{classificacao.nome}" />
+						</p:selectOneMenu>
 
 						<p:commandButton icon="ui-icon-document"
-							title="Novo Classificacao" process="@this"
-							update=":formCadastroClassificacao:painelClassificacao"
-							oncomplete="PF('dialogoClassificacao').show();">
-
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
-
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Nivel" oncomplete="PF('dialogoNivel').show();" />
 					</h:panelGroup>
 
 					<p:outputLabel for="palavra" value="Palavras Chaves" />

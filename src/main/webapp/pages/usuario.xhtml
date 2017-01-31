@@ -170,50 +170,45 @@
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
-					<p:inputText id="nome" maxlength="100" size="45" required="true"
+					<p:inputText id="nome" maxlength="100" size="43" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{usuarioBean.usuario.nome}" />
 
 					<p:outputLabel for="email" value="E-mail " />
-					<p:inputText id="email" maxlength="100" size="45" required="true"
+					<p:inputText id="email" maxlength="100" size="43" required="true"
 						value="#{usuarioBean.usuario.email}" />
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
-						<p:inputText id="departamento" size="34" required="true"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}"
-							value="#{usuarioBean.usuario.nomeDepartamento}" />
+						<p:selectOneMenu id="departamento" filter="true"
+							value="#{usuarioBean.usuario.departamento}" required="true"
+							requiredMessage="O campo 'Departamento' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{usuarioBean.departamentos}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
 
-						<p:commandButton icon="ui-icon-search"
-							title="Pesquisa Departamento" process="@this" update="@none"
-							oncomplete="PF('dialogoPesqDepartamento').show();">
-
-							<p:resetInput target="departamento" />
-						</p:commandButton>
-
-						<p:commandButton icon="ui-icon-document" title="Novo Departamento"
-							process="@this"
-							update=":formCadastroDepartamento:painelDepartamento"
-							oncomplete="PF('dialogoDepartamento').show();">
-
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:commandButton>
-
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Departamento"
+							oncomplete="PF('dialogoDepartamento').show();" />
 					</h:panelGroup>
+
 
 					<p:outputLabel for="acesso" value="Acesso " />
 					<h:panelGroup>
-						<p:inputText id="acesso" size="40" required="true"
-							value="#{usuarioBean.usuario.nomeAcesso}"
-							readonly="#{facesContext.currentPhaseId.name eq 'RENDER_RESPONSE'}" />
-
-						<p:commandButton icon="ui-icon-search" title="Pesquisa"
-							process="@this" update="@none"
-							oncomplete="PF('dialogoPesqAcesso').show();">
-
-							<p:resetInput target="acesso" />
-						</p:commandButton>
+						<p:selectOneMenu id="acesso" filter="true"
+							value="#{usuarioBean.usuario.acesso}" required="true"
+							requiredMessage="O campo 'Acesso' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{usuarioBean.acessos}" var="acesso"
+								itemValue="#{acesso}" itemLabel="#{acesso.nome}" />
+						</p:selectOneMenu>
 					</h:panelGroup>
 
 					<p:outputLabel for="ramal" value="Ramal" />
@@ -239,24 +234,6 @@
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogo').hide();" />
-
-					<p:menuButton value="Opções" style="margin:0 50px 0 50px">
-
-						<p:menuitem value="Novo Departamento"
-							oncomplete="PF('dialogoDepartamento').show();"
-							update=":formCadastroDepartamento:painelDepartamento">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-
-						<p:menuitem value="Novo Acesso"
-							oncomplete="PF('dialogoAcesso').show();"
-							update=":formCadastroAcesso:painelAcesso">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-					</p:menuButton>
-
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

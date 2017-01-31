@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -161,6 +162,27 @@ public class ArtigoBean implements Serializable {
 
 	public void setBuscaClassificacao(String buscaClassificacao) {
 		this.buscaClassificacao = buscaClassificacao;
+	}
+	
+	@PostConstruct
+	public void abrirTabelas() {
+		try {
+			NivelDAO nivelDAO = new NivelDAO();
+			niveis = nivelDAO.listar("nome");
+			
+			ClassificacaoDAO classificacaoDAO = new ClassificacaoDAO();
+			classificacoes = classificacaoDAO.listar("nome");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}		
 	}
 
 	public void pesquisar() {

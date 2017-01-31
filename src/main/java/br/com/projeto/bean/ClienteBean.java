@@ -4,6 +4,7 @@ package br.com.projeto.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -86,6 +87,24 @@ public class ClienteBean implements Serializable {
 
 	public void setBuscaDepartamento(String buscaDepartamento) {
 		this.buscaDepartamento = buscaDepartamento;
+	}
+	
+	@PostConstruct
+	public void abrirTabelas(){
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentos = departamentoDAO.listar("nome");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Tabelas.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}		
 	}
 
 	public void pesquisar() {

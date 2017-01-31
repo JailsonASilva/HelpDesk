@@ -224,11 +224,6 @@
 						<h:outputText value="#{ticket.prioridadeFormatada}" />
 					</p:column>
 
-					<p:column headerText="Categoria" sortBy="#{ticket.categoria.nome}"
-						style="text-align:center" width="60">
-						<h:outputText value="#{ticket.categoria.nome}" />
-					</p:column>
-
 					<p:column headerText="Responsável"
 						sortBy="#{ticket.usuarioAtendimento.nome}" width="60"
 						style="text-align:center">
@@ -427,6 +422,34 @@
 									icon="ui-icon-document"
 									actionListener="#{ticketAtendimentoDepartamentoBean.novaOcorrencia}"
 									update=":formCadastroOcorrencia:painelOcorrencia">
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+
+								<p:commandButton value="Suspender"
+									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+									actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicket}"
+									style="margin:0 3px"
+									update="formListagem:tabela :formListagem:messages"
+									onstart="PF('iconeDeProcessamento').show()"
+									onsuccess="PF('iconeDeProcessamento').hide()"
+									icon="fa fa-fw fa-ban">
+									<p:confirm header="Confirmação"
+										message="Deseja Suspender este Ticket?" icon="ui-icon-alert" />
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+
+								<p:commandButton value="Concluir"
+									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+									actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicket}"
+									style="margin:0 3px"
+									update="formListagem:tabela :formListagem:messages"
+									onstart="PF('iconeDeProcessamento').show()"
+									onsuccess="PF('iconeDeProcessamento').hide()"
+									icon="fa fa-fw fa-check-circle">
+									<p:confirm header="Confirmação"
+										message="Deseja Concluir este Ticket?" icon="ui-icon-alert" />
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
@@ -655,7 +678,7 @@
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
 						<p:selectOneMenu id="departamento" filter="true"
-							value="#{ticketAtendimentoDepartamentoBean.cliente.departamento.nome}"
+							value="#{ticketAtendimentoDepartamentoBean.cliente.departamento}"
 							required="true"
 							requiredMessage="O campo 'Departamento' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">
