@@ -21,19 +21,19 @@
 				closable="true" collapsible="true" style="border:none;">
 
 				<p:panel
-					header="Help Desk 1.1.4.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
+					header="Help Desk 1.1.5.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 					<h:graphicImage url="/imagens/educa.png" width="111" height="42" />
 				</p:panel>
 
 			</p:layoutUnit>
 
-			<p:layoutUnit position="west" size="235" resizable="true"
+			<p:layoutUnit position="west" size="245" resizable="true"
 				closable="true" collapsible="true" style="border:none;">
 
 				<ui:insert name="menu">
 					<h:form>
 
-						<p:slideMenu style="width: 210px;height: 360px" rendered="true"
+						<p:slideMenu style="width: 210px;height: 370px" rendered="true"
 							backLabel="Voltar">
 							<p:submenu label="Sistemas" icon="fa fa fw fa-user">
 
@@ -215,6 +215,11 @@
 
 							<p:menuitem value="Ticket's por Departamento"
 								url="/pages/ticketDepartamento.xhtml"
+								icon="fa fa fw fa-angle-double-right" />
+
+							<p:separator />
+
+							<p:menuitem value="Utilitários" url="/pages/utilitarios.xhtml"
 								icon="fa fa fw fa-angle-double-right" />
 
 							<p:separator />

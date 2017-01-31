@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Utilitários">
+
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+					<p:commandLink id="gvhelp" ajax="false"
+						actionListener="#{utilitariosBean.gvHelp}">
+						<h:outputText value="GvHelp" />
+						<p:fileDownload value="#{utilitariosBean.arquivo}" />
+					</p:commandLink>
+
+					<br></br>
+
+					<p:commandLink id="help" ajax="false"
+						actionListener="#{utilitariosBean.ammy}">
+						<h:outputText value="Help (Ammy)" />
+						<p:fileDownload value="#{utilitariosBean.arquivo}" />
+					</p:commandLink>
+
+					<br></br>
+
+					<p:commandLink id="winbox" ajax="false"
+						actionListener="#{utilitariosBean.winbox}">
+						<h:outputText value="Winbox" />
+						<p:fileDownload value="#{utilitariosBean.arquivo}" />
+					</p:commandLink>
+
+					<br></br>
+
+					<p:commandLink id="xenCenter" ajax="false"
+						actionListener="#{utilitariosBean.xenCenter}">
+						<h:outputText value="Xen Center" />
+						<p:fileDownload value="#{utilitariosBean.arquivo}" />
+					</p:commandLink>
+				</h:panelGrid>
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>
