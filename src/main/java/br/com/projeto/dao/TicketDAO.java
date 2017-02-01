@@ -24,8 +24,9 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.eq("status", status));
 
-			consulta.addOrder(Order.asc("prioridade"));
+			//consulta.addOrder(Order.asc("prioridade"));			
 			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.asc("codigo"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;
@@ -49,8 +50,9 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
 
-			consulta.addOrder(Order.asc("prioridade"));
+			//consulta.addOrder(Order.asc("prioridade"));			
 			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;
@@ -74,8 +76,9 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.eq("status", status));
 
-			consulta.addOrder(Order.asc("prioridade"));
-			consulta.addOrder(Order.asc("dataAbertura"));
+			//consulta.addOrder(Order.asc("prioridade"));			
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;
@@ -99,8 +102,9 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
 
-			consulta.addOrder(Order.asc("prioridade"));
-			consulta.addOrder(Order.asc("dataAbertura"));
+			//consulta.addOrder(Order.asc("prioridade"));			
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;
@@ -124,8 +128,9 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.eq("status", status));
 
-			consulta.addOrder(Order.asc("prioridade"));
-			consulta.addOrder(Order.asc("dataAbertura"));
+			//consulta.addOrder(Order.asc("prioridade"));			
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;
