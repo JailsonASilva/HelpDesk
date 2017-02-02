@@ -158,6 +158,7 @@ public class TicketExternoBean implements Serializable {
 	public void salvar() throws EmailException {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
+			ticket.setEmailEnviado(false);
 			ticketDAO.merge(ticket);
 			
 			FacesContext context = FacesContext.getCurrentInstance();

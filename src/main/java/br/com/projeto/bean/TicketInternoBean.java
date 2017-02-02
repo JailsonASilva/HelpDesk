@@ -306,6 +306,7 @@ public class TicketInternoBean implements Serializable {
 	public void salvar() throws EmailException {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
+			ticket.setEmailEnviado(false);
 			ticketDAO.merge(ticket);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
