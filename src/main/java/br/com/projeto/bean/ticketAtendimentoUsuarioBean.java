@@ -370,10 +370,11 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso!", "Ticket Salvo com Sucesso");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null, new FacesMessage("Aviso!",
+					"Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));	
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
@@ -566,10 +567,8 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.excluir(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Nº do Ticket: " + ticket.getCodigo());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Registro Excluído com Sucesso!", "Nº do Ticket: " + ticket.getCodigo()));
 
 			ticket = null;
 

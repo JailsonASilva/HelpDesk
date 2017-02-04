@@ -130,7 +130,7 @@
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
 							actionListener="#{ticketAtendimentoDepartamentoBean.excluirTicket}"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-							update=":formListagem:tabela :formListagem:tool"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"

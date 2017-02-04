@@ -361,7 +361,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			tickets = ticketDAO.pesquisarDepartamento(departamentoPesq);
-			
+
 			FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":formListagem:tool");
 
 		} catch (
@@ -406,9 +406,10 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Aviso!", "Ticket Salvo com Sucesso");
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null,
+					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
@@ -465,7 +466,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
-			
+
 			FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":formListagem:tool");
 
 		} catch (RuntimeException erro) {
@@ -522,13 +523,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoListagemOcorrencia').hide();");
-			
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null,
 					new FacesMessage("Ticket Suspenso com Sucesso!", "Ticket Nº " + ticket.getCodigo() + " Suspenso!"));
-			
+
 			FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":formListagem:tool");
 
 		} catch (RuntimeException erro) {
@@ -553,9 +555,10 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-			
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoListagemOcorrencia').hide();");
-			
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
@@ -588,10 +591,9 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.excluir(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Nº do Ticket: " + ticket.getCodigo());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null,
+					new FacesMessage("Registro Excluído com Sucesso!", "Nº do Ticket: " + ticket.getCodigo()));
 
 			ticket = null;
 
@@ -982,7 +984,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void duploTicket(SelectEvent evento) {
 		try {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
@@ -994,7 +996,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void salvarCategoria() {
 		try {
@@ -1004,7 +1006,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCategoria').hide();");
 
 			categoria = new Categoria();
-			
+
 			categorias = categoriaDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -1024,7 +1026,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
 
 			departamento = new Departamento();
-			
+
 			departamentos = departamentoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -1044,7 +1046,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCliente').hide();");
 
 			cliente = new Cliente();
-			
+
 			clientes = clienteDAO.listar("nome");
 
 		} catch (RuntimeException erro) {

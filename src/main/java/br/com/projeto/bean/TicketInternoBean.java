@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.apache.commons.mail.EmailException;
@@ -243,7 +244,7 @@ public class TicketInternoBean implements Serializable {
 
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listarAtendimento();
-			departamentosCliente = departamentoDAO.listar("nome");			
+			departamentosCliente = departamentoDAO.listar("nome");
 
 			ClienteDAO clienteDAO = new ClienteDAO();
 			clientes = clienteDAO.listar("nome");
@@ -309,11 +310,12 @@ public class TicketInternoBean implements Serializable {
 			ticket.setEmailEnviado(false);
 			ticketDAO.merge(ticket);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Ticket Aberto com Sucesso!",
-					"Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's");
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!",
+					"Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's"));
 
-			//enviarEmailDepartamento();
-			//enviarEmailSolicitante();
+			// enviarEmailDepartamento();
+			// enviarEmailSolicitante();
 
 			novo();
 
@@ -679,7 +681,7 @@ public class TicketInternoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCategoria').hide();");
 
 			categoria = new Categoria();
-			
+
 			categorias = categoriaDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -699,7 +701,7 @@ public class TicketInternoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
 
 			departamento = new Departamento();
-						
+
 			departamentos = departamentoDAO.listarAtendimento();
 			departamentosCliente = departamentoDAO.listar("nome");
 
@@ -720,8 +722,8 @@ public class TicketInternoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCliente').hide();");
 
 			cliente = new Cliente();
-			
-			clientes = clienteDAO.listar("nome");			
+
+			clientes = clienteDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",

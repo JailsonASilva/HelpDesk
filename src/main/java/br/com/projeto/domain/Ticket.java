@@ -52,7 +52,7 @@ public class Ticket extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String assunto;
 
-	@Column(length = 600, nullable = false)
+	@Column(length = 1000, nullable = false)
 	private String solicitacao;
 
 	@Column(nullable = true)

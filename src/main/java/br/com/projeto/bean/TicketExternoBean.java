@@ -162,7 +162,7 @@ public class TicketExternoBean implements Serializable {
 			ticketDAO.merge(ticket);
 			
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!", "Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's"));
+			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!", "Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's"));			
 
 			//enviarEmailDepartamento();
 			//enviarEmailSolicitante();
