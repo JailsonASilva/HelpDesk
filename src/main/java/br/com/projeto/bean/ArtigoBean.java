@@ -292,6 +292,8 @@ public class ArtigoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoNivel').hide();");
 
 			nivel = new Nivel();
+			
+			niveis = nivelDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -310,6 +312,8 @@ public class ArtigoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoClassificacao').hide();");
 
 			classificacao = new Classificacao();
+			
+			classificacoes = classificacaoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
