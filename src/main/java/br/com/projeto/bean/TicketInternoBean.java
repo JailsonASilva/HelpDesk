@@ -319,8 +319,6 @@ public class TicketInternoBean implements Serializable {
 
 			novo();
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());

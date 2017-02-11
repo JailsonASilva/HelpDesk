@@ -17,223 +17,182 @@
 
 	<div>
 		<p:layout fullPage="true">
-			<p:layoutUnit position="north" size="110" resizable="true"
-				closable="true" collapsible="true" style="border:none;">
+			<p:layoutUnit position="north" size="130" resizable="true">
 
-				<p:panel
-					header="Help Desk 1.1.10.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
-					<h:graphicImage url="/imagens/educa.png" width="111" height="42" />
-				</p:panel>
+				<p:ribbon>
+					<p:tab
+						title="Help Desk 1.1.16.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 
-			</p:layoutUnit>
+						<p:ribbonGroup style="height: 40px;">
+							<h:form>
+								<p:commandLink title="Novo Ticket Externo"
+									action="#{barraFerramentaBean.ticketExterno}">
+									<h:graphicImage url="/imagens/novo2.png" />
+								</p:commandLink>
 
-			<p:layoutUnit position="west" size="245" resizable="true"
-				closable="true" collapsible="true" style="border:none;">
+								<p:commandLink title="Novo Ticket Interno"
+									action="#{barraFerramentaBean.ticketInterno}">
+									<h:graphicImage url="/imagens/novo.png" />
+								</p:commandLink>
+							</h:form>
+						</p:ribbonGroup>
 
-				<ui:insert name="menu">
-					<h:form>
+						<p:ribbonGroup style="height: 40px;">
+							<h:form>
+								<p:commandLink title="Ticket por Departamento"
+									action="#{barraFerramentaBean.ticketDepartamento}">
+									<h:graphicImage url="/imagens/atendimento.png" />
+								</p:commandLink>
+								
+								<p:commandLink title="Meus Atendimentos"
+									action="#{barraFerramentaBean.ticketUsuario}">
+									<h:graphicImage url="/imagens/atendimento2.png" />
+								</p:commandLink>								
+							</h:form>
 
-						<p:slideMenu style="width: 210px;height: 370px" rendered="true"
-							backLabel="Voltar">
-							<p:submenu label="Sistemas" icon="fa fa fw fa-user">
+						</p:ribbonGroup>
 
-								<p:menuitem value="Departamentos"
-									icon="fa fa fw fa-angle-double-right"
-									url="/pages/departamento.xhtml" />
+					</p:tab>
+				</p:ribbon>
 
-								<p:menuitem value="Acessos"
-									icon="fa fa fw fa-angle-double-right" url="/pages/acesso.xhtml" />
+				<h:form>
+					<p:menubar>
+						<p:submenu label="Sistemas" icon="fa fa fw fa-user">
+							<p:menuitem value="Departamentos" url="/pages/departamento.xhtml" />
+							<p:menuitem value="Acessos" url="/pages/acesso.xhtml" />
+							<p:menuitem value="Usuários" url="/pages/usuario.xhtml" />
+						</p:submenu>
 
-								<p:menuitem value="Usuários"
-									icon="fa fa fw fa-angle-double-right"
-									url="/pages/usuario.xhtml" />
+						<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
 
+							<p:submenu label="Cadastros"
+								icon="fa fa fw fa-angle-double-right">
 
+								<p:menuitem value="Solcitantes" url="/pages/cliente.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.cliente}" />
+
+								<p:menuitem value="Categorias" url="/pages/categoria.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.categoria}" />
 							</p:submenu>
 
-							<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
+							<p:submenu label="Movimento"
+								icon="fa fa fw fa-angle-double-right">
 
-								<p:submenu label="Cadastros"
-									icon="fa fa fw fa-angle-double-right">
+								<p:menuitem value="Novo Ticket (Interno)"
+									url="/pages/ticketInterno.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
 
-									<p:menuitem value="Solcitantes" url="/pages/cliente.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.cliente}" />
+								<p:menuitem value="Novo Ticket (Externo)"
+									url="/pages/ticketExterno.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
+							</p:submenu>
 
-									<p:menuitem value="Categorias" url="/pages/categoria.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.categoria}" />
-								</p:submenu>
+							<p:submenu label="Consultas"
+								icon="fa fa fw fa-angle-double-right">
 
-								<p:submenu label="Movimento"
-									icon="fa fa fw fa-angle-double-right">
+								<p:menuitem value="Ticket's por Departamento"
+									url="/pages/ticketDepartamento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}" />
 
-									<p:menuitem value="Novo Ticket (Interno)"
-										url="/pages/ticketInterno.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
+								<p:menuitem value="Ticket's por Atendente"
+									url="/pages/ticketUsuario.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}" />
 
-									<p:menuitem value="Novo Ticket (Externo)"
-										url="/pages/ticketExterno.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
-								</p:submenu>
+							</p:submenu>
+						</p:submenu>
 
-								<p:submenu label="Consultas"
-									icon="fa fa fw fa-angle-double-right">
 
-									<p:menuitem value="Ticket's por Departamento"
-										url="/pages/ticketDepartamento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}" />
+						<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
 
-									<p:menuitem value="Ticket's por Atendente"
-										url="/pages/ticketUsuario.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}" />
+							<p:submenu label="Cadastros"
+								icon="fa fa fw fa-angle-double-right">
 
-								</p:submenu>
+								<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.equipamento}" />
+
+								<p:menuitem value="Marcas" url="/pages/marca.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.manutencao}" />
+
+								<p:menuitem value="Local" url="/pages/localEquipamento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.localEquipamento}" />
+
+								<p:menuitem value="Técnico" url="/pages/tecnico.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.tecnico}" />
+
+								<p:menuitem value="Tipos de Equipamento"
+									url="/pages/tipoEquipamento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEquipamento}" />
+							</p:submenu>
+
+							<p:submenu label="Movimento"
+								icon="fa fa fw fa-angle-double-right">
+								<p:menuitem value="Manutenção" url="/pages/manutencao.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.manutencao}" />
+							</p:submenu>
+
+							<p:submenu label="Consultas"
+								icon="fa fa fw fa-angle-double-right">
+
+								<p:menuitem value="Próximas Manutenções"
+									url="/pages/proximaManutencao.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.proximaManutencao}" />
 							</p:submenu>
 
 
-							<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
+						</p:submenu>
 
-								<p:submenu label="Cadastros"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Equipamentos" url="/pages/equipamento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.equipamento}" />
+						<p:submenu label="Eventos" icon="fa fa fw fa-calendar">
+							<p:submenu label="Cadastros"
+								icon="fa fa fw fa-angle-double-right">
 
-									<p:menuitem value="Marcas" url="/pages/marca.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.manutencao}" />
+								<p:menuitem value="Local" url="/pages/local.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.local}" />
 
-									<p:menuitem value="Local" url="/pages/localEquipamento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.localEquipamento}" />
+								<p:menuitem value="Tipo de Evento" url="/pages/tipoEvento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEvento}" />
 
-									<p:menuitem value="Técnico" url="/pages/tecnico.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.tecnico}" />
-
-									<p:menuitem value="Tipos de Equipamento"
-										url="/pages/tipoEquipamento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEquipamento}" />
-								</p:submenu>
-
-								<p:submenu label="Movimento"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Manutenção" url="/pages/manutencao.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.manutencao}" />
-								</p:submenu>
-
-								<p:submenu label="Consultas"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Próximas Manutenções"
-										icon="fa fa fw fa-angle-double-right"
-										url="/pages/proximaManutencao.xhtml"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.proximaManutencao}" />
-								</p:submenu>
-
-
+								<p:menuitem value="Material" url="/pages/material.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.material}" />
 							</p:submenu>
 
-							<p:submenu label="Eventos" icon="fa fa fw fa-calendar">
-								<p:submenu label="Cadastros"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Local" url="/pages/local.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.local}" />
-
-									<p:menuitem value="Tipo de Evento"
-										url="/pages/tipoEvento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.tipoEvento}" />
-
-									<p:menuitem value="Material" url="/pages/material.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.material}" />
-								</p:submenu>
-
-								<p:submenu label="Movimento"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Evento" url="/pages/evento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.evento}" />
-								</p:submenu>
-
+							<p:submenu label="Movimento"
+								icon="fa fa fw fa-angle-double-right">
+								<p:menuitem value="Evento" url="/pages/evento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.evento}" />
 							</p:submenu>
 
-							<p:submenu label="Base de Conhecimento"
-								icon="fa fa fw fa-list-ol">
-								<p:submenu label="Cadastros"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Nível" url="/pages/nivel.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
+						</p:submenu>
 
-									<p:menuitem value="Classficação"
-										icon="fa fa fw fa-angle-double-right"
-										url="/pages/classificacao.xhtml"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
+						<p:submenu label="Base de Conhecimento" icon="fa fa fw fa-list-ol">
+							<p:submenu label="Cadastros"
+								icon="fa fa fw fa-angle-double-right">
 
-									<p:menuitem value="Artigo" url="/pages/artigo.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.artigo}" />
-								</p:submenu>
+								<p:menuitem value="Nível" url="/pages/nivel.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
 
-								<p:submenu label="Consulta"
-									icon="fa fa fw fa-angle-double-right">
-									<p:menuitem value="Base de Conhecimento"
-										url="/pages/baseConhecimento.xhtml"
-										icon="fa fa fw fa-angle-double-right"
-										rendered="#{autenticacaoBean.usuarioLogado.acesso.baseConhecimento}" />
-								</p:submenu>
+								<p:menuitem value="Classficação"
+									url="/pages/classificacao.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.nivel}" />
+
+								<p:menuitem value="Artigo" url="/pages/artigo.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.artigo}" />
 							</p:submenu>
 
-							<p:separator />
-							<p:menuitem value="Novo Ticket (Interno)"
-								url="/pages/ticketInterno.xhtml"
-								icon="fa fa fw fa-angle-double-right"
-								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}" />
+							<p:submenu label="Consulta" icon="fa fa fw fa-angle-double-right">
+								<p:menuitem value="Base de Conhecimento"
+									url="/pages/baseConhecimento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.baseConhecimento}" />
+							</p:submenu>
+						</p:submenu>
 
-							<p:menuitem value="Novo Ticket (Externo)"
-								url="/pages/ticketExterno.xhtml"
-								icon="fa fa fw fa-angle-double-right"
-								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
-
-							<p:separator />
-
-							<p:menuitem value="Meus Ticket's" url="/pages/meusTickets.xhtml"
-								icon="fa fa fw fa-angle-double-right" />
-
-							<p:menuitem value="Meus Atendimentos"
-								url="/pages/ticketUsuario.xhtml"
-								icon="fa fa fw fa-angle-double-right" />
-
-							<p:menuitem value="Ticket's por Departamento"
-								url="/pages/ticketDepartamento.xhtml"
-								icon="fa fa fw fa-angle-double-right" />
-
-							<p:separator />
-
-							<p:menuitem value="Utilitários" url="/pages/utilitarios.xhtml"
-								icon="fa fa fw fa-angle-double-right" />
-
-							<p:separator />
-
-							<p:menuitem value="Página Inicial" icon="fa fa fw fa-home"
-								url="/pages/principal.xhtml" />
-
-							<p:menuitem value="Deconectar"
+						<f:facet name="options">
+							<p:commandButton value="Desconectar"
 								actionListener="#{autenticacaoBean.desconectar}"
-								icon="fa fa fw fa-close" />
-						</p:slideMenu>
+								icon="ui-icon-extlink" />
+						</f:facet>
+					</p:menubar>
 
-					</h:form>
-				</ui:insert>
+				</h:form>
 
 			</p:layoutUnit>
 
@@ -242,7 +201,8 @@
 					closable="true" collapsible="true">
 
 					<h:outputText
-						value="Faculdade de Ciências e Tecnologia do Maranhão." />
+						value="Faculdade de Ciências e Tecnologia do Maranhão."
+						onfocus="sessao.startCountdown" />
 					<br></br>
 					<h:outputText value="Tecnologia da Informação." />
 
@@ -258,10 +218,6 @@
 		</p:layout>
 	</div>
 
-
 	<br></br>
-
-
-
 </h:body>
 </html>

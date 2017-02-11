@@ -58,7 +58,19 @@ h1 {
 	width: 100%
 }
 
+.ui-layout-north {
+	z-index: 20 !important;
+	overflow: visible !important;;
+}
+
+.ui-layout-north .ui-layout-unit-content {
+	overflow: visible !important;
+}
 
 .sem-linha .ui-panelgrid-cell, .sem-linha .ui-widget-content {
 	border: none !important;
+}
+
+.novoTicketInterno {
+    background-image: url(/imagens/novo.png)
 }

@@ -540,6 +540,12 @@
 						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
+						
+					<p:commandButton value="Salvare e Enviar E-mail" icon="ui-icon-disk"
+						actionListener="#{ticketAtendimentoUsuarioBean.salvarOcorrenciaEmail}"
+						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />						
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoOcorrencia').hide();" />

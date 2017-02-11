@@ -412,6 +412,28 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void salvarOcorrenciaEmail() throws EmailException {
+		try {
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			enviarEmail();
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
+
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
+
+			ocorrencia = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}	
 
 	public void atenderTicket() throws EmailException {
 		try {
