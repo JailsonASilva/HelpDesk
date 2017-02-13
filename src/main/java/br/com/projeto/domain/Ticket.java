@@ -43,6 +43,10 @@ public class Ticket extends GenericDomain {
 	@Temporal(TemporalType.DATE)
 	private Date dataAbertura;
 
+	@Temporal(TemporalType.TIME)
+	@Column(nullable = true)
+	private Date hora;
+
 	@Column(length = 40, nullable = false)
 	private String status;
 
@@ -238,6 +242,14 @@ public class Ticket extends GenericDomain {
 	@Transient
 	public void setNomeUsuarioAtendimento(String nomeUsuarioAtendimento) {
 		usuarioAtendimento.setNome(nomeUsuarioAtendimento);
+	}
+
+	public Date getHora() {
+		return hora;
+	}
+
+	public void setHora(Date hora) {
+		this.hora = hora;
 	}
 
 }
