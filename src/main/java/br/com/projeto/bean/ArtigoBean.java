@@ -163,13 +163,13 @@ public class ArtigoBean implements Serializable {
 	public void setBuscaClassificacao(String buscaClassificacao) {
 		this.buscaClassificacao = buscaClassificacao;
 	}
-	
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
 			NivelDAO nivelDAO = new NivelDAO();
 			niveis = nivelDAO.listar("nome");
-			
+
 			ClassificacaoDAO classificacaoDAO = new ClassificacaoDAO();
 			classificacoes = classificacaoDAO.listar("nome");
 
@@ -182,7 +182,7 @@ public class ArtigoBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
 			erro.printStackTrace();
-		}		
+		}
 	}
 
 	public void pesquisar() {
@@ -230,10 +230,13 @@ public class ArtigoBean implements Serializable {
 		try {
 			UploadedFile arquivoUpload = evento.getFile();
 			Path arquivoTemp = Files.createTempFile(null, null);
+
 			Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
 			artigo.setCaminho(arquivoTemp.toString());
 
-		} catch (IOException erro) {
+		} catch (
+
+		IOException erro) {
 			Messages.addGlobalInfo("Ocorreu um erro ao tentar realizar o upload de arquivo");
 			erro.printStackTrace();
 		}
@@ -257,7 +260,7 @@ public class ArtigoBean implements Serializable {
 			if (artigo.getCaminho() == null) {
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage("Campo Obrigatório!", "Informe o Arquivo a ser Anexado!"));
-				
+
 				return;
 			}
 
@@ -292,7 +295,7 @@ public class ArtigoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoNivel').hide();");
 
 			nivel = new Nivel();
-			
+
 			niveis = nivelDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -312,7 +315,7 @@ public class ArtigoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoClassificacao').hide();");
 
 			classificacao = new Classificacao();
-			
+
 			classificacoes = classificacaoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -354,123 +357,5 @@ public class ArtigoBean implements Serializable {
 	public void onRowUnselect(UnselectEvent event) {
 		artigo = null;
 	}
-
-	public void pesquisarNivel() {
-		try {
-			NivelDAO nivelDAO = new NivelDAO();
-			niveis = nivelDAO.pesquisar(buscaNivel);
-
-			if (niveis.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
-	public void selecionarNivel(ActionEvent evento) {
-		try {
-
-			Nivel nivelPesq = (Nivel) evento.getComponent().getAttributes().get("nivelSelecionado");
-
-			artigo.setNivel(nivelPesq);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqNivel').hide();");
-			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:nivel");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
-	public void pesquisarClassificacao() {
-		try {
-			ClassificacaoDAO classificacaoDAO = new ClassificacaoDAO();
-			classificacoes = classificacaoDAO.pesquisar(buscaClassificacao);
-
-			if (classificacoes.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
-	public void selecionarClassificacao(ActionEvent evento) {
-		try {
-
-			Classificacao classificacaoPesq = (Classificacao) evento.getComponent().getAttributes()
-					.get("classificacaoSelecionado");
-
-			artigo.setClassificacao(classificacaoPesq);
-
-			org.primefaces.context.RequestContext.getCurrentInstance()
-					.execute("PF('dialogoPesqClassificacao').hide();");
-			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:classificacao");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-	
-	public void duploCliqueNivel(SelectEvent evento) {
-		try {
-			artigo.setNivel(nivel);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqNivel').hide();");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-	
-	public void duploCliqueClassificacao(SelectEvent evento) {
-		try {
-			artigo.setClassificacao(classificacao);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqClassificacao').hide();");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}	
 
 }

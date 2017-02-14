@@ -1,7 +1,14 @@
 package br.com.projeto.bean;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -15,8 +22,12 @@ import org.apache.commons.mail.EmailException;
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
@@ -58,6 +69,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
 
+	private StreamedContent arquivo;
+
 	private FacesMessage message;
 
 	private String departamentoPesq;
@@ -69,6 +82,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private String buscaUsuario;
 	private String buscaEquipamento;
 	private String usuarioEmail;
+	private String extensao;
+	private String tipoArquivo;
 
 	public Ticket getTicket() {
 		return ticket;
@@ -286,6 +301,30 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.usuarioEmail = usuarioEmail;
 	}
 
+	public StreamedContent getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(StreamedContent arquivo) {
+		this.arquivo = arquivo;
+	}
+
+	public String getExtensao() {
+		return extensao;
+	}
+
+	public void setExtensao(String extensao) {
+		this.extensao = extensao;
+	}
+
+	public String getTipoArquivo() {
+		return tipoArquivo;
+	}
+
+	public void setTipoArquivo(String tipoArquivo) {
+		this.tipoArquivo = tipoArquivo;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -435,12 +474,21 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void salvarOcorrencia() throws EmailException {
+	public void salvarOcorrencia() throws EmailException, IOException {
 		try {
+			if (ocorrencia.getCaminho() != null) {
+				ocorrencia.setCodigoAnexo(ticket.getCodigo() + "" + ocorrencias.size());
+				ocorrencia.setTipoAnexo(tipoArquivo);
+
+				Path origem = Paths.get(ocorrencia.getCaminho());
+				Path destino = Paths
+						.get("C:/Ocorrencias/" + ticket.getCodigo() + ocorrencias.size() + "." + tipoArquivo);
+
+				Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+			}
+
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
-
-			// enviarEmail();
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -1155,7 +1203,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 					"Dados do Ticket " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
 					+ ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n" + "" + "\n"
 					+ "Dados da Solicitação: " + "\n" + ticket.getSolicitacao() + "\n";
-			
+
 			EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, usuarioEmail);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEmailOcorrencia').hide();");
@@ -1172,6 +1220,83 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 
+	}
+
+	public void upload(FileUploadEvent evento) {
+		try {
+			UploadedFile arquivoUpload = evento.getFile();
+			Path arquivoTemp = Files.createTempFile(null, null);
+
+			Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
+			ocorrencia.setCaminho(arquivoTemp.toString());
+
+			String extensao = evento.getFile().getContentType();
+
+			boolean encontrado = false;
+			tipoArquivo = "";
+
+			for (int i = 0; i < extensao.length(); i++) {
+				String busca = extensao.substring(0 + i, 1 + i);
+
+				if (busca.equals("/")) {
+					encontrado = true;
+				}
+
+				if (encontrado == true != (busca.equals("/"))) {
+					tipoArquivo = tipoArquivo + busca;
+				}
+
+			}
+
+			if (tipoArquivo.equals("plain")) {
+				tipoArquivo = "txt";
+			}
+
+			if (tipoArquivo.equals("msword")) {
+				tipoArquivo = "doc";
+			}
+
+			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+				tipoArquivo = "docx";
+			}
+			
+			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+				tipoArquivo = "xlsx";
+			}			
+			
+			if (tipoArquivo.equals("vnd.ms-excel")) {
+				tipoArquivo = "xls";
+			}			
+
+		} catch (IOException erro) {
+			Messages.addGlobalInfo("Ocorreu um erro ao tentar realizar o upload de arquivo");
+			erro.printStackTrace();
+		}
+	}
+
+	public void download(ActionEvent evento) {
+		try {
+			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
+
+			if (ocorrencia.getAnexo().equals("Sim")) {
+				InputStream stream = new FileInputStream(
+						"C:/Ocorrencias/" + ocorrencia.getCodigoAnexo() + "." + ocorrencia.getTipoAnexo());
+
+				arquivo = new DefaultStreamedContent(stream, tipoArquivo + "/" + tipoArquivo,
+						ocorrencia.getCodigo() + "." + ocorrencia.getTipoAnexo());
+			} else {
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Aviso!", "Não existe nenhum arquivo Anexado."));
+
+				return;
+
+			}
+
+		} catch (FileNotFoundException erro) {
+			Messages.addGlobalError("Ocorreu um erro ao tentar efetuar o download da Arquivo");
+			erro.printStackTrace();
+		}
 	}
 
 }

@@ -63,6 +63,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	private String buscaCategoria;
 	private String buscaUsuario;
 	private String buscaEquipamento;
+	private String usuarioEmail;
 
 	public Ticket getTicket() {
 		return ticket;
@@ -248,6 +249,14 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		this.departamentosCliente = departamentosCliente;
 	}
 
+	public String getUsuarioEmail() {
+		return usuarioEmail;
+	}
+
+	public void setUsuarioEmail(String usuarioEmail) {
+		this.usuarioEmail = usuarioEmail;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -370,11 +379,11 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-			
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
-			context.addMessage(null, new FacesMessage("Aviso!",
-					"Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));	
+			context.addMessage(null,
+					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
@@ -412,7 +421,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void salvarOcorrenciaEmail() throws EmailException {
 		try {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
@@ -433,7 +442,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void atenderTicket() throws EmailException {
 		try {
@@ -512,7 +521,8 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoListagemOcorrencia').hide();");
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
@@ -542,7 +552,8 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoListagemOcorrencia').hide();");
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
@@ -570,7 +581,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void duploTicket(SelectEvent evento) {
 		try {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
@@ -582,7 +593,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
-	}	
+	}
 
 	public void excluirTicket(ActionEvent evento) {
 		try {
@@ -590,7 +601,8 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			ticketDAO.excluir(ticket);
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Registro Excluído com Sucesso!", "Nº do Ticket: " + ticket.getCodigo()));
+			context.addMessage(null,
+					new FacesMessage("Registro Excluído com Sucesso!", "Nº do Ticket: " + ticket.getCodigo()));
 
 			ticket = null;
 
@@ -898,7 +910,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCategoria').hide();");
 
 			categoria = new Categoria();
-			
+
 			categorias = categoriaDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -918,7 +930,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
 
 			departamento = new Departamento();
-			
+
 			departamentos = departamentoDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -938,7 +950,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCliente').hide();");
 
 			cliente = new Cliente();
-			
+
 			clientes = clienteDAO.listar("nome");
 
 		} catch (RuntimeException erro) {
@@ -984,6 +996,50 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um Erro ao Tentar Enviar E-mail para o Departamento", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+
+	}
+
+	public void selecionarOcorrenciaEmail(ActionEvent evento) {
+		try {
+			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
+
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void enviarEmailOcorrencia() throws EmailException {
+		try {
+			String mensagem = "Registro de Ocorrência " + "\n" + "\n" + "Data Ocorrência: " + ocorrencia.getData()
+					+ "\n" + "Atendente: " + ocorrencia.getUsuario().getNome() + "\n" + "Ocorrência: "
+					+ ocorrencia.getOcorrencia() + "\n" + "" + "\n" +
+
+					"Dados do Ticket " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
+					+ ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n" + "" + "\n"
+					+ "Dados da Solicitação: " + "\n" + ticket.getSolicitacao() + "\n";
+
+			EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, usuarioEmail);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEmailOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Envio de Ocorrência!", "E-mail Enviado com Sucesso!"));
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Enviar E-mail",
+					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();

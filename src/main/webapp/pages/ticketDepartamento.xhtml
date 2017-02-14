@@ -277,6 +277,17 @@
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
+						<p:commandButton icon="fa fa-fw fa-sitemap" title="Ocorrências"
+							oncomplete="PF('dialogoListagemOcorrencia').show()"
+							actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrencia}"
+							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
 					</p:column>
 
 				</p:dataTable>
@@ -524,11 +535,16 @@
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							var="ocorrencia" rows="10" paginatorPosition="bottom">
 
-							<p:column headerText="Data Lanç." width="150"
-								style="text-align:center" sortBy="#{ocorrencia.data}">
+							<p:column headerText="Data" width="85" style="text-align:center"
+								sortBy="#{ocorrencia.data}">
 								<h:outputText value="#{ocorrencia.data}">
-									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy HH:mm:ss" />
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Hora" style="text-align:center"
+								sortBy="#{ocorrencia.hora}" width="85">
+								<h:outputText value="#{ocorrencia.hora}" />
 							</p:column>
 
 							<p:column headerText="Ocorrência"
@@ -544,16 +560,6 @@
 
 							<p:column headerText="Opções" width="100"
 								style="text-align:center">
-								<p:commandButton icon="ui-icon-trash" title="Excluir Ocorrência"
-									actionListener="#{ticketAtendimentoDepartamentoBean.excluirOcorrencia}"
-									update=":formListagemOcorrencia:tabView:tabelaOcorrencia"
-									onstart="PF('iconeDeProcessamento').show()"
-									onsuccess="PF('iconeDeProcessamento').hide()">
-									<p:confirm header="Confirmação"
-										message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
-								</p:commandButton>
-
 								<p:commandButton icon="ui-icon-pencil" title="Editar Ocorrência"
 									actionListener="#{ticketAtendimentoDepartamentoBean.editarOcorrencia}"
 									update=":formCadastroOcorrencia:painelOcorrencia"
@@ -573,6 +579,19 @@
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
 
+								<p:commandButton icon="ui-icon-arrowthick-1-s" title="Download"
+									actionListener="#{ticketAtendimentoDepartamentoBean.download}"
+									ajax="false">
+									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
+									<p:fileDownload
+										value="#{ticketAtendimentoDepartamentoBean.arquivo}" />
+								</p:commandButton>
+
+							</p:column>
+
+							<p:column headerText="Anexo" style="text-align:center"
+								sortBy="#{ocorrencia.anexo}" width="35">
+								<h:outputText value="#{ocorrencia.anexo}" />
 							</p:column>
 						</p:dataTable>
 
@@ -594,6 +613,17 @@
 						value="#{ticketAtendimentoDepartamentoBean.ocorrencia.ocorrencia}" />
 
 					<h:outputText id="display" />
+
+					<br></br>
+
+					<p:outputLabel for="arquivo" value="Arquivo" />
+					<p:fileUpload id="arquivo" required="false"
+						fileUploadListener="#{ticketAtendimentoDepartamentoBean.upload}"
+						mode="advanced" dragDropSupport="false" fileLimit="1"
+						allowTypes="/(\.|\/)(pdf|png|jpeg|doc|docx|txt|xls|xlsx)$/" />
+
+					<h:outputText
+						value="Permitido apena arquivo Pdf, jpeg, png, doc, docx, txt, xls e xlsx." />
 
 				</h:panelGrid>
 

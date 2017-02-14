@@ -21,16 +21,18 @@
 
 				<p:ribbon>
 					<p:tab
-						title="Help Desk 1.1.17.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
+						title="Help Desk 1.1.21.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 
 						<p:ribbonGroup style="height: 40px;">
 							<h:form>
 								<p:commandLink title="Novo Ticket Externo"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}"
 									action="#{barraFerramentaBean.ticketExterno}">
 									<h:graphicImage url="/imagens/novo2.png" />
 								</p:commandLink>
 
 								<p:commandLink title="Novo Ticket Interno"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}"
 									action="#{barraFerramentaBean.ticketInterno}">
 									<h:graphicImage url="/imagens/novo.png" />
 								</p:commandLink>
@@ -40,18 +42,29 @@
 						<p:ribbonGroup style="height: 40px;">
 							<h:form>
 								<p:commandLink title="Ticket por Departamento"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}"
 									action="#{barraFerramentaBean.ticketDepartamento}">
 									<h:graphicImage url="/imagens/atendimento.png" />
 								</p:commandLink>
-								
+
 								<p:commandLink title="Meus Atendimentos"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}"
 									action="#{barraFerramentaBean.ticketUsuario}">
 									<h:graphicImage url="/imagens/atendimento2.png" />
-								</p:commandLink>								
+								</p:commandLink>
 							</h:form>
 
 						</p:ribbonGroup>
 
+						<p:ribbonGroup style="height: 40px;">
+							<h:form>
+								<p:commandLink title="Cadastro de Artigo (Base de Conhecimento)"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.artigo}"
+									action="#{barraFerramentaBean.artigo}">
+									<h:graphicImage url="/imagens/web.png" />
+								</p:commandLink>
+							</h:form>
+						</p:ribbonGroup>
 					</p:tab>
 				</p:ribbon>
 
