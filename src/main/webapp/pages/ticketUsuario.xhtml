@@ -76,7 +76,7 @@
 							disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
 							actionListener="#{ticketAtendimentoUsuarioBean.concluirTicket}"
 							style="margin:0 3px"
-							update="formListagem:tabela :formListagem:messages"
+							update="formListagem:tabela :formListagem:messages :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							icon="fa fa-fw fa-check-circle">
@@ -197,7 +197,15 @@
 						<h:outputText value="#{ticket.codigo}" />
 					</p:column>
 
-					<p:column headerText="Data" width="15" style="text-align:center"
+
+					<p:column headerText="Última Interação" width="15"
+						style="text-align:center" sortBy="#{ticket.ultimaInteracao}">
+						<h:outputText value="#{ticket.ultimaInteracao}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Data Abertura" width="15" style="text-align:center"
 						sortBy="#{ticket.dataAbertura}">
 						<h:outputText value="#{ticket.dataAbertura}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
@@ -211,27 +219,28 @@
 					</p:column>
 
 					<p:column headerText="Assunto" sortBy="#{ticket.assunto}"
-						width="120">
+						width="100">
 						<h:outputText value="#{ticket.assunto}" />
 					</p:column>
 
 					<p:column headerText="Status" sortBy="#{ticket.status}"
-						style="text-align:center" width="30">
+						style="text-align:center" width="25">
 						<h:outputText value="#{ticket.status}" />
 					</p:column>
 
 					<p:column headerText="Prioridade" style="text-align:center"
-						sortBy="#{ticket.prioridadeFormatada}" width="30">
+						sortBy="#{ticket.prioridadeFormatada}" width="20">
 						<h:outputText value="#{ticket.prioridadeFormatada}" />
 					</p:column>
 
 					<p:column headerText="Opções" width="45" style="text-align:center">
 
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
-							actionListener="#{ticketAtendimentoUsuarioBean.atenderTicket}"
+							actionListener="#{ticketAtendimentoUsuarioBean.atenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
 							<p:confirm header="Confirmação"
 								message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
 							<f:actionListener
@@ -239,10 +248,11 @@
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-ban" title="Suspender Ticket"
-							actionListener="#{ticketAtendimentoUsuarioBean.suspenderTicket}"
+							actionListener="#{ticketAtendimentoUsuarioBean.suspenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
 							<p:confirm header="Confirmação"
 								message="Deseja Suspender este Ticket?" icon="ui-icon-alert" />
 							<f:actionListener
@@ -251,10 +261,11 @@
 
 						<p:commandButton icon="fa fa-fw fa-check-circle"
 							title="Concluir Ticket"
-							actionListener="#{ticketAtendimentoUsuarioBean.concluirTicket}"
+							actionListener="#{ticketAtendimentoUsuarioBean.concluirTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
 							<p:confirm header="Confirmação"
 								message="Deseja Concluir este Ticket?" icon="ui-icon-alert" />
 							<f:actionListener
@@ -264,16 +275,18 @@
 						<p:commandButton icon="fa fa-fw fa-user-md"
 							title="Encaminhar Ticket"
 							oncomplete="PF('dialogoEncaminhar').show()"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							actionListener="#{ticketAtendimentoUsuarioBean.encaminharTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formListagem:tool :formEncaminhar:painelUsuario"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-sitemap" title="Ocorrências"
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
-							actionListener="#{ticketAtendimentoUsuarioBean.listarOcorrencia}"
+							actionListener="#{ticketAtendimentoUsuarioBean.listarOcorrenciaAtalho}"
 							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -458,7 +471,7 @@
 		</p:dialog>
 
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
-			width="1000" height="500" draggable="false" resizable="false"
+			width="1000" height="450" draggable="false" resizable="false"
 			closable="true">
 			<h:form id="formListagemOcorrencia">
 
@@ -571,6 +584,18 @@
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
 
+								<p:commandButton icon="ui-icon-arrowthick-1-s" title="Download"
+									actionListener="#{ticketAtendimentoUsuarioBean.download}"
+									ajax="false">
+									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
+									<p:fileDownload value="#{ticketAtendimentoUsuarioBean.arquivo}" />
+								</p:commandButton>
+
+							</p:column>
+
+							<p:column headerText="Anexo" style="text-align:center"
+								sortBy="#{ocorrencia.anexo}" width="35">
+								<h:outputText value="#{ocorrencia.anexo}" />
 							</p:column>
 						</p:dataTable>
 
@@ -593,6 +618,17 @@
 						value="#{ticketAtendimentoUsuarioBean.ocorrencia.ocorrencia}" />
 
 					<h:outputText id="display" />
+
+					<br></br>
+
+					<p:outputLabel for="arquivo" value="Anexar Arquivo" />
+					<p:fileUpload id="arquivo" required="false"
+						fileUploadListener="#{ticketAtendimentoUsuarioBean.upload}"
+						mode="advanced" dragDropSupport="false" fileLimit="1"
+						allowTypes="/(\.|\/)(pdf|png|jpeg|doc|docx|txt|xls|xlsx)$/" />
+
+					<h:outputText
+						value="Permitido apenas arquivos Pdf, jpeg, png, doc, docx, txt, xls e xlsx." />
 
 				</h:panelGrid>
 

@@ -1,7 +1,13 @@
 package br.com.projeto.bean;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -15,8 +21,12 @@ import org.apache.commons.mail.EmailException;
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
@@ -64,6 +74,9 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	private String buscaUsuario;
 	private String buscaEquipamento;
 	private String usuarioEmail;
+	private String extensao;
+	private String tipoArquivo;
+	private StreamedContent arquivo;
 
 	public Ticket getTicket() {
 		return ticket;
@@ -257,6 +270,30 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		this.usuarioEmail = usuarioEmail;
 	}
 
+	public String getExtensao() {
+		return extensao;
+	}
+
+	public void setExtensao(String extensao) {
+		this.extensao = extensao;
+	}
+
+	public String getTipoArquivo() {
+		return tipoArquivo;
+	}
+
+	public void setTipoArquivo(String tipoArquivo) {
+		this.tipoArquivo = tipoArquivo;
+	}
+
+	public StreamedContent getArquivo() {
+		return arquivo;
+	}
+
+	public void setArquivo(StreamedContent arquivo) {
+		this.arquivo = arquivo;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -364,6 +401,22 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		}
 	}
 
+	public void listarOcorrenciaAtalho(ActionEvent evento) {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void novaOcorrencia() {
 		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 		usuario = autenticacaoBean.getUsuarioLogado();
@@ -458,14 +511,49 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			// enviarEmail();
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
+
+			ticket = null;
 
 			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void atenderTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket em Atendimento!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Em Atendimento");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
+
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
@@ -489,17 +577,69 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			// enviarEmail();
-
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEncaminhar').hide();");
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Encaminhado com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Encaminhado!"));
+			
+			ticket = null;
+
+			listarPendentes();			
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void encaminharTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Encaminhar este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void suspenderTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket Suspenso!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Suspenso");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null,
+					new FacesMessage("Ticket Suspenso com Sucesso!", "Ticket Nº " + ticket.getCodigo() + " Suspenso!"));
+
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Suspender este Ticket.",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
@@ -528,6 +668,10 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			context.addMessage(null,
 					new FacesMessage("Ticket Suspenso com Sucesso!", "Ticket Nº " + ticket.getCodigo() + " Suspenso!"));
+			
+			ticket = null;
+
+			listarPendentes();			
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Suspender este Ticket.",
@@ -559,6 +703,47 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
+			
+			ticket = null;
+
+			listarPendentes();			
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void concluirTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket Concluído!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Concluído");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
+			
+			ticket = null;
+
+			listarPendentes();			
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
@@ -1045,5 +1230,82 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 
+	}
+
+	public void upload(FileUploadEvent evento) {
+		try {
+			UploadedFile arquivoUpload = evento.getFile();
+			Path arquivoTemp = Files.createTempFile(null, null);
+
+			Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
+			ocorrencia.setCaminho(arquivoTemp.toString());
+
+			String extensao = evento.getFile().getContentType();
+
+			boolean encontrado = false;
+			tipoArquivo = "";
+
+			for (int i = 0; i < extensao.length(); i++) {
+				String busca = extensao.substring(0 + i, 1 + i);
+
+				if (busca.equals("/")) {
+					encontrado = true;
+				}
+
+				if (encontrado == true != (busca.equals("/"))) {
+					tipoArquivo = tipoArquivo + busca;
+				}
+
+			}
+
+			if (tipoArquivo.equals("plain")) {
+				tipoArquivo = "txt";
+			}
+
+			if (tipoArquivo.equals("msword")) {
+				tipoArquivo = "doc";
+			}
+
+			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+				tipoArquivo = "docx";
+			}
+
+			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+				tipoArquivo = "xlsx";
+			}
+
+			if (tipoArquivo.equals("vnd.ms-excel")) {
+				tipoArquivo = "xls";
+			}
+
+		} catch (IOException erro) {
+			Messages.addGlobalInfo("Ocorreu um erro ao tentar realizar o upload de arquivo");
+			erro.printStackTrace();
+		}
+	}
+
+	public void download(ActionEvent evento) {
+		try {
+			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
+
+			if (ocorrencia.getAnexo().equals("Sim")) {
+				InputStream stream = new FileInputStream(
+						"C:/Ocorrencias/" + ocorrencia.getCodigoAnexo() + "." + ocorrencia.getTipoAnexo());
+
+				arquivo = new DefaultStreamedContent(stream, tipoArquivo + "/" + tipoArquivo,
+						ocorrencia.getCodigo() + "." + ocorrencia.getTipoAnexo());
+			} else {
+
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Aviso!", "Não existe nenhum arquivo Anexado."));
+
+				return;
+
+			}
+
+		} catch (FileNotFoundException erro) {
+			Messages.addGlobalError("Ocorreu um erro ao tentar efetuar o download da Arquivo");
+			erro.printStackTrace();
+		}
 	}
 }

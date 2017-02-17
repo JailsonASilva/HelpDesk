@@ -62,6 +62,10 @@ public class Ticket extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean emailEnviado;
 
+	@Column(nullable = true)
+	@Temporal(TemporalType.DATE)
+	private Date ultimaInteracao;
+
 	public Categoria getCategoria() {
 		return categoria;
 	}
@@ -156,6 +160,14 @@ public class Ticket extends GenericDomain {
 
 	public void setEmailEnviado(Boolean emailEnviado) {
 		this.emailEnviado = emailEnviado;
+	}
+
+	public Date getUltimaInteracao() {
+		return ultimaInteracao;
+	}
+
+	public void setUltimaInteracao(Date ultimaInteracao) {
+		this.ultimaInteracao = ultimaInteracao;
 	}
 
 	@Transient

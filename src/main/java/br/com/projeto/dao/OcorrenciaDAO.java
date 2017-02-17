@@ -22,7 +22,7 @@ public class OcorrenciaDAO extends GenericDAO<Ocorrencia> {
 					Criteria.INNER_JOIN, Restrictions.eq("ticket.codigo", ticket));			
 			
 			consulta.addOrder(Order.desc("data"));
-			consulta.addOrder(Order.asc("codigo"));
+			consulta.addOrder(Order.desc("codigo"));
 			
 			List<Ocorrencia> resultado = consulta.list();
 			return resultado;

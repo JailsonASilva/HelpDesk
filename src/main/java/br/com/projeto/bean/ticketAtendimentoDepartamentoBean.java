@@ -438,6 +438,22 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
+	public void listarOcorrenciaAtalho(ActionEvent evento) {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void novaOcorrencia() {
 		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 		usuario = autenticacaoBean.getUsuarioLogado();
@@ -495,6 +511,9 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -517,6 +536,9 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -541,14 +563,49 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			// enviarEmail();
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
+
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void atenderTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket em Atendimento!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Em Atendimento");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
 
-			FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":formListagem:tool");
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
@@ -580,7 +637,20 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 					"Ticket Nº " + ticket.getCodigo() + " Encaminhado!"));
 
 		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Atender este Ticket.",
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Encaminhar este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void encaminharTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Encaminhar este Ticket.",
 					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
@@ -610,7 +680,46 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			context.addMessage(null,
 					new FacesMessage("Ticket Suspenso com Sucesso!", "Ticket Nº " + ticket.getCodigo() + " Suspenso!"));
 
-			FacesContext.getCurrentInstance().getPartialViewContext().getRenderIds().add(":formListagem:tool");
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Suspender este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void suspenderTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket Suspenso!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Suspenso");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null,
+					new FacesMessage("Ticket Suspenso com Sucesso!", "Ticket Nº " + ticket.getCodigo() + " Suspenso!"));
+
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Suspender este Ticket.",
@@ -642,6 +751,47 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
+
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void concluirTicketAtalho(ActionEvent evento) throws EmailException {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket Concluído!");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Concluído");
+			ticket.setUsuarioAtendimento(usuario);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
+
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
@@ -1259,14 +1409,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.wordprocessingml.document")) {
 				tipoArquivo = "docx";
 			}
-			
+
 			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
 				tipoArquivo = "xlsx";
-			}			
-			
+			}
+
 			if (tipoArquivo.equals("vnd.ms-excel")) {
 				tipoArquivo = "xls";
-			}			
+			}
 
 		} catch (IOException erro) {
 			Messages.addGlobalInfo("Ocorreu um erro ao tentar realizar o upload de arquivo");
