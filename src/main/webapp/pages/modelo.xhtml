@@ -21,7 +21,7 @@
 
 				<p:ribbon>
 					<p:tab
-						title="Help Desk 1.1.24.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
+						title="Help Desk 1.1.25.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
 
 						<p:ribbonGroup style="height: 40px;">
 							<h:form>
@@ -52,6 +52,11 @@
 									action="#{barraFerramentaBean.ticketUsuario}">
 									<h:graphicImage url="/imagens/atendimento2.png" />
 								</p:commandLink>
+								
+								<p:commandLink title="Meus Ticket's"
+									action="#{barraFerramentaBean.meusTickets}">
+									<h:graphicImage url="/imagens/meusTickets.png" />
+								</p:commandLink>								
 							</h:form>
 
 						</p:ribbonGroup>
@@ -110,6 +115,8 @@
 								<p:menuitem value="Ticket's por Atendente"
 									url="/pages/ticketUsuario.xhtml"
 									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}" />
+
+								<p:menuitem value="Meus Ticket's" url="/pages/meusTickets.xhtml" />
 
 							</p:submenu>
 						</p:submenu>

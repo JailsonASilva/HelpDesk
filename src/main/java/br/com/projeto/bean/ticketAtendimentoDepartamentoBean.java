@@ -511,9 +511,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
-			ticket = null;
-
-			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -536,9 +533,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
-			ticket = null;
-
-			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",

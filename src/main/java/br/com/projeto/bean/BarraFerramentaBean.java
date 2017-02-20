@@ -55,6 +55,16 @@ public class BarraFerramentaBean implements Serializable{
 		}
 	}
 	
+	public void meusTickets() {
+		try {
+			Faces.redirect("./pages/meusTickets.xhtml");
+
+		} catch (IOException erro) {
+			erro.printStackTrace();
+			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+		}
+	}	
+	
 	public void artigo() {
 		try {
 			Faces.redirect("./pages/artigo.xhtml");
