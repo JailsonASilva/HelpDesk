@@ -196,13 +196,6 @@
 						<h:outputText value="#{ticket.codigo}" />
 					</p:column>
 
-					<p:column headerText="Última Interação" width="15"
-						style="text-align:center" sortBy="#{ticket.ultimaInteracao}">
-						<h:outputText value="#{ticket.ultimaInteracao}">
-							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-
 					<p:column headerText="Data Abertura" width="15" style="text-align:center"
 						sortBy="#{ticket.dataAbertura}">
 						<h:outputText value="#{ticket.dataAbertura}">
@@ -236,6 +229,13 @@
 						style="text-align:center">
 						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
 					</p:column>
+					
+					<p:column headerText="Última Interação" width="20"
+						style="text-align:center" sortBy="#{ticket.ultimaInteracao}">
+						<h:outputText value="#{ticket.ultimaInteracao}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>					
 
 					<p:column headerText="Opções" width="45" style="text-align:center">
 
@@ -471,6 +471,9 @@
 						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
+						
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />						
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

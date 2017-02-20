@@ -559,6 +559,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ticket.setStatus("Em Atendimento");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -594,6 +595,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ticket.setStatus("Em Atendimento");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -668,6 +670,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ticket.setStatus("Suspenso");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -705,6 +708,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ticket.setStatus("Suspenso");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -740,6 +744,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ticket.setStatus("Concluído");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -777,6 +782,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ticket.setStatus("Concluído");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);

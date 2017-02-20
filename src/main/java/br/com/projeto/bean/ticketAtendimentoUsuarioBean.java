@@ -458,13 +458,14 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
 
-			// enviarEmail();
-
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -487,6 +488,9 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
+			ticket = null;
+
+			listarPendentes();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -507,6 +511,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			ticket.setStatus("Em Atendimento");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -542,6 +547,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			ticket.setStatus("Em Atendimento");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -570,7 +576,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			ocorrencia.setOcorrencia("Ticket em Encaminhado para " + ticket.getUsuarioAtendimento().getNome());
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
-			ocorrenciaDAO.merge(ocorrencia);
+			ocorrenciaDAO.merge(ocorrencia);			
 
 			ticket.setStatus("Pendente");
 
@@ -622,6 +628,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			ticket.setStatus("Suspenso");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -657,6 +664,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			ticket.setStatus("Suspenso");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -692,6 +700,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			ticket.setStatus("Concluído");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
@@ -729,6 +738,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			ticket.setStatus("Concluído");
 			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
