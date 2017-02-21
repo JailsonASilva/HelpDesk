@@ -1,13 +1,18 @@
 package br.com.projeto.dao;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.omnifaces.util.Faces;
 
+import br.com.projeto.bean.AutenticacaoBean;
 import br.com.projeto.domain.Ticket;
+import br.com.projeto.domain.Usuario;
 import br.com.projeto.util.HibernateUtil;
 
 public class TicketDAO extends GenericDAO<Ticket> {
@@ -24,7 +29,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.eq("status", status));
 
-			//consulta.addOrder(Order.asc("prioridade"));			
+			// consulta.addOrder(Order.asc("prioridade"));
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
 
@@ -49,7 +54,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 					Restrictions.like("departamento.nome", "%" + departamento + "%"));
 
 			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
-			
+
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
 
@@ -75,7 +80,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.eq("status", status));
 
-			//consulta.addOrder(Order.asc("prioridade"));			
+			// consulta.addOrder(Order.asc("prioridade"));
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
 
@@ -101,7 +106,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
 
-			//consulta.addOrder(Order.asc("prioridade"));			
+			// consulta.addOrder(Order.asc("prioridade"));
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
 
@@ -127,7 +132,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			consulta.add(Restrictions.eq("status", status));
 
-			//consulta.addOrder(Order.asc("prioridade"));			
+			// consulta.addOrder(Order.asc("prioridade"));
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
 
@@ -140,7 +145,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			sessao.close();
 		}
 	}
-	
+
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	public List<Ticket> meusTickets(String usuario) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
@@ -152,7 +157,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 					Restrictions.like("usuario.nome", "%" + usuario + "%"));
 
 			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
-			
+
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
 
@@ -164,5 +169,65 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		} finally {
 			sessao.close();
 		}
-	}	
+	}
+
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	public List<Ticket> ticketPendentes() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			Calendar data48 = Calendar.getInstance();
+			data48.add(Calendar.DAY_OF_MONTH, -2);
+
+			Calendar dataInicial = Calendar.getInstance();
+			dataInicial.add(Calendar.DAY_OF_MONTH, -99999);
+
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+
+			@SuppressWarnings("unused")
+			Criteria consultaUsuario = consulta.createCriteria("usuarioAtendimento", "usuarioAtendimento",
+					Criteria.INNER_JOIN, Restrictions.like("usuarioAtendimento.nome", "%" + usuario.getNome() + "%"));
+
+			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
+			consulta.add(Restrictions.between("ultimaInteracao", dataInicial.getTime(), data48.getTime()));
+			consulta.addOrder(Order.asc("codigo"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List ticketPendentesDepartamento() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			Calendar data48 = Calendar.getInstance();
+			data48.add(Calendar.DAY_OF_MONTH, -2);
+
+			String dataFormatada = new SimpleDateFormat("yyyy/MM/dd").format(data48.getTime());				
+
+			dataFormatada = "'" + dataFormatada + "'";
+			
+			List tickets = sessao.createSQLQuery("SELECT * FROM vs_ticketpendentes WHERE departamento_codigo = "
+					+ usuario.getDepartamento().getCodigo() + " AND ultimaInteracao <= " + dataFormatada).list();
+
+			return tickets;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
 }

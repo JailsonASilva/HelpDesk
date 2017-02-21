@@ -1,25 +1,21 @@
 package br.com.projeto.util;
 
-import org.hibernate.Session;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class teste {
 
-	public static Long main(String[] args) {
+	public static void main(String[] args) {
 
-		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
-		try {
-			Long nextVal = (Long) sessao.createQuery("SELECT next_val FROM hibernate_sequence").uniqueResult();
+		Calendar data48 = Calendar.getInstance();
+		data48.add(Calendar.DAY_OF_MONTH, -2);
 
-			System.out.println(nextVal);
 
-			return nextVal;
+		String dataFormatada = new SimpleDateFormat("yyyy/MM/dd").format(data48.getTime());
 
-		} catch (RuntimeException erro) {
-			throw erro;
-		} finally {
-			sessao.close();
-		}
-
+		dataFormatada = "'" + dataFormatada + "'";
+		
+		System.out.println(dataFormatada);
 	}
 
 }

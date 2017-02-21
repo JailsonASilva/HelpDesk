@@ -296,6 +296,7 @@ public class TicketInternoBean implements Serializable {
 		ticket.setStatus("Pendente");
 		ticket.setUsuario(usuario);
 		ticket.setDataAbertura(new java.util.Date());
+		ticket.setUltimaInteracao(new java.util.Date());
 		ticket.setPrioridade("Normal");
 		ticket.setEmailEnviado(false);
 

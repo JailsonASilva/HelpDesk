@@ -196,8 +196,8 @@
 						<h:outputText value="#{ticket.codigo}" />
 					</p:column>
 
-					<p:column headerText="Data Abertura" width="15" style="text-align:center"
-						sortBy="#{ticket.dataAbertura}">
+					<p:column headerText="Data Abertura" width="15"
+						style="text-align:center" sortBy="#{ticket.dataAbertura}">
 						<h:outputText value="#{ticket.dataAbertura}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 						</h:outputText>
@@ -229,13 +229,13 @@
 						style="text-align:center">
 						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
 					</p:column>
-					
+
 					<p:column headerText="Última Interação" width="20"
 						style="text-align:center" sortBy="#{ticket.ultimaInteracao}">
 						<h:outputText value="#{ticket.ultimaInteracao}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
 						</h:outputText>
-					</p:column>					
+					</p:column>
 
 					<p:column headerText="Opções" width="45" style="text-align:center">
 
@@ -471,9 +471,9 @@
 						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
-						
+
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogo').hide();" />						
+						oncomplete="PF('dialogo').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
@@ -884,6 +884,89 @@
 							oncomplete="PF('dialogoEmailOcorrencia').hide();" />
 					</h:panelGrid>
 				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog
+			header="Seus Ticket's que não houvem interações nas últimas 48h"
+			widgetVar="dialogoPendente" draggable="false" resizable="false"
+			width="880" height="450" closable="true">
+			<h:form id="formPendente">
+				<p:tabView>
+					<p:tab title="Ticket's">
+						<p:dataTable id="tabela"
+							emptyMessage="Nenhum registro encontrado." selectionMode="single"
+							selection="#{ticketAtendimentoDepartamentoBean.ticketPendente}"
+							draggableColumns="true" resizableColumns="true"
+							rowKey="#{ticket.codigo}" paginator="true"
+							rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+							value="#{ticketAtendimentoDepartamentoBean.ticketsPendentes}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							var="ticket" rows="10" paginatorPosition="bottom">
+
+							<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
+								style="text-align:center" width="5">
+								<h:outputText value="#{ticket.codigo}" />
+							</p:column>
+
+							<p:column headerText="Data Abertura" width="9"
+								style="text-align:center" sortBy="#{ticket.dataAbertura}">
+								<h:outputText value="#{ticket.dataAbertura}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+
+							<p:column headerText="Assunto" sortBy="#{ticket.assunto}"
+								style="white-space:normal !important;" width="70">
+								<h:outputText value="#{ticket.assunto}" />
+							</p:column>
+
+							<p:column headerText="Status" sortBy="#{ticket.status}"
+								style="text-align:center" width="30">
+								<h:outputText value="#{ticket.status}" />
+							</p:column>
+
+							<p:column headerText="Última Interação" width="30"
+								style="text-align:center" sortBy="#{ticket.ultimaInteracao}">
+								<h:outputText value="#{ticket.ultimaInteracao}">
+									<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+
+						<h:panelGrid columns="2">
+							<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+								oncomplete="PF('dialogoPendente').hide();" />
+						</h:panelGrid>
+
+					</p:tab>
+
+					<p:tab title="Por Atendente">
+						<p:tab title="Ticket's">
+							<p:dataTable id="tabelaDepartamento"
+								emptyMessage="Nenhum registro encontrado."
+								selectionMode="single"
+								selection="#{ticketAtendimentoDepartamentoBean.ticketDepartamento}"
+								draggableColumns="true" resizableColumns="true"
+								rowKey="#{ticket[0]}" paginator="true"
+								rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+								value="#{ticketAtendimentoDepartamentoBean.ticketsDepartamentos}"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								var="ticket" rows="10" paginatorPosition="bottom">
+
+								<p:column headerText="Atendente" sortBy="#{ticket[0]}"
+									width="90">
+									<h:outputText value="#{ticket[0]}" />
+								</p:column>
+
+								<p:column headerText="Qtde de Ticket's"
+									style="text-align:center" sortBy="#{ticket[1]}" width="50">
+									<h:outputText value="#{ticket[1]}" />
+								</p:column>
+							</p:dataTable>
+						</p:tab>
+					</p:tab>
+				</p:tabView>
 			</h:form>
 		</p:dialog>
 

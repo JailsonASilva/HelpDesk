@@ -150,6 +150,7 @@ public class TicketExternoBean implements Serializable {
 		ticket = new Ticket();
 		ticket.setUsuario(usuario);
 		ticket.setDataAbertura(new java.util.Date());
+		ticket.setUltimaInteracao(new java.util.Date());
 		ticket.setStatus("Pendente");
 		ticket.setPrioridade("Normal");
 		ticket.setEmailEnviado(false);
@@ -162,10 +163,7 @@ public class TicketExternoBean implements Serializable {
 			ticketDAO.merge(ticket);
 			
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!", "Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's"));			
-
-			//enviarEmailDepartamento();
-			//enviarEmailSolicitante();
+			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!", "Para acompanhar o andamento de seu Ticket acesse o menu Meus Ticket's"));		
 
 			novo();
 

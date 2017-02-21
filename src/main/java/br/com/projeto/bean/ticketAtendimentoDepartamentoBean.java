@@ -50,6 +50,8 @@ import br.com.projeto.util.EmailUtils;
 @ViewScoped
 public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private Ticket ticket;
+	private Ticket ticketPendente;
+	private Ticket ticketDepartamento;
 	private Ocorrencia ocorrencia;
 	private AutenticacaoBean autenticacaoBean;
 	private Usuario usuario;
@@ -62,6 +64,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	private List<Ocorrencia> ocorrencias;
 	private List<Ticket> tickets;
+	private List<Ticket> ticketsPendentes;
+	private List<Ticket> ticketsDepartamentos;
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
 	private List<Departamento> departamentosCliente;
@@ -325,9 +329,42 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.tipoArquivo = tipoArquivo;
 	}
 
+	public List<Ticket> getTicketsPendentes() {
+		return ticketsPendentes;
+	}
+
+	public void setTicketsPendentes(List<Ticket> ticketsPendentes) {
+		this.ticketsPendentes = ticketsPendentes;
+	}
+
+	public Ticket getTicketPendente() {
+		return ticketPendente;
+	}
+
+	public void setTicketPendente(Ticket ticketPendente) {
+		this.ticketPendente = ticketPendente;
+	}
+
+	public List<Ticket> getTicketsDepartamentos() {
+		return ticketsDepartamentos;
+	}
+
+	public void setTicketsDepartamentos(List<Ticket> ticketsDepartamentos) {
+		this.ticketsDepartamentos = ticketsDepartamentos;
+	}
+
+	public Ticket getTicketDepartamento() {
+		return ticketDepartamento;
+	}
+
+	public void setTicketDepartamento(Ticket ticketDepartamento) {
+		this.ticketDepartamento = ticketDepartamento;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
+			ticketsPendenteInteracao();
 			listarPendentes();
 
 			categoria = new Categoria();
@@ -401,7 +438,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void listarPendentes() {
 		try {
-
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
@@ -478,8 +514,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			ticket = null;
-
-			// enviarEmail();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -1329,7 +1363,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			for (int i = 0; i < usuarios.size(); i++) {
 				Usuario usuarioEmail = (Usuario) usuarios.get(i);
 
-				EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, usuarioEmail.getEmail());
+				EmailUtils.enviaEmail("Ocorrência - Nº Ticket: " + ocorrencia.getTicket(), mensagem,
+						usuarioEmail.getEmail());
 			}
 
 			EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, ticket.getUsuario().getEmail());
@@ -1447,6 +1482,30 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			Messages.addGlobalError("Ocorreu um erro ao tentar efetuar o download da Arquivo");
 			erro.printStackTrace();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void ticketsPendenteInteracao() {
+		try {
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketsPendentes = ticketDAO.ticketPendentes();
+			ticketsDepartamentos = ticketDAO.ticketPendentesDepartamento();
+
+			if (ticketsPendentes.isEmpty() == false) {
+				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPendente').show();");
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Ticket's sem Interação.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+
 	}
 
 }

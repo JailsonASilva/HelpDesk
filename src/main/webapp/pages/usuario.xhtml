@@ -105,7 +105,7 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{usuarioBean.onRowSelect}" /> />							
+						listener="#{usuarioBean.onRowSelect}" />					
 
 					<p:column headerText="Nome" sortBy="#{usuario.nome}">
 						<h:outputText value="#{usuario.nome}" />
@@ -116,7 +116,7 @@
 					</p:column>
 
 					<p:column headerText="Departamento" style="text-align:center"
-						width="260" sortBy="#{usuario.departamento.nome}">
+						width="200" sortBy="#{usuario.departamento.nome}">
 						<h:outputText value="#{usuario.departamento.nome}" />
 					</p:column>
 					

@@ -1180,7 +1180,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 				EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, usuarioEmail.getEmail());
 			}
 
-			EmailUtils.enviaEmail("Registro de Ocorrência", mensagem, ticket.getUsuario().getEmail());
+			EmailUtils.enviaEmail("Ocorrência - Nº Ticket: " + ocorrencia.getTicket(), mensagem, ticket.getUsuario().getEmail());
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,

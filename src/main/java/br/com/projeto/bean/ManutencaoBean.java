@@ -190,7 +190,7 @@ public class ManutencaoBean implements Serializable {
 		try {
 			ManutencaoDAO manutencaoEquipamentoDAO = new ManutencaoDAO();
 
-			manutencoes = manutencaoEquipamentoDAO.pesquisarEquipamento(dataInicial, dataFinal);
+			manutencoes = manutencaoEquipamentoDAO.pesquisarEquipamento(dataInicial, dataFinal);		
 
 			equipamento = new Equipamento();
 			tecnico = new Tecnico();
