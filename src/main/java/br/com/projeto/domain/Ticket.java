@@ -1,5 +1,6 @@
 package br.com.projeto.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -192,6 +193,13 @@ public class Ticket extends GenericDomain {
 		}
 
 		return prioridadeFormatada;
+	}
+	
+	@Transient
+	public String getDataFormatada() {
+		String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(dataAbertura);
+		
+		return dataFormatada;
 	}
 
 	@Transient

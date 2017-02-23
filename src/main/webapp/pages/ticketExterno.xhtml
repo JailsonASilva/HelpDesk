@@ -10,7 +10,9 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
+
 			<p:growl id="messages" showDetail="true" />
+
 			<p:dialog widgetVar="iconeDeProcessamento">
 				<f:facet name="header">
 					<h:graphicImage value="/imagens/ampulheta.png" />
@@ -18,6 +20,7 @@
 						value="Aguarde... Estamos Processando sua Informação..." />
 				</f:facet>
 			</p:dialog>
+
 			<p:dialog header="Novo Ticket" widgetVar="dialogo" visible="true"
 				draggable="false" resizable="false" modal="false" closable="true">
 				<h:form id="formCadastro">
@@ -57,7 +60,7 @@
 							value="#{ticketExternoBean.ticket.assunto}" />
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
-						<p:inputTextarea id="solicitacao" rows="6" cols="60"
+						<p:inputTextarea id="solicitacao" rows="4" cols="60"
 							required="true" requiredMessage="Campo Obrigatório!"
 							counter="display" maxlength="1000"
 							counterTemplate="{0} caracteres restantes." autoResize="false"
@@ -73,6 +76,9 @@
 							update=":formListagem:formCadastro:painel :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogo').hide();" />
 					</h:panelGrid>
 				</h:form>
 			</p:dialog>

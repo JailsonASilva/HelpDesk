@@ -17,6 +17,10 @@ public class Evento extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String titulo;
 
+	@Column(nullable = true)
+	@Temporal(TemporalType.DATE)
+	private Date dataEvento;
+
 	@Column(nullable = false, columnDefinition = "DATETIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date dataHoraInicial;
@@ -82,6 +86,14 @@ public class Evento extends GenericDomain {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+
+	public Date getDataEvento() {
+		return dataEvento;
+	}
+
+	public void setDataEvento(Date dataEvento) {
+		this.dataEvento = dataEvento;
 	}
 
 }

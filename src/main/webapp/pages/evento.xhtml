@@ -169,25 +169,32 @@
 		<p:dialog header="Cadastro de Evento" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="false" closable="true">
 			<h:form id="formCadastro">
+
 				<h:panelGrid id="painel" columns="3" class="ui-noborder">
 					<p:outputLabel for="titulo" value="Título: " />
-					<p:inputText id="titulo" maxlength="100" size="95" required="true"
+					<p:inputText id="titulo" maxlength="100" size="84" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{eventoBean.evento.titulo}" />
 				</h:panelGrid>
 
 				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
-					<p:outputLabel for="evento" value="Local" />
-					<p:selectOneMenu id="evento" filter="true" style="margin:0 10px"
-						filterMatchMode="startsWith" value="#{eventoBean.evento.local}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{eventoBean.locais}" var="evento"
-							itemValue="#{evento}" itemLabel="#{evento.nome}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="local" value="Local " />
+					<h:panelGroup>
+						<p:selectOneMenu id="local" filter="true"
+							value="#{eventoBean.evento.local}" required="true"
+							requiredMessage="O campo 'Local' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{eventoBean.locais}" var="local"
+								itemValue="#{local}" itemLabel="#{local.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Local" oncomplete="PF('dialogoLocal').show();" />
+					</h:panelGroup>
 
 					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início" />
 					<p:calendar id="dataHoraInicial" size="24" mask="99/99/99 99:99:99"
@@ -196,17 +203,24 @@
 						showButtonPanel="true" navigator="true" showOn="button"
 						requiredMessage="Campo Obrigatório!" />
 
-					<p:outputLabel for="tipo" value="Tipo" />
-					<p:selectOneMenu id="tipo" filter="true" style="margin:0 10px"
-						filterMatchMode="startsWith"
-						value="#{eventoBean.evento.tipoEvento}"
-						converter="omnifaces.SelectItemsConverter" required="true"
-						requiredMessage="Campo Obrigatório">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Nenhum Registro Selecionado" />
-						<f:selectItems value="#{eventoBean.tipoEventos}" var="tipo"
-							itemValue="#{tipo}" itemLabel="#{tipo.nome}" />
-					</p:selectOneMenu>
+					<p:outputLabel for="tipo" value="Tipo " />
+					<h:panelGroup>
+						<p:selectOneMenu id="tipo" filter="true"
+							value="#{eventoBean.evento.tipoEvento}" required="true"
+							requiredMessage="O campo 'Tipo' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{eventoBean.tipoEventos}"
+								var="tipo" itemValue="#{tipo}"
+								itemLabel="#{tipo.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Tipo"
+							oncomplete="PF('dialogoTipo').show();" />
+					</h:panelGroup>
 
 					<p:outputLabel for="dataHoraFinal" value="Data/Hora Término" />
 					<p:calendar id="dataHoraFinal" size="24" mask="99/99/99 99:99:99"
@@ -219,7 +233,7 @@
 				<h:panelGrid id="painel3" columns="1" class="ui-noborder">
 					<p:outputLabel for="observacao" value="Observação"
 						style="margin4px" />
-					<p:inputTextarea id="observacao" rows="6" cols="103"
+					<p:inputTextarea id="observacao" rows="6" cols="89"
 						counter="display" maxlength="500"
 						counterTemplate="{0} caracteres restantes." autoResize="false"
 						value="#{eventoBean.evento.observacao}" />
@@ -237,24 +251,7 @@
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogo').hide();" />
-
-					<p:menuButton value="Opções" style="margin:0 50px 0 50px">
-
-						<p:menuitem value="Novo Local"
-							oncomplete="PF('dialogoLocal').show();"
-							update=":formCadastroLocal:painelLocal">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-
-						<p:menuitem value="Novo Tipo de Evento"
-							oncomplete="PF('dialogoTipo').show();"
-							update=":formCadastroTipo:painelTipo">
-							<f:actionListener
-								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-						</p:menuitem>
-					</p:menuButton>
+						oncomplete="PF('dialogo').hide();" />			
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
@@ -275,7 +272,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{eventoBean.salvarLocal}"
-						update=":formCadastroLocal:painelLocal :formCadastro:evento"
+						update=":formCadastroLocal:painelLocal :formCadastro:local"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -314,7 +311,7 @@
 		<p:dialog header="Materiais" widgetVar="dialogoMaterial"
 			draggable="false" resizable="false" modal="false" closable="true">
 			<h:form id="formCadastroMaterial">
-			
+
 			</h:form>
 		</p:dialog>
 	</ui:define>

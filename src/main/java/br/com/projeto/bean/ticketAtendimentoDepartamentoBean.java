@@ -50,8 +50,6 @@ import br.com.projeto.util.EmailUtils;
 @ViewScoped
 public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private Ticket ticket;
-	private Ticket ticketPendente;
-	private Ticket ticketDepartamento;
 	private Ocorrencia ocorrencia;
 	private AutenticacaoBean autenticacaoBean;
 	private Usuario usuario;
@@ -66,6 +64,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Ticket> tickets;
 	private List<Ticket> ticketsPendentes;
 	private List<Ticket> ticketsDepartamentos;
+	private List<Ticket> ticketsResumo;
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
 	private List<Departamento> departamentosCliente;
@@ -337,14 +336,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.ticketsPendentes = ticketsPendentes;
 	}
 
-	public Ticket getTicketPendente() {
-		return ticketPendente;
-	}
-
-	public void setTicketPendente(Ticket ticketPendente) {
-		this.ticketPendente = ticketPendente;
-	}
-
 	public List<Ticket> getTicketsDepartamentos() {
 		return ticketsDepartamentos;
 	}
@@ -353,12 +344,12 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.ticketsDepartamentos = ticketsDepartamentos;
 	}
 
-	public Ticket getTicketDepartamento() {
-		return ticketDepartamento;
+	public List<Ticket> getTicketsResumo() {
+		return ticketsResumo;
 	}
 
-	public void setTicketDepartamento(Ticket ticketDepartamento) {
-		this.ticketDepartamento = ticketDepartamento;
+	public void setTicketsResumo(List<Ticket> ticketsResumo) {
+		this.ticketsResumo = ticketsResumo;
 	}
 
 	@PostConstruct
@@ -921,6 +912,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		ticket = null;
 	}
 
+	public void onRowSelectPendente(SelectEvent event) {
+
+	}
+
+	public void onRowUnselectPendente(UnselectEvent event) {
+		ticket = null;
+	}
+
 	public void pesquisarDepartamento() {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
@@ -1363,7 +1362,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			for (int i = 0; i < usuarios.size(); i++) {
 				Usuario usuarioEmail = (Usuario) usuarios.get(i);
 
-				EmailUtils.enviaEmail("Ocorrência - Nº Ticket: " + ocorrencia.getTicket(), mensagem,
+				EmailUtils.enviaEmail("Ocorrência - Nº Ticket: " + ocorrencia.getTicket().getCodigo(), mensagem,
 						usuarioEmail.getEmail());
 			}
 
@@ -1494,6 +1493,25 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			if (ticketsPendentes.isEmpty() == false) {
 				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPendente').show();");
 			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Ticket's sem Interação.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public void resumoEquipe() {
+		try {
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketsResumo = ticketDAO.resumoDepartamento();
 
 		} catch (
 

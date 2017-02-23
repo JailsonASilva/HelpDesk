@@ -23,8 +23,7 @@
 				draggable="false" resizable="false" modal="false" closable="true">
 				<h:form id="formCadastro">
 
-					<h:panelGrid id="painel" columns="2" class="ui-noborder">
-
+					<h:panelGrid id="painel" columns="4" class="ui-noborder">
 
 						<p:outputLabel for="cliente" value="Solicitante " />
 						<h:panelGroup>
@@ -43,7 +42,6 @@
 								style="display: inline-block; vertical-align: top;"
 								oncomplete="PF('dialogoCliente').show();" />
 						</h:panelGroup>
-
 
 						<p:outputLabel for="departamento" value="Departamento " />
 						<h:panelGroup>
@@ -93,15 +91,10 @@
 							yearRange="1900:2222"
 							value="#{ticketInternoBean.ticket.dataAbertura}" size="12"
 							locale="pt_BR" showButtonPanel="true" navigator="true" />
-					</h:panelGrid>
-
-					<p:separator />
-
-					<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 						<p:outputLabel for="assunto" value="Assunto" />
-						<p:inputText id="assunto" maxlength="100" size="37" required="true"
-							style="margin:0 39px 0 39px" requiredMessage="Campo Obrigatório!"
+						<p:inputText id="assunto" maxlength="100" size="33"
+							required="true" requiredMessage="Campo Obrigatório!"
 							value="#{ticketInternoBean.ticket.assunto}" />
 
 						<p:outputLabel for="prioridade" value="Prioridade" />
@@ -121,18 +114,19 @@
 						</p:selectOneMenu>
 					</h:panelGrid>
 
-					<h:panelGrid id="painel3" columns="2" class="ui-noborder">
+					<p:separator />
+
+					<h:panelGrid id="painel3" columns="1" class="ui-noborder">
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
-						<p:inputTextarea id="solicitacao" rows="6" cols="95"
-							style="margin:0 25px 0 25px" required="true"
-							requiredMessage="Campo Obrigatório!" counter="display"
-							maxlength="1000" counterTemplate="{0} caracteres restantes."
-							autoResize="false"
+						<p:inputTextarea id="solicitacao" rows="5" cols="95"
+							required="true" requiredMessage="Campo Obrigatório!"
+							counter="display" maxlength="1000"
+							counterTemplate="{0} caracteres restantes." autoResize="false"
 							value="#{ticketInternoBean.ticket.solicitacao}" />
 
-						<br></br>
-						<h:outputText id="display" style="margin:0 25px 0 25px" />
+
+						<h:outputText id="display" />
 					</h:panelGrid>
 
 					<h:panelGrid id="painel4" columns="1" class="ui-noborder">
@@ -140,7 +134,7 @@
 
 						<p:outputLabel for="equipamento" value="Equipamento " />
 						<h:panelGroup>
-							<p:inputText id="equipamento" size="110" readonly="true"
+							<p:inputText id="equipamento" size="93" readonly="true"
 								value="#{ticketInternoBean.ticket.nomeEquipamento}" />
 
 							<p:commandButton icon="ui-icon-search" title="Pesquisa"
@@ -158,9 +152,12 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Salvar" icon="ui-icon-disk"
 							actionListener="#{ticketInternoBean.salvar}"
-							update=":formListagem:formCadastro:painel :formListagem:formCadastro:painel2 :formListagem:formCadastro:painel3 :formListagem:formCadastro:painel4 :formListagem:messages"
+							update=":formListagem:formCadastro:painel :formListagem:formCadastro:painel3 :formListagem:formCadastro:painel4 :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogo').hide();" />
 					</h:panelGrid>
 				</h:form>
 			</p:dialog>
@@ -289,8 +286,7 @@
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
 						<p:selectOneMenu id="departamento" filter="true"
-							value="#{ticketInternoBean.cliente.departamento}"
-							required="true"
+							value="#{ticketInternoBean.cliente.departamento}" required="true"
 							requiredMessage="O campo 'Departamento' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"

@@ -193,25 +193,18 @@
 						listener="#{ticketAtendimentoUsuarioBean.onRowSelect}" />
 
 					<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
-						style="text-align:center" width="10">
+						style="text-align:center" width="5">
 						<h:outputText value="#{ticket.codigo}" />
 					</p:column>
 
-					<p:column headerText="Data Abertura" width="15"
+					<p:column headerText="Data/Hora" width="13"
 						style="text-align:center" sortBy="#{ticket.dataAbertura}">
-						<h:outputText value="#{ticket.dataAbertura}">
-							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
-						</h:outputText>
-					</p:column>
-
-					<p:column headerText="Hora" width="15" style="text-align:center"
-						sortBy="#{ticket.hora}">
-						<h:outputText value="#{ticket.hora}">
+						<h:outputText value="#{ticket.dataFormatada} #{ticket.hora}">
 						</h:outputText>
 					</p:column>
 
 					<p:column headerText="Assunto" sortBy="#{ticket.assunto}"
-						width="100">
+						style="white-space:normal !important;" width="70">
 						<h:outputText value="#{ticket.assunto}" />
 					</p:column>
 
@@ -221,11 +214,17 @@
 					</p:column>
 
 					<p:column headerText="Prioridade" style="text-align:center"
-						sortBy="#{ticket.prioridadeFormatada}" width="20">
+						sortBy="#{ticket.prioridadeFormatada}" width="15">
 						<h:outputText value="#{ticket.prioridadeFormatada}" />
 					</p:column>
 
-					<p:column headerText="Última Interação" width="20"
+					<p:column headerText="Responsável"
+						sortBy="#{ticket.usuarioAtendimento.nome}" width="38"
+						style="text-align:center">
+						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
+					</p:column>
+
+					<p:column headerText="Interação" width="18"
 						style="text-align:center" sortBy="#{ticket.ultimaInteracao}">
 						<h:outputText value="#{ticket.ultimaInteracao}">
 							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
@@ -233,7 +232,7 @@
 					</p:column>
 
 
-					<p:column headerText="Opções" width="45" style="text-align:center">
+					<p:column headerText="Opções" width="50" style="text-align:center">
 
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{ticketAtendimentoUsuarioBean.atenderTicketAtalho}"
@@ -474,7 +473,7 @@
 		</p:dialog>
 
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
-			width="1000" height="450" draggable="false" resizable="false"
+			width="1000" height="410" draggable="false" resizable="false"
 			closable="true">
 			<h:form id="formListagemOcorrencia">
 
@@ -615,14 +614,12 @@
 				<h:panelGrid id="painelOcorrencia" columns="1" class="ui-noborder">
 
 					<p:outputLabel for="ocorrencia" value="Informe a Ocorrência" />
-					<p:inputTextarea id="ocorrencia" rows="8" cols="65"
+					<p:inputTextarea id="ocorrencia" rows="5" cols="65"
 						counter="display" maxlength="600"
 						counterTemplate="{0} caracteres restantes." autoResize="false"
 						value="#{ticketAtendimentoUsuarioBean.ocorrencia.ocorrencia}" />
 
 					<h:outputText id="display" />
-
-					<br></br>
 
 					<p:outputLabel for="arquivo" value="Anexar Arquivo" />
 					<p:fileUpload id="arquivo" required="false"

@@ -156,7 +156,8 @@ public class EventoBean implements Serializable {
 
 	public void salvar() {
 		try {
-			EventoDAO eventoDAO = new EventoDAO();
+			evento.setDataEvento(evento.getDataHoraInicial());
+			EventoDAO eventoDAO = new EventoDAO();			
 			eventoDAO.merge(evento);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
@@ -201,7 +202,6 @@ public class EventoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoTipo').hide();");
 
 			tipoEventos = tipoEventoDAO.listar("nome");
-
 			tipoEvento = new TipoEvento();
 
 		} catch (RuntimeException erro) {
@@ -238,8 +238,7 @@ public class EventoBean implements Serializable {
 
 	public void exibirMateriais(ActionEvent eventoMaterial) {
 		try {
-			evento = (Evento) eventoMaterial.getComponent().getAttributes().get("eventoSelecionado");
-			
+			evento = (Evento) eventoMaterial.getComponent().getAttributes().get("eventoSelecionado");			
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Exibir Materiais.",

@@ -214,12 +214,54 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			Calendar data48 = Calendar.getInstance();
 			data48.add(Calendar.DAY_OF_MONTH, -2);
 
-			String dataFormatada = new SimpleDateFormat("yyyy/MM/dd").format(data48.getTime());				
+			String dataFormatada = new SimpleDateFormat("yyyy/MM/dd").format(data48.getTime());
 
 			dataFormatada = "'" + dataFormatada + "'";
+
+			List tickets = sessao
+					.createSQLQuery("SELECT * FROM vs_ticket_pendentes WHERE departamento_codigo = "
+							+ usuario.getDepartamento().getCodigo() + " AND ultimaInteracao <= " + dataFormatada)
+					.list();
+
+			return tickets;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List resumoDepartamento() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_departamento WHERE Departamento_Codigo = "
+					+ usuario.getDepartamento().getCodigo()).list();
+
+			return tickets;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List resumoAtendente() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			//AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			//Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			List tickets = sessao
+					.createSQLQuery(
+							"SELECT * FROM vs_resumo_departamento").list();		
 			
-			List tickets = sessao.createSQLQuery("SELECT * FROM vs_ticketpendentes WHERE departamento_codigo = "
-					+ usuario.getDepartamento().getCodigo() + " AND ultimaInteracao <= " + dataFormatada).list();
 
 			return tickets;
 
