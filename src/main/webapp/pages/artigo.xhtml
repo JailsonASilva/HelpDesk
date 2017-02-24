@@ -221,10 +221,12 @@
 					<p:outputLabel for="arquivo" value="Arquivo" />
 					<p:fileUpload id="arquivo" required="true"
 						fileUploadListener="#{artigoBean.upload}" mode="advanced"
-						dragDropSupport="false" fileLimit="1" allowTypes="/(\.|\/)(pdf)$/" />
+						dragDropSupport="false" fileLimit="1"
+						allowTypes="/(\.|\/)(pdf|png|jpeg|doc|docx|txt|xls|xlsx)$/" />
 
 					<br></br>
-					<h:outputText value="Permitido apenas arquivos PDF's." />
+					<h:outputText
+						value="Permitido apenas arquivos Pdf, jpeg, png, doc, docx, txt, xls e xlsx." />
 
 				</h:panelGrid>
 

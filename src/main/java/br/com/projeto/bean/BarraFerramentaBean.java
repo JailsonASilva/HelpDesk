@@ -4,16 +4,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
-import org.primefaces.context.RequestContext;
 
-import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.domain.Ticket;
 
 @SuppressWarnings("serial")
@@ -47,26 +44,6 @@ public class BarraFerramentaBean implements Serializable {
 
 	public void setTickets(List<Ticket> tickets) {
 		this.tickets = tickets;
-	}
-
-	@PostConstruct
-	@SuppressWarnings("unchecked")
-	public void resumoAtendente() {
-		try {
-			TicketDAO ticketDAO = new TicketDAO();
-			tickets = ticketDAO.resumoAtendente();
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Listar Resumo.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-
 	}
 
 	public void ticketInterno() {

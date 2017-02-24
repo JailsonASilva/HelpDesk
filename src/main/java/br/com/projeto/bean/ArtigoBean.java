@@ -59,6 +59,7 @@ public class ArtigoBean implements Serializable {
 
 	private AutenticacaoBean autenticacaoBean;
 	private Usuario usuario;
+	private String tipoArquivo;
 
 	public FacesMessage getMessage() {
 		return message;
@@ -164,6 +165,14 @@ public class ArtigoBean implements Serializable {
 		this.buscaClassificacao = buscaClassificacao;
 	}
 
+	public String getTipoArquivo() {
+		return tipoArquivo;
+	}
+
+	public void setTipoArquivo(String tipoArquivo) {
+		this.tipoArquivo = tipoArquivo;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -234,6 +243,44 @@ public class ArtigoBean implements Serializable {
 			Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
 			artigo.setCaminho(arquivoTemp.toString());
 
+			String extensao = evento.getFile().getContentType();
+
+			boolean encontrado = false;
+			tipoArquivo = "";
+
+			for (int i = 0; i < extensao.length(); i++) {
+				String busca = extensao.substring(0 + i, 1 + i);
+
+				if (busca.equals("/")) {
+					encontrado = true;
+				}
+
+				if (encontrado == true != (busca.equals("/"))) {
+					tipoArquivo = tipoArquivo + busca;
+				}
+
+			}
+
+			if (tipoArquivo.equals("plain")) {
+				tipoArquivo = "txt";
+			}
+
+			if (tipoArquivo.equals("msword")) {
+				tipoArquivo = "doc";
+			}
+
+			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+				tipoArquivo = "docx";
+			}
+
+			if (tipoArquivo.equals("vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+				tipoArquivo = "xlsx";
+			}
+
+			if (tipoArquivo.equals("vnd.ms-excel")) {
+				tipoArquivo = "xls";
+			}
+
 		} catch (
 
 		IOException erro) {
@@ -246,8 +293,10 @@ public class ArtigoBean implements Serializable {
 		try {
 			artigo = (Artigo) evento.getComponent().getAttributes().get("artigoSelecionado");
 
-			InputStream stream = new FileInputStream("C:/Artigos/" + artigo.getCodigo() + ".pdf");
-			arquivo = new DefaultStreamedContent(stream, "pdf/pdf", artigo.getCodigo() + ".pdf");
+			InputStream stream = new FileInputStream("C:/Artigos/" + artigo.getCodigo() + "." + artigo.getTipoAnexo());
+
+			arquivo = new DefaultStreamedContent(stream, tipoArquivo + "/" + tipoArquivo,
+					artigo.getCodigo() + "." + artigo.getTipoAnexo());
 
 		} catch (FileNotFoundException erro) {
 			Messages.addGlobalError("Ocorreu um erro ao tentar efetuar o download da foto");
@@ -264,11 +313,13 @@ public class ArtigoBean implements Serializable {
 				return;
 			}
 
+			artigo.setTipoAnexo(tipoArquivo);
+
 			ArtigoDAO artigoDAO = new ArtigoDAO();
 			Artigo artigoRetorno = artigoDAO.merge(artigo);
 
 			Path origem = Paths.get(artigo.getCaminho());
-			Path destino = Paths.get("C:/Artigos/" + artigoRetorno.getCodigo() + ".pdf");
+			Path destino = Paths.get("C:/Artigos/" + artigoRetorno.getCodigo() + "." + tipoArquivo);
 
 			Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
 

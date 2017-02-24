@@ -241,7 +241,6 @@
 					</p:column>
 
 					<p:column headerText="Opções" width="50" style="text-align:center">
-
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
@@ -422,7 +421,7 @@
 				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 					<p:outputLabel for="assunto" value="Assunto" />
-					<p:inputText id="assunto" maxlength="47" size="57" required="true"
+					<p:inputText id="assunto" maxlength="100" size="57" required="true"
 						style="margin:0 39px 0 39px" requiredMessage="Campo Obrigatório!"
 						value="#{ticketAtendimentoDepartamentoBean.ticket.assunto}" />
 
@@ -1115,6 +1114,120 @@
 
 				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 					oncomplete="PF('dialogoResumo').hide();" />
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Ticket's sem Atendente. (Pendentes)"
+			widgetVar="dialogoSemAtendimento" draggable="false" resizable="false"
+			width="880" height="420" closable="true">
+			<h:form id="formAtendimento">
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single"
+					selection="#{ticketAtendimentoDepartamentoBean.ticket}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{ticket.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{ticketAtendimentoDepartamentoBean.ticketsSemAtendimento}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="ticket" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formAtendimento:tabela"
+						listener="#{ticketAtendimentoDepartamentoBean.onRowUnselectSemAtendimento}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formAtendimento:tabela"
+						listener="#{ticketAtendimentoDepartamentoBean.onRowSelectSemAtendimento}" />
+
+					<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
+						style="text-align:center" width="5">
+						<h:outputText value="#{ticket.codigo}" />
+					</p:column>
+
+					<p:column headerText="Data Abertura" width="9"
+						style="text-align:center" sortBy="#{ticket.dataAbertura}">
+						<h:outputText value="#{ticket.dataAbertura}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Assunto" sortBy="#{ticket.assunto}"
+						style="white-space:normal !important;" width="70">
+						<h:outputText value="#{ticket.assunto}" />
+					</p:column>
+
+					<p:column headerText="Solicitante" sortBy="#{ticket.usuario.nome}"
+						width="70">
+						<h:outputText value="#{ticket.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="65" style="text-align:center">
+						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
+							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formListagem:tool :formAtendimento:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<p:confirm header="Confirmação"
+								message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-ban" title="Suspender Ticket"
+							actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formListagem:tool :formAtendimento:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<p:confirm header="Confirmação"
+								message="Deseja Suspender este Ticket?" icon="ui-icon-alert" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-check-circle"
+							title="Concluir Ticket"
+							actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formListagem:tool :formAtendimento:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<p:confirm header="Confirmação"
+								message="Deseja Concluir este Ticket?" icon="ui-icon-alert" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-user-md"
+							title="Encaminhar Ticket"
+							oncomplete="PF('dialogoEncaminhar').show()"
+							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formListagem:tool :formEncaminhar:painelUsuario :formAtendimento:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-sitemap" title="Ocorrências"
+							oncomplete="PF('dialogoListagemOcorrencia').show()"
+							actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrenciaAtalho}"
+							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formAtendimento:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoSemAtendimento').hide();" />
+
 			</h:form>
 		</p:dialog>
 

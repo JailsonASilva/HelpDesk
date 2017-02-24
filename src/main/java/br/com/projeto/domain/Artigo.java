@@ -40,6 +40,9 @@ public class Artigo extends GenericDomain {
 	@Column(nullable = false)
 	private Boolean ativo;
 
+	@Column(nullable = true)
+	private String tipoAnexo;
+
 	@Transient
 	private String caminho;
 
@@ -137,4 +140,13 @@ public class Artigo extends GenericDomain {
 	public void setNomeClassificacao(String nomeClassificacao) {
 
 	}
+
+	public String getTipoAnexo() {
+		return tipoAnexo;
+	}
+
+	public void setTipoAnexo(String tipoAnexo) {
+		this.tipoAnexo = tipoAnexo;
+	}
+
 }

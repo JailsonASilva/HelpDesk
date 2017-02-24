@@ -64,6 +64,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Ticket> tickets;
 	private List<Ticket> ticketsPendentes;
 	private List<Ticket> ticketsDepartamentos;
+	private List<Ticket> ticketsSemAtendimento;
 	private List<Ticket> ticketsResumo;
 	private List<Cliente> clientes;
 	private List<Departamento> departamentos;
@@ -352,10 +353,19 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.ticketsResumo = ticketsResumo;
 	}
 
+	public List<Ticket> getTicketsSemAtendimento() {
+		return ticketsSemAtendimento;
+	}
+
+	public void setTicketsSemAtendimento(List<Ticket> ticketsSemAtendimento) {
+		this.ticketsSemAtendimento = ticketsSemAtendimento;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
 			ticketsPendenteInteracao();
+			ticketsNaoAtendidos();
 			listarPendentes();
 
 			categoria = new Categoria();
@@ -919,6 +929,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	public void onRowUnselectPendente(UnselectEvent event) {
 		ticket = null;
 	}
+	
+	public void onRowSelectSemAtendimento(SelectEvent event) {
+
+	}
+
+	public void onRowUnselectSemAtendimento(UnselectEvent event) {
+		ticket = null;
+	}	
 
 	public void pesquisarDepartamento() {
 		try {
@@ -1512,6 +1530,28 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketsResumo = ticketDAO.resumoDepartamento();
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Ticket's sem Interação.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+
+	}
+
+	public void ticketsNaoAtendidos() {
+		try {
+			TicketDAO ticketDAO = new TicketDAO();			
+			ticketsSemAtendimento = ticketDAO.ticketSemAtendente();
+
+			if (ticketsSemAtendimento.isEmpty() == false) {
+				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoSemAtendimento').show();");
+			}
 
 		} catch (
 

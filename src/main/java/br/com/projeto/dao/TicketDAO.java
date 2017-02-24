@@ -204,6 +204,31 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "unused", "deprecation" })
+	public List<Ticket> ticketSemAtendente() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();			
+
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+			
+			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
+					Restrictions.like("departamento.nome", "%" + usuario.getDepartamento().getNome() + "%"));
+
+			consulta.add(Restrictions.isNull("usuarioAtendimento"));
+			consulta.addOrder(Order.asc("codigo"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
 	@SuppressWarnings("rawtypes")
 	public List ticketPendentesDepartamento() {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
@@ -250,26 +275,4 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			sessao.close();
 		}
 	}
-
-	@SuppressWarnings("rawtypes")
-	public List resumoAtendente() {
-		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
-		try {
-			//AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
-			//Usuario usuario = autenticacaoBean.getUsuarioLogado();
-
-			List tickets = sessao
-					.createSQLQuery(
-							"SELECT * FROM vs_resumo_departamento").list();		
-			
-
-			return tickets;
-
-		} catch (RuntimeException erro) {
-			throw erro;
-		} finally {
-			sessao.close();
-		}
-	}
-
 }
