@@ -143,7 +143,16 @@
 					</f:facet>
 
 					<f:facet name="right">
-						<p:commandButton value="Resumo Equipe"
+						<p:commandButton value="Busca Avançada"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							oncomplete="PF('dialogoBusca').show()"
+							update=":formResumo:tabela">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Resumo Equipe" style="margin:0 5px 0 5px"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							oncomplete="PF('dialogoResumo').show()"
@@ -153,7 +162,7 @@
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
-						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+						<p:menuButton value="Opções" style="margin:0 8px 0 8px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
 								<p:dataExporter type="xls" target="tabela" fileName="ticket" />
@@ -1227,6 +1236,79 @@
 
 				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 					oncomplete="PF('dialogoSemAtendimento').hide();" />
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
+			draggable="false" resizable="false" width="555" height="270"
+			closable="true">
+			<h:form id="formBusca">
+
+				<h:panelGrid columns="2" class="ui-noborder">
+
+					<p:outputLabel for="usuario" value="Solicitantes" />
+					<p:selectOneMenu id="usuario" filter="true"
+						value="#{ticketAtendimentoDepartamentoBean.usuarioAberturaBusca}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros Selecionado" />
+						<f:selectItems
+							value="#{ticketAtendimentoDepartamentoBean.usuariosAberturaBusca}"
+							var="usuario" itemValue="#{usuario.nome}"
+							itemLabel="#{usuario.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="status" value="Status" />
+					<p:selectOneMenu id="status" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{ticketAtendimentoDepartamentoBean.statusBusca}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros Selecionado" />
+
+						<f:selectItem itemValue="Em Atendimento"
+							itemLabel="Em Atendimento" />
+						<f:selectItem itemValue="Pendente" itemLabel="Pendente" />
+						<f:selectItem itemValue="Suspenso" itemLabel="Suspenso" />
+						<f:selectItem itemValue="Concluído" itemLabel="Concluído" />
+						<f:selectItems />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="prioridade" value="Prioridade" />
+					<p:selectOneMenu id="prioridade" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{ticketAtendimentoDepartamentoBean.prioridadeBusca}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros Selecionado" />
+
+						<f:selectItem itemValue="4-Baixa" itemLabel="Baixa" />
+						<f:selectItem itemValue="3-Normal" itemLabel="Normal" />
+						<f:selectItem itemValue="2-Alta" itemLabel="Alta" />
+						<f:selectItem itemValue="1-Urgente" itemLabel="Urgente" />
+						<f:selectItems />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="assunto" value="Assunto" />
+					<p:inputText id="assunto" maxlength="100" size="57"
+						value="#{ticketAtendimentoDepartamentoBean.assuntoBusca}" />
+
+
+					<p:outputLabel for="solicitacao" value="Solicitação" />
+					<p:inputTextarea id="solicitacao" rows="4" cols="55"
+						maxlength="1000" autoResize="false"
+						value="#{ticketAtendimentoDepartamentoBean.solicitacaoBusca}" />
+
+					<br></br>
+
+					<p:commandButton value="Pesquisar"
+						icon="ui-icon-script"
+						actionListener="#{ticketAtendimentoDepartamentoBean.pesquisarAvancada}"
+						update="formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+				</h:panelGrid>
+
+
 
 			</h:form>
 		</p:dialog>

@@ -1,5 +1,6 @@
 package br.com.projeto.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -129,4 +130,10 @@ public class Ocorrencia extends GenericDomain {
 		this.tipoAnexo = tipoAnexo;
 	}
 
+	@Transient
+	public String getDataFormatada() {
+		String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(data);
+
+		return dataFormatada;
+	}
 }

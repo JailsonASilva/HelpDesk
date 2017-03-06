@@ -43,6 +43,37 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		}
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
+	public List<Ticket> pesquisaAvancado(String departamento, String usuarioAbertura, String status, String prioridade,
+			String assunto, String solicitacao) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+
+			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
+					Restrictions.like("departamento.nome", "%" + departamento + "%"));
+
+			Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.LEFT_JOIN,
+					Restrictions.like("usuario.nome", "%" + usuarioAbertura + "%"));
+
+			consulta.add(Restrictions.like("status", "%" + status + "%"));
+			consulta.add(Restrictions.like("prioridade", "%" + prioridade + "%"));
+			consulta.add(Restrictions.like("assunto", "%" + assunto + "%"));
+			consulta.add(Restrictions.like("solicitacao", "%" + solicitacao + "%"));
+
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	public List<Ticket> pesquisarDepartamento(String departamento) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
@@ -209,10 +240,10 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
-			Usuario usuario = autenticacaoBean.getUsuarioLogado();			
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
 			Criteria consulta = sessao.createCriteria(Ticket.class);
-			
+
 			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
 					Restrictions.like("departamento.nome", "%" + usuario.getDepartamento().getNome() + "%"));
 

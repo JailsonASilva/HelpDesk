@@ -73,6 +73,15 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
 
+	private String solicitanteBusca;
+	private List<Cliente> solicitantesBusca;
+	private String usuarioAberturaBusca;
+	private List<Usuario> usuariosAberturaBusca;
+	private String prioridadeBusca;
+	private String statusBusca;
+	private String assuntoBusca;
+	private String solicitacaoBusca;
+
 	private StreamedContent arquivo;
 
 	private FacesMessage message;
@@ -361,6 +370,70 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.ticketsSemAtendimento = ticketsSemAtendimento;
 	}
 
+	public String getSolicitanteBusca() {
+		return solicitanteBusca;
+	}
+
+	public void setSolicitanteBusca(String solicitanteBusca) {
+		this.solicitanteBusca = solicitanteBusca;
+	}
+
+	public List<Cliente> getSolicitantesBusca() {
+		return solicitantesBusca;
+	}
+
+	public void setSolicitantesBusca(List<Cliente> solicitantesBusca) {
+		this.solicitantesBusca = solicitantesBusca;
+	}
+
+	public String getUsuarioAberturaBusca() {
+		return usuarioAberturaBusca;
+	}
+
+	public void setUsuarioAberturaBusca(String usuarioAberturaBusca) {
+		this.usuarioAberturaBusca = usuarioAberturaBusca;
+	}
+
+	public List<Usuario> getUsuariosAberturaBusca() {
+		return usuariosAberturaBusca;
+	}
+
+	public void setUsuariosAberturaBusca(List<Usuario> usuariosAberturaBusca) {
+		this.usuariosAberturaBusca = usuariosAberturaBusca;
+	}
+
+	public String getPrioridadeBusca() {
+		return prioridadeBusca;
+	}
+
+	public void setPrioridadeBusca(String prioridadeBusca) {
+		this.prioridadeBusca = prioridadeBusca;
+	}
+
+	public String getStatusBusca() {
+		return statusBusca;
+	}
+
+	public void setStatusBusca(String statusBusca) {
+		this.statusBusca = statusBusca;
+	}
+
+	public String getAssuntoBusca() {
+		return assuntoBusca;
+	}
+
+	public void setAssuntoBusca(String assuntoBusca) {
+		this.assuntoBusca = assuntoBusca;
+	}
+
+	public String getSolicitacaoBusca() {
+		return solicitacaoBusca;
+	}
+
+	public void setSolicitacaoBusca(String solicitacaoBusca) {
+		this.solicitacaoBusca = solicitacaoBusca;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -380,6 +453,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ClienteDAO clienteDAO = new ClienteDAO();
 			clientes = clienteDAO.listar("nome");
+			solicitantesBusca = clientes;
 
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.listar("nome");
@@ -389,6 +463,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(usuario.getDepartamento().getCodigo());
+			usuariosAberturaBusca = usuarioDAO.listar("nome");
 
 		} catch (
 
@@ -404,6 +479,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void pesquisar() {
 		try {
+			ticketsNaoAtendidos();
+
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
@@ -423,6 +500,58 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			if (tickets.isEmpty() == true) {
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarAvancada() {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			departamentoPesq = usuario.getDepartamento().getNome();
+
+			if (usuarioAberturaBusca.equals("Todos os Registros Selecionado")) {
+				usuarioAberturaBusca = "";
+			}
+
+			if (statusBusca.equals("Todos os Registros Selecionado")) {
+				statusBusca = "";
+			}
+
+			if (prioridadeBusca.equals("Todos os Registros Selecionado")) {
+				prioridadeBusca = "";
+			}
+
+			if (assuntoBusca.equals("Todos os Registros Selecionado")) {
+				assuntoBusca = "";
+			}
+
+			if (solicitacaoBusca.equals("Todos os Registros Selecionado")) {
+				solicitacaoBusca = "";
+			}
+
+			TicketDAO ticketDAO = new TicketDAO();
+			tickets = ticketDAO.pesquisaAvancado(departamentoPesq, usuarioAberturaBusca, statusBusca, prioridadeBusca,
+					assuntoBusca, solicitacaoBusca);
+
+			ticket = null;
+
+			if (tickets.isEmpty() == true) {
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
+			} else {
+				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoBusca').hide();");
 			}
 
 		} catch (
@@ -929,14 +1058,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	public void onRowUnselectPendente(UnselectEvent event) {
 		ticket = null;
 	}
-	
+
 	public void onRowSelectSemAtendimento(SelectEvent event) {
 
 	}
 
 	public void onRowUnselectSemAtendimento(UnselectEvent event) {
 		ticket = null;
-	}	
+	}
 
 	public void pesquisarDepartamento() {
 		try {
@@ -1546,11 +1675,12 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void ticketsNaoAtendidos() {
 		try {
-			TicketDAO ticketDAO = new TicketDAO();			
+			TicketDAO ticketDAO = new TicketDAO();
 			ticketsSemAtendimento = ticketDAO.ticketSemAtendente();
 
 			if (ticketsSemAtendimento.isEmpty() == false) {
-				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoSemAtendimento').show();");
+				org.primefaces.context.RequestContext.getCurrentInstance()
+						.execute("PF('dialogoSemAtendimento').show();");
 			}
 
 		} catch (

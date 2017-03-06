@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
-@Table
+@Table(name="ticket")
 public class Ticket extends GenericDomain {
 	@ManyToOne
 	@JoinColumn(nullable = true)
