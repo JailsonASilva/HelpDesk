@@ -1241,7 +1241,7 @@
 		</p:dialog>
 
 		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
-			draggable="false" resizable="false" width="555" height="270"
+			draggable="false" resizable="false" width="555" height="280"
 			closable="true">
 			<h:form id="formBusca">
 
@@ -1251,11 +1251,11 @@
 					<p:selectOneMenu id="usuario" filter="true"
 						value="#{ticketAtendimentoDepartamentoBean.usuarioAberturaBusca}"
 						converter="omnifaces.SelectItemsConverter">
-						<f:selectItem noSelectionOption="true"
-							itemLabel="Todos os Registros Selecionado" />
+						<f:selectItem itemLabel="Todos os Registros Selecionado"
+							itemValue="0" />
 						<f:selectItems
 							value="#{ticketAtendimentoDepartamentoBean.usuariosAberturaBusca}"
-							var="usuario" itemValue="#{usuario.nome}"
+							var="usuario" itemValue="#{usuario.codigo}"
 							itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
 
@@ -1268,6 +1268,7 @@
 
 						<f:selectItem itemValue="Em Atendimento"
 							itemLabel="Em Atendimento" />
+						<f:selectItem itemValue="Aberto" itemLabel="Aberto" />
 						<f:selectItem itemValue="Pendente" itemLabel="Pendente" />
 						<f:selectItem itemValue="Suspenso" itemLabel="Suspenso" />
 						<f:selectItem itemValue="Concluído" itemLabel="Concluído" />
@@ -1300,16 +1301,12 @@
 
 					<br></br>
 
-					<p:commandButton value="Pesquisar"
-						icon="ui-icon-script"
+					<p:commandButton value="Pesquisar" icon="ui-icon-script"
 						actionListener="#{ticketAtendimentoDepartamentoBean.pesquisarAvancada}"
 						update="formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
-
-
-
 			</h:form>
 		</p:dialog>
 

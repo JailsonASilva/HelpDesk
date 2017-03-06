@@ -44,7 +44,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 	}
 
 	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
-	public List<Ticket> pesquisaAvancado(String departamento, String usuarioAbertura, String status, String prioridade,
+	public List<Ticket> pesquisaAvancado(String departamento, Long usuarioAbertura, String status, String prioridade,
 			String assunto, String solicitacao) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
@@ -53,10 +53,17 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
 					Restrictions.like("departamento.nome", "%" + departamento + "%"));
 
-			Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.LEFT_JOIN,
-					Restrictions.like("usuario.nome", "%" + usuarioAbertura + "%"));
+			if (usuarioAbertura > 0L) {
+				Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN,
+						Restrictions.eq("usuario.codigo", usuarioAbertura));
+			}
 
-			consulta.add(Restrictions.like("status", "%" + status + "%"));
+			if (status.equals("Aberto")) {
+				consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
+			} else {
+				consulta.add(Restrictions.like("status", "%" + status + "%"));
+			}
+
 			consulta.add(Restrictions.like("prioridade", "%" + prioridade + "%"));
 			consulta.add(Restrictions.like("assunto", "%" + assunto + "%"));
 			consulta.add(Restrictions.like("solicitacao", "%" + solicitacao + "%"));

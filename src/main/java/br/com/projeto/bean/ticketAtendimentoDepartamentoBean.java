@@ -75,7 +75,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	private String solicitanteBusca;
 	private List<Cliente> solicitantesBusca;
-	private String usuarioAberturaBusca;
+	private Long usuarioAberturaBusca;
 	private List<Usuario> usuariosAberturaBusca;
 	private String prioridadeBusca;
 	private String statusBusca;
@@ -386,11 +386,11 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.solicitantesBusca = solicitantesBusca;
 	}
 
-	public String getUsuarioAberturaBusca() {
+	public Long getUsuarioAberturaBusca() {
 		return usuarioAberturaBusca;
 	}
 
-	public void setUsuarioAberturaBusca(String usuarioAberturaBusca) {
+	public void setUsuarioAberturaBusca(Long usuarioAberturaBusca) {
 		this.usuarioAberturaBusca = usuarioAberturaBusca;
 	}
 
@@ -520,10 +520,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
 			departamentoPesq = usuario.getDepartamento().getNome();
-
-			if (usuarioAberturaBusca.equals("Todos os Registros Selecionado")) {
-				usuarioAberturaBusca = "";
-			}
 
 			if (statusBusca.equals("Todos os Registros Selecionado")) {
 				statusBusca = "";
