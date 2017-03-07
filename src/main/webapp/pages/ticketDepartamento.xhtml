@@ -146,8 +146,7 @@
 						<p:commandButton value="Busca Avançada"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							oncomplete="PF('dialogoBusca').show()"
-							update=":formResumo:tabela">
+							oncomplete="PF('dialogoBusca').show()">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -984,6 +983,10 @@
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							var="ticket" rows="10" paginatorPosition="bottom">
 
+							<p:ajax event="rowDblselect"
+								listener="#{ticketAtendimentoDepartamentoBean.duploTicket}"
+								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+
 							<p:ajax event="rowUnselect"
 								update=":formListagem:messages :formPendente:tabView"
 								listener="#{ticketAtendimentoDepartamentoBean.onRowUnselectPendente}" />
@@ -1089,7 +1092,6 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="10" paginatorPosition="bottom">
 
-
 					<p:column headerText="Atendente" sortBy="#{ticket[0]}" width="90">
 						<h:outputText value="#{ticket[0]}" />
 					</p:column>
@@ -1140,6 +1142,10 @@
 					value="#{ticketAtendimentoDepartamentoBean.ticketsSemAtendimento}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{ticketAtendimentoDepartamentoBean.duploTicket}"
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formAtendimento:tabela"

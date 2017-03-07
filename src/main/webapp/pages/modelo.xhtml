@@ -17,64 +17,10 @@
 
 	<div>
 		<p:layout fullPage="true">
-			<p:layoutUnit position="north" size="130" resizable="true">
-
-				<p:ribbon>
-					<p:tab
-						title="Help Desk 1.1.37.1 - Seja Bem-vindo #{autenticacaoBean.usuarioLogado.nome}">
-
-						<p:ribbonGroup style="height: 40px;">
-							<h:form>
-								<p:commandLink title="Novo Ticket Externo"
-									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}"
-									action="#{barraFerramentaBean.ticketExterno}">
-									<h:graphicImage url="/imagens/novo2.png" />
-								</p:commandLink>
-
-								<p:commandLink title="Novo Ticket Interno"
-									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketInterno}"
-									action="#{barraFerramentaBean.ticketInterno}">
-									<h:graphicImage url="/imagens/novo.png" />
-								</p:commandLink>
-							</h:form>
-						</p:ribbonGroup>
-
-						<p:ribbonGroup style="height: 40px;">
-							<h:form>
-								<p:commandLink title="Ticket por Departamento"
-									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}"
-									action="#{barraFerramentaBean.ticketDepartamento}">
-									<h:graphicImage url="/imagens/atendimento.png" />
-								</p:commandLink>
-
-								<p:commandLink title="Meus Atendimentos"
-									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}"
-									action="#{barraFerramentaBean.ticketUsuario}">
-									<h:graphicImage url="/imagens/atendimento2.png" />
-								</p:commandLink>
-
-								<p:commandLink title="Meus Ticket's"
-									action="#{barraFerramentaBean.meusTickets}">
-									<h:graphicImage url="/imagens/meusTickets.png" />
-								</p:commandLink>
-							</h:form>
-
-						</p:ribbonGroup>
-
-						<p:ribbonGroup style="height: 40px;">
-							<h:form>
-								<p:commandLink title="Cadastro de Artigo (Base de Conhecimento)"
-									rendered="#{autenticacaoBean.usuarioLogado.acesso.artigo}"
-									action="#{barraFerramentaBean.artigo}">
-									<h:graphicImage url="/imagens/web.png" />
-								</p:commandLink>
-							</h:form>
-						</p:ribbonGroup>
-					</p:tab>
-				</p:ribbon>
+			<p:layoutUnit position="north" size="47" resizable="true">
 
 				<h:form>
-					<p:menubar>
+					<p:menubar style="border:none;">
 						<p:submenu label="Sistemas" icon="fa fa fw fa-user">
 							<p:menuitem value="Departamentos" url="/pages/departamento.xhtml" />
 							<p:menuitem value="Acessos" url="/pages/acesso.xhtml" />
@@ -206,21 +152,44 @@
 						</p:submenu>
 
 						<f:facet name="options">
+							<p:commandButton icon="ui-icon-document" title="Novo Ticket"
+								action="#{barraFerramentaBean.ticketExterno}"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
+
+							<p:commandButton icon="fa fa fw fa-list"
+								title="Ticket por Departamento"
+								action="#{barraFerramentaBean.ticketDepartamento}"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}" />
+
+							<p:commandButton icon="fa fa fw fa-user-md"
+								title="Meus Atendimento"
+								action="#{barraFerramentaBean.ticketUsuario}"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}" />
+
+							<p:commandButton icon="fa fa fw fa-list-alt"
+								title="Acompanhar meus Ticket's"
+								action="#{barraFerramentaBean.meusTickets}" />
+
+							<p:commandButton icon="fa fa fw fa-graduation-cap"
+								title="Cadastro de Artigo (Base de Conhecimento)"
+								action="#{barraFerramentaBean.artigo}" />
+
 							<p:commandButton value="Desconectar"
 								actionListener="#{autenticacaoBean.desconectar}"
 								icon="ui-icon-extlink" />
 						</f:facet>
 					</p:menubar>
-
 				</h:form>
 
 			</p:layoutUnit>
 
 			<div align="center">
-				<p:layoutUnit position="south" size="30" resizable="true"
+				<p:layoutUnit position="south" size="50" resizable="true"
 					closable="true" collapsible="true">
 
-					<h:outputText value="Grupo Educa - Tecnologia da Informação." />
+					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
+					<br></br>
+					<h:outputText value="Versão 1.1.40.1" />
 
 				</p:layoutUnit>
 			</div>
