@@ -43,6 +43,72 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		}
 	}
 
+	@SuppressWarnings({ "deprecation", "unchecked" })
+	public List<Ticket> pesquisarDepartamento(String departamento) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+
+			@SuppressWarnings("unused")
+			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
+					Restrictions.like("departamento.nome", "%" + departamento + "%"));
+
+			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
+
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Ticket> pesquisarAdministrador(String status) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+			consulta.add(Restrictions.eq("status", status));
+
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Ticket> pesquisarAdministrador() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+			Criteria consulta = sessao.createCriteria(Ticket.class);
+
+			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
+
+			consulta.addOrder(Order.desc("dataAbertura"));
+			consulta.addOrder(Order.desc("codigo"));
+
+			List<Ticket> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
 	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
 	public List<Ticket> pesquisaAvancado(String departamento, Long usuarioAbertura, String status, String prioridade,
 			String assunto, String solicitacao, Long atendenteAbertura) {
@@ -57,11 +123,11 @@ public class TicketDAO extends GenericDAO<Ticket> {
 				Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN,
 						Restrictions.eq("usuario.codigo", usuarioAbertura));
 			}
-			
+
 			if (atendenteAbertura > 0L) {
-				Criteria consultaUsuario = consulta.createCriteria("usuarioAtendimento", "usuarioAtendimento", Criteria.INNER_JOIN,
-						Restrictions.eq("usuarioAtendimento.codigo", atendenteAbertura));
-			}			
+				Criteria consultaUsuario = consulta.createCriteria("usuarioAtendimento", "usuarioAtendimento",
+						Criteria.INNER_JOIN, Restrictions.eq("usuarioAtendimento.codigo", atendenteAbertura));
+			}
 
 			if (status.equals("Aberto")) {
 				consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
@@ -86,17 +152,37 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		}
 	}
 
-	@SuppressWarnings({ "deprecation", "unchecked" })
-	public List<Ticket> pesquisarDepartamento(String departamento) {
+	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
+	public List<Ticket> pesquisaAvancadoAdministrador(Long departamento, Long usuarioAbertura, String status,
+			String prioridade, String assunto, String solicitacao, Long atendenteAbertura) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Ticket.class);
 
-			@SuppressWarnings("unused")
-			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
-					Restrictions.like("departamento.nome", "%" + departamento + "%"));
+			if (departamento > 0L) {
+				Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento",
+						Criteria.INNER_JOIN, Restrictions.eq("departamento.codigo", departamento));
+			}
 
-			consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
+			if (usuarioAbertura > 0L) {
+				Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN,
+						Restrictions.eq("usuario.codigo", usuarioAbertura));
+			}
+
+			if (atendenteAbertura > 0L) {
+				Criteria consultaUsuario = consulta.createCriteria("usuarioAtendimento", "usuarioAtendimento",
+						Criteria.INNER_JOIN, Restrictions.eq("usuarioAtendimento.codigo", atendenteAbertura));
+			}
+
+			if (status.equals("Aberto")) {
+				consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));
+			} else {
+				consulta.add(Restrictions.like("status", "%" + status + "%"));
+			}
+
+			consulta.add(Restrictions.like("prioridade", "%" + prioridade + "%"));
+			consulta.add(Restrictions.like("assunto", "%" + assunto + "%"));
+			consulta.add(Restrictions.like("solicitacao", "%" + solicitacao + "%"));
 
 			consulta.addOrder(Order.desc("dataAbertura"));
 			consulta.addOrder(Order.desc("codigo"));
@@ -309,6 +395,22 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_departamento WHERE Departamento_Codigo = "
 					+ usuario.getDepartamento().getCodigo()).list();
+
+			return tickets;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List resumoGeral() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		try {
+
+			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_departamento").list();
 
 			return tickets;
 

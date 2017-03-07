@@ -215,6 +215,11 @@
 					<p:selectBooleanCheckbox id="ativo"
 						value="#{usuarioBean.usuario.ativo}" required="true"
 						requiredMessage="O campo 'Ativo' é obrigatório" />
+						
+					<p:outputLabel for="administrador" value="Administrador" />
+					<p:selectBooleanCheckbox id="administrador"
+						value="#{usuarioBean.usuario.administrador}" required="true"
+						requiredMessage="O campo 'Administrador' é obrigatório" />						
 				</h:panelGrid>
 
 				<br></br>

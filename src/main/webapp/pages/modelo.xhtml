@@ -64,6 +64,10 @@
 
 								<p:menuitem value="Meus Ticket's" url="/pages/meusTickets.xhtml" />
 
+								<p:menuitem value="Acesso Administrador"
+									url="/pages/acessoAdministador.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.administrador}" />
+
 							</p:submenu>
 						</p:submenu>
 
@@ -189,7 +193,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.1.42.1" />
+					<h:outputText value="Versão 1.1.43.1" />
 
 				</p:layoutUnit>
 			</div>

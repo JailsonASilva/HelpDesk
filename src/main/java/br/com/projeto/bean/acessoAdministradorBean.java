@@ -50,7 +50,7 @@ import br.com.projeto.util.EmailUtils;
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class ticketAtendimentoDepartamentoBean implements Serializable {
+public class acessoAdministradorBean implements Serializable {
 	private Ticket ticket;
 	private Ocorrencia ocorrencia;
 	private AutenticacaoBean autenticacaoBean;
@@ -78,6 +78,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Usuario> usuarios;
 
 	private String solicitanteBusca;
+	private Long departamentoBusca;
+	private List<Departamento> departamentosBusca;
 	private List<Cliente> solicitantesBusca;
 	private Long usuarioAberturaBusca;
 	private List<Usuario> usuariosAberturaBusca;
@@ -472,11 +474,25 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.interacao = interacao;
 	}
 
+	public Long getDepartamentoBusca() {
+		return departamentoBusca;
+	}
+
+	public void setDepartamentoBusca(Long departamentoBusca) {
+		this.departamentoBusca = departamentoBusca;
+	}
+
+	public List<Departamento> getDepartamentosBusca() {
+		return departamentosBusca;
+	}
+
+	public void setDepartamentosBusca(List<Departamento> departamentosBusca) {
+		this.departamentosBusca = departamentosBusca;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
-			ticketsPendenteInteracao();
-			ticketsNaoAtendidos();
 			listarPendentes();
 
 			categoria = new Categoria();
@@ -488,6 +504,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listarAtendimento();
 			departamentosCliente = departamentoDAO.listar("nome");
+			departamentosBusca = departamentos;
 
 			ClienteDAO clienteDAO = new ClienteDAO();
 			clientes = clienteDAO.listar("nome");
@@ -518,20 +535,13 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void pesquisar() {
 		try {
-			ticketsNaoAtendidos();
-
-			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
-			Usuario usuario = autenticacaoBean.getUsuarioLogado();
-
-			departamentoPesq = usuario.getDepartamento().getNome();
-
 			TicketDAO ticketDAO = new TicketDAO();
-			tickets = ticketDAO.pesquisarDepartamento(departamentoPesq, status);
+			tickets = ticketDAO.pesquisarAdministrador(status);
 
 			if (status.equals("Aberto")) {
-				tickets = ticketDAO.pesquisarDepartamento(departamentoPesq);
+				tickets = ticketDAO.pesquisarAdministrador();
 			} else {
-				tickets = ticketDAO.pesquisarDepartamento(departamentoPesq, status);
+				tickets = ticketDAO.pesquisarAdministrador(status);
 			}
 
 			ticket = null;
@@ -577,8 +587,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			}
 
 			TicketDAO ticketDAO = new TicketDAO();
-			tickets = ticketDAO.pesquisaAvancado(departamentoPesq, usuarioAberturaBusca, statusBusca, prioridadeBusca,
-					assuntoBusca, solicitacaoBusca, atendenteBusca);
+			tickets = ticketDAO.pesquisaAvancadoAdministrador(departamentoBusca, usuarioAberturaBusca, statusBusca,
+					prioridadeBusca, assuntoBusca, solicitacaoBusca, atendenteBusca);
 
 			ticket = null;
 
@@ -1771,7 +1781,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	public void resumoEquipe() {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
-			ticketsResumo = ticketDAO.resumoDepartamento();
+			ticketsResumo = ticketDAO.resumoGeral();
 
 		} catch (
 
@@ -1840,9 +1850,9 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	public void listarInteracoes(ActionEvent evento) {
 		try {
 			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
-			
+
 			InteracaoDAO interacaoDAO = new InteracaoDAO();
-			interacoes = interacaoDAO.listarInteracaoes(ticket.getCodigo());			
+			interacoes = interacaoDAO.listarInteracaoes(ticket.getCodigo());
 
 		} catch (
 
