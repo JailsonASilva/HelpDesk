@@ -45,7 +45,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
 	public List<Ticket> pesquisaAvancado(String departamento, Long usuarioAbertura, String status, String prioridade,
-			String assunto, String solicitacao) {
+			String assunto, String solicitacao, Long atendenteAbertura) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Ticket.class);
@@ -57,6 +57,11 @@ public class TicketDAO extends GenericDAO<Ticket> {
 				Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN,
 						Restrictions.eq("usuario.codigo", usuarioAbertura));
 			}
+			
+			if (atendenteAbertura > 0L) {
+				Criteria consultaUsuario = consulta.createCriteria("usuarioAtendimento", "usuarioAtendimento", Criteria.INNER_JOIN,
+						Restrictions.eq("usuarioAtendimento.codigo", atendenteAbertura));
+			}			
 
 			if (status.equals("Aberto")) {
 				consulta.add(Restrictions.in("status", "Pendente", "Em Atendimento"));

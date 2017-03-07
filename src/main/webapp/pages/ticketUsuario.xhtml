@@ -119,9 +119,12 @@
 
 						</p:commandButton>
 
-						<p:commandButton title="Editar" process=":formListagem:tabela"
+						<p:commandButton title="Editar"
 							disabled="#{ticketAtendimentoUsuarioBean.ticket == null}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{ticketAtendimentoUsuarioBean.editarTicket}"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />

@@ -33,6 +33,7 @@ import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
+import br.com.projeto.dao.InteracaoDAO;
 import br.com.projeto.dao.OcorrenciaDAO;
 import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.dao.UsuarioDAO;
@@ -40,6 +41,7 @@ import br.com.projeto.domain.Categoria;
 import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
+import br.com.projeto.domain.Interacao;
 import br.com.projeto.domain.Ocorrencia;
 import br.com.projeto.domain.Ticket;
 import br.com.projeto.domain.Usuario;
@@ -53,6 +55,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private Ocorrencia ocorrencia;
 	private AutenticacaoBean autenticacaoBean;
 	private Usuario usuario;
+	private Interacao interacao;
 	private Categoria categoria;
 	private Departamento departamento;
 	private Departamento departamentoCliente;
@@ -67,6 +70,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Ticket> ticketsSemAtendimento;
 	private List<Ticket> ticketsResumo;
 	private List<Cliente> clientes;
+	private List<Interacao> interacoes;
 	private List<Departamento> departamentos;
 	private List<Departamento> departamentosCliente;
 	private List<Categoria> categorias;
@@ -77,6 +81,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private List<Cliente> solicitantesBusca;
 	private Long usuarioAberturaBusca;
 	private List<Usuario> usuariosAberturaBusca;
+	private Long atendenteBusca;
+	private List<Usuario> atendentesBusca;
 	private String prioridadeBusca;
 	private String statusBusca;
 	private String assuntoBusca;
@@ -434,6 +440,38 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.solicitacaoBusca = solicitacaoBusca;
 	}
 
+	public List<Usuario> getAtendentesBusca() {
+		return atendentesBusca;
+	}
+
+	public void setAtendentesBusca(List<Usuario> atendentesBusca) {
+		this.atendentesBusca = atendentesBusca;
+	}
+
+	public Long getAtendenteBusca() {
+		return atendenteBusca;
+	}
+
+	public void setAtendenteBusca(Long atendenteBusca) {
+		this.atendenteBusca = atendenteBusca;
+	}
+
+	public List<Interacao> getInteracoes() {
+		return interacoes;
+	}
+
+	public void setInteracoes(List<Interacao> interacoes) {
+		this.interacoes = interacoes;
+	}
+
+	public Interacao getInteracao() {
+		return interacao;
+	}
+
+	public void setInteracao(Interacao interacao) {
+		this.interacao = interacao;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -463,6 +501,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(usuario.getDepartamento().getCodigo());
+			atendentesBusca = usuarios;
 			usuariosAberturaBusca = usuarioDAO.listar("nome");
 
 		} catch (
@@ -539,7 +578,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			tickets = ticketDAO.pesquisaAvancado(departamentoPesq, usuarioAberturaBusca, statusBusca, prioridadeBusca,
-					assuntoBusca, solicitacaoBusca);
+					assuntoBusca, solicitacaoBusca, atendenteBusca);
 
 			ticket = null;
 
@@ -591,6 +630,36 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
 
+			interacao("Listou as Ocorrências");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void listarOcorrenciaAtender(ActionEvent evento) {
+		try {
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket em Atendimento!");
+
+			interacao("Listou as Ocorrências e Atendeu o Ticket");
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Em Atendimento");
+			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
 					"Erro Inesperado!");
@@ -606,6 +675,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+
+			interacao("Listou as Ocorrências");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
@@ -627,10 +698,12 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		ocorrencia.setData(new java.util.Date());
 	}
 
-	public void salvar() throws EmailException {
+	public void salvar() {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+
+			interacao("Alterou Dados do Ticket");
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
@@ -650,11 +723,27 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void salvarOcorrencia() throws EmailException, IOException {
+	public void editarTicket() {
+		try {
+
+			interacao("Visualizou o Ticket");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Editar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarOcorrencia() throws IOException {
 		try {
 			if (ocorrencia.getCaminho() != null) {
 				ocorrencia.setCodigoAnexo(ticket.getCodigo() + "" + ocorrencias.size());
 				ocorrencia.setTipoAnexo(tipoArquivo);
+
+				interacao("Salvou uma Ocorrência com Anexo");
 
 				Path origem = Paths.get(ocorrencia.getCaminho());
 				Path destino = Paths
@@ -665,6 +754,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
+
+			interacao("Salvou uma Ocorrência");
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -692,6 +783,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
+			interacao("Ocorrência Salva com o Envio de E-mail");
+
 			ocorrencia = null;
 
 		} catch (RuntimeException erro) {
@@ -718,6 +811,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
+			interacao("Atendeu o Ticket");
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
@@ -738,7 +833,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void atenderTicketAtalho(ActionEvent evento) throws EmailException {
 		try {
-
 			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
 
 			novaOcorrencia();
@@ -753,6 +847,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+
+			interacao("Atendeu o Ticket");
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
@@ -772,7 +868,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		}
 	}
 
-	public void encaminharTicket() throws EmailException {
+	public void encaminharTicket() {
 		try {
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket em Encaminhado para " + ticket.getUsuarioAtendimento().getNome());
@@ -784,6 +880,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+
+			interacao("Encaminou o Ticket");
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEncaminhar').hide();");
 
@@ -829,6 +927,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
+			interacao("Suspendeu o Ticket");
+
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
 
@@ -867,6 +967,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
+			interacao("Suspendeu o Ticket");
+
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
 
@@ -902,6 +1004,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
+
+			interacao("Concluiu o Ticket");
 
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
@@ -941,6 +1045,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
+			interacao("Concluiu o Ticket");
+
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
 
@@ -965,6 +1071,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	public void editarOcorrencia(ActionEvent evento) {
 		try {
 			ocorrencia = (Ocorrencia) evento.getComponent().getAttributes().get("ocorrenciaSelecionada");
+
+			interacao("Editou uma Ocorrência");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -1019,6 +1127,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.excluir(ocorrencia);
+
+			interacao("Excluiu uma Ocorrência");
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Ocorrência Excluída - Nº Ticket: " + ocorrencia.getTicket().getCodigo() + " / Assunto: "
@@ -1410,6 +1520,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		try {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
 
+			interacao("Visualizou o Ticket");
+
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
 					"Erro Inesperado!");
@@ -1537,6 +1649,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
+			interacao("Enviou o E-mail da Ocorrência");
+
 			context.addMessage(null, new FacesMessage("Envio de Ocorrência!", "E-mail Enviado com Sucesso!"));
 
 		} catch (RuntimeException erro) {
@@ -1611,6 +1725,9 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 				arquivo = new DefaultStreamedContent(stream, tipoArquivo + "/" + tipoArquivo,
 						ocorrencia.getCodigo() + "." + ocorrencia.getTipoAnexo());
+
+				interacao("Baixou um Anexo da Ocorrência");
+
 			} else {
 
 				FacesContext context = FacesContext.getCurrentInstance();
@@ -1690,6 +1807,55 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 
+	}
+
+	public void interacao(String descricao) {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			Interacao interacao = new Interacao();
+
+			interacao.setInteracao(descricao);
+			interacao.setData(new java.util.Date());
+			interacao.setTicket(ticket);
+			interacao.setUsuario(usuario);
+
+			InteracaoDAO interacaoDAO = new InteracaoDAO();
+			interacaoDAO.merge(interacao);
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar uma Interação.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+
+	}
+
+	public void listarInteracoes(ActionEvent evento) {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+			
+			InteracaoDAO interacaoDAO = new InteracaoDAO();
+			interacoes = interacaoDAO.listarInteracaoes(ticket.getCodigo());
+			//interacoes = interacaoDAO.listar();
+			
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Listar as Interações.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
 	}
 
 }

@@ -33,7 +33,7 @@
 					</p:selectOneMenu>
 
 					<p:commandButton id="bitPesquisar" style="margin:0 10px"
-						value="Pesquisar" icon="ui-icon-script"
+						value="Pesquisar" icon="fa fa fw fa-search"
 						actionListener="#{ticketAtendimentoDepartamentoBean.pesquisar}"
 						update="formListagem:tabela :formListagem:tool formListagem:painelBusca"
 						onstart="PF('iconeDeProcessamento').show()"
@@ -118,8 +118,11 @@
 
 						</p:commandButton>
 
-						<p:commandButton title="Editar" process=":formListagem:tabela"
+						<p:commandButton title="Editar"
 							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{ticketAtendimentoDepartamentoBean.editarTicket}"
 							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -143,7 +146,7 @@
 					</f:facet>
 
 					<f:facet name="right">
-						<p:commandButton value="Busca Avançada"
+						<p:commandButton value="Busca Avançada" icon="fa fa fw fa-search"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							oncomplete="PF('dialogoBusca').show()">
@@ -248,7 +251,7 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Opções" width="50" style="text-align:center">
+					<p:column headerText="Opções" width="73" style="text-align:center">
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
@@ -309,6 +312,17 @@
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
+						<p:commandButton icon="fa fa-fw fa-ellipsis-h"
+							title="Listar Interações"
+							oncomplete="PF('dialogoInteracao').show()"
+							actionListener="#{ticketAtendimentoDepartamentoBean.listarInteracoes}"
+							update=":formInteracao:tabView :formInteracao:tabView:tabelaInteracao"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
 					</p:column>
 
 				</p:dataTable>
@@ -457,12 +471,24 @@
 
 				<p:separator />
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoDepartamentoBean.salvar}"
 						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Atender" icon="fa fa-fw fa-user-md"
+						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						oncomplete="PF('dialogoListagemOcorrencia').show()"
+						actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrenciaAtender}"
+						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
+						<p:confirm header="Confirmação"
+							message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogo').hide();" />
@@ -1247,7 +1273,7 @@
 		</p:dialog>
 
 		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
-			draggable="false" resizable="false" width="555" height="280"
+			draggable="false" resizable="false" width="555" height="300"
 			closable="true">
 			<h:form id="formBusca">
 
@@ -1264,6 +1290,20 @@
 							var="usuario" itemValue="#{usuario.codigo}"
 							itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
+
+
+					<p:outputLabel for="atendente" value="Atendentes" />
+					<p:selectOneMenu id="atendente" filter="true"
+						value="#{ticketAtendimentoDepartamentoBean.atendenteBusca}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel="Todos os Registros Selecionado"
+							itemValue="0" />
+						<f:selectItems
+							value="#{ticketAtendimentoDepartamentoBean.atendentesBusca}"
+							var="atendente" itemValue="#{atendente.codigo}"
+							itemLabel="#{atendente.nome}" />
+					</p:selectOneMenu>
+
 
 					<p:outputLabel for="status" value="Status" />
 					<p:selectOneMenu id="status" filter="true"
@@ -1313,6 +1353,54 @@
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Interações" widgetVar="dialogoInteracao"
+			draggable="false" resizable="false" width="800" height="415"
+			closable="true">
+			<h:form id="formInteracao">
+				<p:tabView id="tabView">
+					<p:tab
+						title="Nº Ticket: #{ticketAtendimentoDepartamentoBean.ticket.codigo} -  Assunto: #{ticketAtendimentoDepartamentoBean.ticket.assunto}">
+
+						<p:dataTable id="tabelaInteracao"
+							emptyMessage="Nenhum registro encontrado." selectionMode="single"
+							selection="#{ticketAtendimentoDepartamentoBean.interacao}"
+							draggableColumns="true" resizableColumns="true"
+							rowKey="#{interacao.codigo}" paginator="true"
+							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+							value="#{ticketAtendimentoDepartamentoBean.interacoes}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							var="interacao" rows="10" paginatorPosition="bottom">
+
+							<p:column headerText="Descrição" sortBy="#{interacao.interacao}"
+								style="white-space:normal !important;">
+								<h:outputText value="#{interacao.interacao}" />
+							</p:column>
+
+							<p:column headerText="Usuário" sortBy="#{interacao.usuario.nome}"
+								style="text-align:center" width="110">
+								<h:outputText value="#{interacao.usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Data" style="text-align:center"
+								sortBy="#{interacao.dataFormatada}" width="63">
+								<h:outputText value="#{interacao.dataFormatada}" />
+							</p:column>
+
+							<p:column headerText="Hora" style="text-align:center"
+								sortBy="#{interacao.hora}" width="50">
+								<h:outputText value="#{interacao.hora}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoInteracao').hide();" />
+
 			</h:form>
 		</p:dialog>
 

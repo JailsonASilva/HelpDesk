@@ -62,6 +62,7 @@
 		<mapping class="br.com.projeto.domain.Evento"/>
 		<mapping class="br.com.projeto.domain.EventoMaterial"/>
 		<mapping class="br.com.projeto.domain.Tecnico"/>		
+				<mapping class="br.com.projeto.domain.Interacao"/>
 
 	</session-factory>
 
