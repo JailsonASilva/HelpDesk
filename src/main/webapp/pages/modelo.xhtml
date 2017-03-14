@@ -49,6 +49,10 @@
 								<p:menuitem value="Novo Ticket (Externo)"
 									url="/pages/ticketExterno.xhtml"
 									rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
+
+								<p:menuitem value="Abertura por E-mail"
+									url="/pages/aberturaEmail.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.aberturaEmail}" />
 							</p:submenu>
 
 							<p:submenu label="Consultas"
@@ -193,7 +197,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.1.43.1" />
+					<h:outputText value="Versão 1.2.2.1" />
 
 				</p:layoutUnit>
 			</div>

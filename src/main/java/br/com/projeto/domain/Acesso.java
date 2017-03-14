@@ -83,6 +83,9 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean tecnico;
 
+	@Column(nullable = true)
+	private Boolean aberturaEmail;
+
 	public String getNome() {
 		return nome;
 	}
@@ -281,6 +284,14 @@ public class Acesso extends GenericDomain {
 
 	public void setTecnico(Boolean tecnico) {
 		this.tecnico = tecnico;
+	}
+
+	public Boolean getAberturaEmail() {
+		return aberturaEmail;
+	}
+
+	public void setAberturaEmail(Boolean aberturaEmail) {
+		this.aberturaEmail = aberturaEmail;
 	}
 
 }

@@ -35,7 +35,7 @@
 					<p:commandButton id="bitPesquisar" style="margin:0 10px"
 						value="Pesquisar" icon="fa fa fw fa-search"
 						actionListener="#{ticketAtendimentoDepartamentoBean.pesquisar}"
-						update="formListagem:tabela :formListagem:tool formListagem:painelBusca"
+						update="formListagem:tabela :formListagem:tool formListagem:painelBusca :formAtendimento:tabela"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -223,9 +223,10 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Assunto" sortBy="#{ticket.assunto}"
-						style="white-space:normal !important;" width="70">
-						<h:outputText value="#{ticket.assunto}" />
+					<p:column headerText="Assunto / Solicitante"
+						sortBy="#{ticket.assunto}" style="white-space:normal !important;"
+						width="70">
+						<h:outputText value="#{ticket.assunto} / #{ticket.usuario.nome}" />
 					</p:column>
 
 					<p:column headerText="Status" sortBy="#{ticket.status}"
@@ -498,7 +499,7 @@
 
 
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
-			width="1000" height="410" draggable="false" resizable="false"
+			width="1000" height="450" draggable="false" resizable="false"
 			closable="true">
 			<h:form id="formListagemOcorrencia">
 
@@ -663,7 +664,7 @@
 				</h:panelGrid>
 				<p:separator />
 
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="4">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoDepartamentoBean.salvarOcorrencia}"
 						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
@@ -673,6 +674,13 @@
 					<p:commandButton value="Salvar e Enviar E-mail" icon="ui-icon-disk"
 						actionListener="#{ticketAtendimentoDepartamentoBean.salvarOcorrenciaEmail}"
 						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Concluir e Enviar E-mail"
+						icon="ui-icon-disk"
+						actionListener="#{ticketAtendimentoDepartamentoBean.concluirEnviarEmail}"
+						update=":formListagem:messages :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -1273,7 +1281,7 @@
 		</p:dialog>
 
 		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
-			draggable="false" resizable="false" width="555" height="300"
+			draggable="false" resizable="false" width="555" height="350"
 			closable="true">
 			<h:form id="formBusca">
 

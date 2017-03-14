@@ -171,12 +171,13 @@
 
 							<p:outputLabel value="Marca" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.marca}" />
-							
+
 							<p:outputLabel value="Local" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.localEquipamento}" />							
-							
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.localEquipamento}" />
+
 							<p:outputLabel value="Técnico" />
-							<p:selectBooleanCheckbox value="#{acessoBean.acesso.tecnico}" />							
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.tecnico}" />
 
 							<p:outputLabel value="Tipo de Equipamento" />
 							<p:selectBooleanCheckbox
@@ -215,6 +216,10 @@
 							<p:outputLabel value="Ticket por Atendente" />
 							<p:selectBooleanCheckbox
 								value="#{acessoBean.acesso.ticketUsuario}" />
+
+							<p:outputLabel value="Abertura por E-mail" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.aberturaEmail}" />
 						</h:panelGrid>
 					</p:tab>
 
