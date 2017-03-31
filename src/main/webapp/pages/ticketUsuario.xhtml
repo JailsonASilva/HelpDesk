@@ -147,6 +147,14 @@
 					</f:facet>
 
 					<f:facet name="right">
+						<p:commandButton value="Busca Avançada" icon="fa fa fw fa-search"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							oncomplete="PF('dialogoBusca').show()">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
@@ -201,7 +209,8 @@
 					</p:column>
 
 					<p:column headerText="Data/Hora" width="13"
-						style="text-align:center" sortBy="#{ticket.dataAbertura}">
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ticket.dataAbertura}">
 						<h:outputText value="#{ticket.dataFormatada} #{ticket.hora}">
 						</h:outputText>
 					</p:column>
@@ -211,20 +220,18 @@
 						<h:outputText value="#{ticket.assunto}" />
 					</p:column>
 
-					<p:column headerText="Status" sortBy="#{ticket.status}"
-						style="text-align:center" width="25">
-						<h:outputText value="#{ticket.status}" />
+					<p:column headerText="Prioridade/Status"
+						sortBy="#{ticket.prioridadeFormatada} / #{ticket.status}"
+						style="text-align:center;white-space:normal !important;"
+						width="35">
+						<h:outputText
+							value="#{ticket.prioridadeFormatada} / #{ticket.status}" />
 					</p:column>
 
-					<p:column headerText="Prioridade" style="text-align:center"
-						sortBy="#{ticket.prioridadeFormatada}" width="15">
-						<h:outputText value="#{ticket.prioridadeFormatada}" />
-					</p:column>
-
-					<p:column headerText="Responsável"
-						sortBy="#{ticket.usuarioAtendimento.nome}" width="38"
-						style="text-align:center">
-						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
+					<p:column headerText="Usuário Abertura"
+						sortBy="#{ticket.usuario.nome}" width="30"
+						style="text-align:center;white-space:normal !important;">
+						<h:outputText value="#{ticket.usuario.nome}" />
 					</p:column>
 
 					<p:column headerText="Interação" width="18"
@@ -235,7 +242,8 @@
 					</p:column>
 
 
-					<p:column headerText="Opções" width="50" style="text-align:center">
+					<p:column headerText="Opções" width="50"
+						style="text-align:center;white-space:normal !important;">
 
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{ticketAtendimentoUsuarioBean.atenderTicketAtalho}"
@@ -290,6 +298,18 @@
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
 							actionListener="#{ticketAtendimentoUsuarioBean.listarOcorrenciaAtalho}"
 							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-ellipsis-h"
+							title="Listar Interações"
+							oncomplete="PF('dialogoInteracao').show()"
+							actionListener="#{ticketAtendimentoUsuarioBean.listarInteracoes}"
+							update=":formInteracao:tabView :formInteracao:tabView:tabelaInteracao"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -1077,6 +1097,133 @@
 						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 							oncomplete="PF('dialogoEmailOcorrencia').hide();" />
 					</h:panelGrid>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Interações" widgetVar="dialogoInteracao"
+			draggable="false" resizable="false" width="800" height="415"
+			closable="true">
+			<h:form id="formInteracao">
+				<p:tabView id="tabView">
+					<p:tab
+						title="Nº Ticket: #{ticketAtendimentoUsuarioBean.ticket.codigo} -  Assunto: #{ticketAtendimentoUsuarioBean.ticket.assunto}">
+
+						<p:dataTable id="tabelaInteracao"
+							emptyMessage="Nenhum registro encontrado." selectionMode="single"
+							selection="#{ticketAtendimentoUsuarioBean.interacao}"
+							draggableColumns="true" resizableColumns="true"
+							rowKey="#{interacao.codigo}" paginator="true"
+							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+							value="#{ticketAtendimentoUsuarioBean.interacoes}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							var="interacao" rows="10" paginatorPosition="bottom">
+
+							<p:column headerText="Descrição" sortBy="#{interacao.interacao}"
+								style="white-space:normal !important;">
+								<h:outputText value="#{interacao.interacao}" />
+							</p:column>
+
+							<p:column headerText="Usuário" sortBy="#{interacao.usuario.nome}"
+								style="text-align:center" width="110">
+								<h:outputText value="#{interacao.usuario.nome}" />
+							</p:column>
+
+							<p:column headerText="Data" style="text-align:center"
+								sortBy="#{interacao.dataFormatada}" width="63">
+								<h:outputText value="#{interacao.dataFormatada}" />
+							</p:column>
+
+							<p:column headerText="Hora" style="text-align:center"
+								sortBy="#{interacao.hora}" width="50">
+								<h:outputText value="#{interacao.hora}" />
+							</p:column>
+
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoInteracao').hide();" />
+
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
+			draggable="false" resizable="false" width="555" height="350"
+			closable="true">
+			<h:form id="formBusca">
+
+				<h:panelGrid columns="2" class="ui-noborder">
+
+					<p:outputLabel for="ticket" value="Nº Ticket" />
+					<p:inputText id="ticket" maxlength="20" size="10"
+						value="#{ticketAtendimentoUsuarioBean.ticketBusca}"
+						converterMessage="Informe um valor válido para o campo 'Nº do Ticket'"
+						validatorMessage="Informe um valor Inteiro para o campo 'Nº do Ticket'">
+						<f:validateLongRange minimum="0" maximum="99999999" />
+					</p:inputText>
+
+					<p:outputLabel for="usuario" value="Solicitantes" />
+					<p:selectOneMenu id="usuario" filter="true"
+						value="#{ticketAtendimentoUsuarioBean.usuarioAberturaBusca}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel="Todos os Registros Selecionado"
+							itemValue="0" />
+						<f:selectItems
+							value="#{ticketAtendimentoUsuarioBean.usuariosAberturaBusca}"
+							var="usuario" itemValue="#{usuario.codigo}"
+							itemLabel="#{usuario.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="status" value="Status" />
+					<p:selectOneMenu id="status" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{ticketAtendimentoUsuarioBean.statusBusca}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros Selecionado" />
+
+						<f:selectItem itemValue="Em Atendimento"
+							itemLabel="Em Atendimento" />
+						<f:selectItem itemValue="Aberto" itemLabel="Aberto" />
+						<f:selectItem itemValue="Pendente" itemLabel="Pendente" />
+						<f:selectItem itemValue="Suspenso" itemLabel="Suspenso" />
+						<f:selectItem itemValue="Concluído" itemLabel="Concluído" />
+						<f:selectItems />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="prioridade" value="Prioridade" />
+					<p:selectOneMenu id="prioridade" filter="true"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{ticketAtendimentoUsuarioBean.prioridadeBusca}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Todos os Registros Selecionado" />
+
+						<f:selectItem itemValue="4-Baixa" itemLabel="Baixa" />
+						<f:selectItem itemValue="3-Normal" itemLabel="Normal" />
+						<f:selectItem itemValue="2-Alta" itemLabel="Alta" />
+						<f:selectItem itemValue="1-Urgente" itemLabel="Urgente" />
+						<f:selectItems />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="assunto" value="Assunto" />
+					<p:inputText id="assunto" maxlength="100" size="57"
+						value="#{ticketAtendimentoUsuarioBean.assuntoBusca}" />
+
+
+					<p:outputLabel for="solicitacao" value="Solicitação" />
+					<p:inputTextarea id="solicitacao" rows="4" cols="55"
+						maxlength="1000" autoResize="false"
+						value="#{ticketAtendimentoUsuarioBean.solicitacaoBusca}" />
+
+					<br></br>
+
+					<p:commandButton value="Pesquisar" icon="ui-icon-script"
+						actionListener="#{ticketAtendimentoUsuarioBean.pesquisarAvancada}"
+						update="formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

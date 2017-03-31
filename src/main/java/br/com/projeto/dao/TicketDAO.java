@@ -111,13 +111,17 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
 	public List<Ticket> pesquisaAvancado(String departamento, Long usuarioAbertura, String status, String prioridade,
-			String assunto, String solicitacao, Long atendenteAbertura) {
+			String assunto, String solicitacao, Long atendenteAbertura, Long ticket) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Ticket.class);
 
 			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
 					Restrictions.like("departamento.nome", "%" + departamento + "%"));
+
+			if (ticket > 0L) {
+				consulta.add(Restrictions.eq("codigo", ticket));
+			}
 
 			if (usuarioAbertura > 0L) {
 				Criteria consultaUsuario = consulta.createCriteria("usuario", "usuario", Criteria.INNER_JOIN,
@@ -154,10 +158,15 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 	@SuppressWarnings({ "deprecation", "unchecked", "unused" })
 	public List<Ticket> pesquisaAvancadoAdministrador(Long departamento, Long usuarioAbertura, String status,
-			String prioridade, String assunto, String solicitacao, Long atendenteAbertura) {
+			String prioridade, String assunto, String solicitacao, Long atendenteAbertura, Long ticket) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Ticket.class);
+			
+			if (ticket > 0L) {
+				consulta.add(Restrictions.eq("codigo", ticket));
+			}
+
 
 			if (departamento > 0L) {
 				Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento",
@@ -346,7 +355,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 					Restrictions.like("departamento.nome", "%" + usuario.getDepartamento().getNome() + "%"));
 
 			consulta.add(Restrictions.isNull("usuarioAtendimento"));
-			consulta.addOrder(Order.asc("codigo"));
+			consulta.addOrder(Order.desc("codigo"));
 
 			List<Ticket> resultado = consulta.list();
 			return resultado;

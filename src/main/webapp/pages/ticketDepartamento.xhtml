@@ -218,7 +218,8 @@
 					</p:column>
 
 					<p:column headerText="Data/Hora" width="13"
-						style="text-align:center" sortBy="#{ticket.dataAbertura}">
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ticket.dataAbertura}">
 						<h:outputText value="#{ticket.dataFormatada} #{ticket.hora}">
 						</h:outputText>
 					</p:column>
@@ -229,19 +230,17 @@
 						<h:outputText value="#{ticket.assunto} / #{ticket.usuario.nome}" />
 					</p:column>
 
-					<p:column headerText="Status" sortBy="#{ticket.status}"
-						style="text-align:center" width="25">
-						<h:outputText value="#{ticket.status}" />
-					</p:column>
-
-					<p:column headerText="Prioridade" style="text-align:center"
-						sortBy="#{ticket.prioridadeFormatada}" width="15">
-						<h:outputText value="#{ticket.prioridadeFormatada}" />
+					<p:column headerText="Prioridade/Status"
+						sortBy="#{ticket.prioridadeFormatada} / #{ticket.status}"
+						style="text-align:center;white-space:normal !important;"
+						width="35">
+						<h:outputText
+							value="#{ticket.prioridadeFormatada} / #{ticket.status}" />
 					</p:column>
 
 					<p:column headerText="Responsável"
-						sortBy="#{ticket.usuarioAtendimento.nome}" width="38"
-						style="text-align:center">
+						sortBy="#{ticket.usuarioAtendimento.nome}" width="30"
+						style="text-align:center;white-space:normal !important;">
 						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
 					</p:column>
 
@@ -252,7 +251,8 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Opções" width="73" style="text-align:center">
+					<p:column headerText="Opções" width="50"
+						style="text-align:center;white-space:normal !important;">
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
@@ -462,7 +462,7 @@
 					<p:inputTextarea id="solicitacao" rows="6" cols="95"
 						style="margin:0 25px 0 25px" required="true"
 						requiredMessage="Campo Obrigatório!" counter="display"
-						maxlength="1000" counterTemplate="{0} caracteres restantes."
+						maxlength="10000" counterTemplate="{0} caracteres restantes."
 						autoResize="false"
 						value="#{ticketAtendimentoDepartamentoBean.ticket.solicitacao}" />
 
@@ -1150,6 +1150,11 @@
 						<h:outputText value="#{ticket[5]}" />
 					</p:column>
 
+					<p:column headerText="Todos" sortBy="#{ticket[7]}" width="70"
+						style="text-align:center">
+						<h:outputText value="#{ticket[7]}" />
+					</p:column>
+
 					<p:column headerText="Interações" sortBy="#{ticket[6]}" width="70"
 						style="text-align:center">
 						<h:outputText value="#{ticket[6]}" />
@@ -1286,6 +1291,14 @@
 			<h:form id="formBusca">
 
 				<h:panelGrid columns="2" class="ui-noborder">
+
+					<p:outputLabel for="ticket" value="Nº Ticket" />
+					<p:inputText id="ticket" maxlength="20" size="10"
+						value="#{ticketAtendimentoDepartamentoBean.ticketBusca}"
+						converterMessage="Informe um valor válido para o campo 'Nº do Ticket'"
+						validatorMessage="Informe um valor Inteiro para o campo 'Nº do Ticket'">
+						<f:validateLongRange minimum="0" maximum="99999999" />
+					</p:inputText>
 
 					<p:outputLabel for="usuario" value="Solicitantes" />
 					<p:selectOneMenu id="usuario" filter="true"

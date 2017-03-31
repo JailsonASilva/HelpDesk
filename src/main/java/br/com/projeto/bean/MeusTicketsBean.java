@@ -33,6 +33,7 @@ import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
+import br.com.projeto.dao.InteracaoDAO;
 import br.com.projeto.dao.OcorrenciaDAO;
 import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.dao.UsuarioDAO;
@@ -40,6 +41,7 @@ import br.com.projeto.domain.Categoria;
 import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
+import br.com.projeto.domain.Interacao;
 import br.com.projeto.domain.Ocorrencia;
 import br.com.projeto.domain.Ticket;
 import br.com.projeto.domain.Usuario;
@@ -68,6 +70,20 @@ public class MeusTicketsBean implements Serializable {
 	private List<Categoria> categorias;
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
+
+	private String solicitanteBusca;
+	private Long departamentoBusca;
+	private List<Departamento> departamentosBusca;
+	private List<Cliente> solicitantesBusca;
+	private Long usuarioAberturaBusca;
+	private List<Usuario> usuariosAberturaBusca;
+	private Long atendenteBusca;
+	private Long ticketBusca;
+	private List<Usuario> atendentesBusca;
+	private String prioridadeBusca;
+	private String statusBusca;
+	private String assuntoBusca;
+	private String solicitacaoBusca;
 
 	private StreamedContent arquivo;
 
@@ -325,6 +341,110 @@ public class MeusTicketsBean implements Serializable {
 		this.tipoArquivo = tipoArquivo;
 	}
 
+	public String getSolicitanteBusca() {
+		return solicitanteBusca;
+	}
+
+	public void setSolicitanteBusca(String solicitanteBusca) {
+		this.solicitanteBusca = solicitanteBusca;
+	}
+
+	public Long getDepartamentoBusca() {
+		return departamentoBusca;
+	}
+
+	public void setDepartamentoBusca(Long departamentoBusca) {
+		this.departamentoBusca = departamentoBusca;
+	}
+
+	public List<Cliente> getSolicitantesBusca() {
+		return solicitantesBusca;
+	}
+
+	public void setSolicitantesBusca(List<Cliente> solicitantesBusca) {
+		this.solicitantesBusca = solicitantesBusca;
+	}
+
+	public Long getUsuarioAberturaBusca() {
+		return usuarioAberturaBusca;
+	}
+
+	public void setUsuarioAberturaBusca(Long usuarioAberturaBusca) {
+		this.usuarioAberturaBusca = usuarioAberturaBusca;
+	}
+
+	public List<Usuario> getUsuariosAberturaBusca() {
+		return usuariosAberturaBusca;
+	}
+
+	public void setUsuariosAberturaBusca(List<Usuario> usuariosAberturaBusca) {
+		this.usuariosAberturaBusca = usuariosAberturaBusca;
+	}
+
+	public Long getAtendenteBusca() {
+		return atendenteBusca;
+	}
+
+	public void setAtendenteBusca(Long atendenteBusca) {
+		this.atendenteBusca = atendenteBusca;
+	}
+
+	public Long getTicketBusca() {
+		return ticketBusca;
+	}
+
+	public void setTicketBusca(Long ticketBusca) {
+		this.ticketBusca = ticketBusca;
+	}
+
+	public List<Usuario> getAtendentesBusca() {
+		return atendentesBusca;
+	}
+
+	public void setAtendentesBusca(List<Usuario> atendentesBusca) {
+		this.atendentesBusca = atendentesBusca;
+	}
+
+	public String getPrioridadeBusca() {
+		return prioridadeBusca;
+	}
+
+	public void setPrioridadeBusca(String prioridadeBusca) {
+		this.prioridadeBusca = prioridadeBusca;
+	}
+
+	public String getStatusBusca() {
+		return statusBusca;
+	}
+
+	public void setStatusBusca(String statusBusca) {
+		this.statusBusca = statusBusca;
+	}
+
+	public String getAssuntoBusca() {
+		return assuntoBusca;
+	}
+
+	public void setAssuntoBusca(String assuntoBusca) {
+		this.assuntoBusca = assuntoBusca;
+	}
+
+	public String getSolicitacaoBusca() {
+		return solicitacaoBusca;
+	}
+
+	public void setSolicitacaoBusca(String solicitacaoBusca) {
+		this.solicitacaoBusca = solicitacaoBusca;
+	}
+
+	public List<Departamento> getDepartamentosBusca() {
+		return departamentosBusca;
+	}
+
+	public void setDepartamentosBusca(List<Departamento> departamentosBusca) {
+		this.departamentosBusca = departamentosBusca;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -339,6 +459,7 @@ public class MeusTicketsBean implements Serializable {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listarAtendimento();
 			departamentosCliente = departamentoDAO.listar("nome");
+			departamentosBusca = departamentos;
 
 			ClienteDAO clienteDAO = new ClienteDAO();
 			clientes = clienteDAO.listar("nome");
@@ -425,6 +546,9 @@ public class MeusTicketsBean implements Serializable {
 		try {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+			
+			interacao("Listou as Ocorrências");
+
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
@@ -441,6 +565,8 @@ public class MeusTicketsBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+			
+			interacao("Listou as Ocorrências");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
@@ -475,6 +601,8 @@ public class MeusTicketsBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			ticket = null;
+			
+			interacao("Alterou Dados do Ticket");
 
 			// enviarEmail();
 
@@ -492,6 +620,8 @@ public class MeusTicketsBean implements Serializable {
 			if (ocorrencia.getCaminho() != null) {
 				ocorrencia.setCodigoAnexo(ticket.getCodigo() + "" + ocorrencias.size());
 				ocorrencia.setTipoAnexo(tipoArquivo);
+				
+				interacao("Salvou uma Ocorrência com Anexo");
 
 				Path origem = Paths.get(ocorrencia.getCaminho());
 				Path destino = Paths
@@ -502,6 +632,8 @@ public class MeusTicketsBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
+			
+			interacao("Salvou uma Ocorrência");
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -530,6 +662,8 @@ public class MeusTicketsBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
+			
+			interacao("Ocorrência Salva com o Envio de E-mail");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -561,6 +695,8 @@ public class MeusTicketsBean implements Serializable {
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
 
 			ticket = null;
+			
+			interacao("Atendeu o Ticket");
 
 			listarPendentes();
 
@@ -583,6 +719,8 @@ public class MeusTicketsBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
+			
+			interacao("Atendeu o Ticket");
 
 			ticket.setStatus("Em Atendimento");
 			ticket.setUsuarioAtendimento(usuario);
@@ -1230,6 +1368,8 @@ public class MeusTicketsBean implements Serializable {
 	public void duploTicket(SelectEvent evento) {
 		try {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
+			
+			interacao("Visualizou o Ticket");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
@@ -1446,6 +1586,84 @@ public class MeusTicketsBean implements Serializable {
 		}
 	}
 
+	public void pesquisarAvancada() {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			departamentoPesq = usuario.getDepartamento().getNome();
+
+			if (statusBusca.equals("Todos os Registros Selecionado")) {
+				statusBusca = "";
+			}
+
+			if (prioridadeBusca.equals("Todos os Registros Selecionado")) {
+				prioridadeBusca = "";
+			}
+
+			if (assuntoBusca.equals("Todos os Registros Selecionado")) {
+				assuntoBusca = "";
+			}
+
+			if (solicitacaoBusca.equals("Todos os Registros Selecionado")) {
+				solicitacaoBusca = "";
+			}
+
+			if (ticketBusca == null) {
+				ticketBusca = 0L;
+			}
+
+			TicketDAO ticketDAO = new TicketDAO();
+			tickets = ticketDAO.pesquisaAvancadoAdministrador(departamentoBusca, usuario.getCodigo(), statusBusca,
+					prioridadeBusca, assuntoBusca, solicitacaoBusca, atendenteBusca, ticketBusca);
+
+			ticket = null;
+
+			if (tickets.isEmpty() == true) {
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
+			} else {
+				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoBusca').hide();");
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
 	
+	public void interacao(String descricao) {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			Interacao interacao = new Interacao();
+
+			interacao.setInteracao(descricao);
+			interacao.setData(new java.util.Date());
+			interacao.setTicket(ticket);
+			interacao.setUsuario(usuario);
+
+			InteracaoDAO interacaoDAO = new InteracaoDAO();
+			interacaoDAO.merge(interacao);
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar uma Interação.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+
+	}
 
 }

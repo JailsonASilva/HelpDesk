@@ -217,35 +217,36 @@
 						<h:outputText value="#{ticket.codigo}" />
 					</p:column>
 
-					<p:column headerText="Data/Hora" width="13"
-						style="text-align:center" sortBy="#{ticket.dataAbertura}">
+					<p:column headerText="Data/Hora" width="11"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ticket.dataAbertura}">
 						<h:outputText value="#{ticket.dataFormatada} #{ticket.hora}">
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Assunto" sortBy="#{ticket.assunto}"
-						style="white-space:normal !important;" width="70">
-						<h:outputText value="#{ticket.assunto}" />
+					<p:column headerText="Assunto / Solicitante"
+						sortBy="#{ticket.assunto}" style="white-space:normal !important;"
+						width="47">
+						<h:outputText value="#{ticket.assunto} / #{ticket.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Prioridade/Status"
+						sortBy="#{ticket.prioridadeFormatada} / #{ticket.status}"
+						style="text-align:center;white-space:normal !important;"
+						width="30">
+						<h:outputText
+							value="#{ticket.prioridadeFormatada} / #{ticket.status}" />
 					</p:column>
 
 					<p:column headerText="Departamento"
-						sortBy="#{ticket.departamento.nome}" width="70">
+						sortBy="#{ticket.departamento.nome}" width="30"
+						style="text-align:center;white-space:normal !important;">
 						<h:outputText value="#{ticket.departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Status" sortBy="#{ticket.status}"
-						style="text-align:center" width="25">
-						<h:outputText value="#{ticket.status}" />
-					</p:column>
-
-					<p:column headerText="Prioridade" style="text-align:center"
-						sortBy="#{ticket.prioridadeFormatada}" width="15">
-						<h:outputText value="#{ticket.prioridadeFormatada}" />
-					</p:column>
-
 					<p:column headerText="Responsável"
-						sortBy="#{ticket.usuarioAtendimento.nome}" width="38"
-						style="text-align:center">
+						sortBy="#{ticket.usuarioAtendimento.nome}" width="30"
+						style="text-align:center;white-space:normal !important;">
 						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
 					</p:column>
 
@@ -256,7 +257,8 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Opções" width="73" style="text-align:center">
+					<p:column headerText="Opções" width="42"
+						style="text-align:center;white-space:normal !important;">
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{acessoAdministradorBean.atenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
@@ -1140,6 +1142,11 @@
 						<h:outputText value="#{ticket[5]}" />
 					</p:column>
 
+					<p:column headerText="Todos" sortBy="#{ticket[7]}" width="70"
+						style="text-align:center">
+						<h:outputText value="#{ticket[7]}" />
+					</p:column>
+
 					<p:column headerText="Interações" sortBy="#{ticket[6]}" width="70"
 						style="text-align:center">
 						<h:outputText value="#{ticket[6]}" />
@@ -1271,11 +1278,17 @@
 		</p:dialog>
 
 		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
-			draggable="false" resizable="false" width="560" height="350"
-			closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formBusca">
 
 				<h:panelGrid columns="2" class="ui-noborder">
+					<p:outputLabel for="ticket" value="Nº Ticket" />
+					<p:inputText id="ticket" maxlength="20" size="10"
+						value="#{acessoAdministradorBean.ticketBusca}"
+						converterMessage="Informe um valor válido para o campo 'Nº do Ticket'"
+						validatorMessage="Informe um valor Inteiro para o campo 'Nº do Ticket'">
+						<f:validateLongRange minimum="0" maximum="99999999" />
+					</p:inputText>
 
 					<p:outputLabel for="departamento" value="Departamentos" />
 					<p:selectOneMenu id="departamento" filter="true"

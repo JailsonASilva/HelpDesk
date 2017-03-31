@@ -82,6 +82,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 	private Long usuarioAberturaBusca;
 	private List<Usuario> usuariosAberturaBusca;
 	private Long atendenteBusca;
+	private Long ticketBusca;
 	private List<Usuario> atendentesBusca;
 	private String prioridadeBusca;
 	private String statusBusca;
@@ -472,6 +473,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 		this.interacao = interacao;
 	}
 
+	public Long getTicketBusca() {
+		return ticketBusca;
+	}
+
+	public void setTicketBusca(Long ticketBusca) {
+		this.ticketBusca = ticketBusca;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -576,9 +585,14 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 				solicitacaoBusca = "";
 			}
 
+			if (ticketBusca == null) {
+				ticketBusca = 0L;
+
+			}
+
 			TicketDAO ticketDAO = new TicketDAO();
 			tickets = ticketDAO.pesquisaAvancado(departamentoPesq, usuarioAberturaBusca, statusBusca, prioridadeBusca,
-					assuntoBusca, solicitacaoBusca, atendenteBusca);
+					assuntoBusca, solicitacaoBusca, atendenteBusca, ticketBusca);
 
 			ticket = null;
 
@@ -1663,7 +1677,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 					+ "\n" + "Atendente: " + ocorrencia.getUsuario().getNome() + "\n" + "Ocorrência: "
 					+ ocorrencia.getOcorrencia() + "\n" + "" + "\n" +
 
-					"Dados do Ticket " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
+					"Dados do Chamado " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
 					+ ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n" + "" + "\n"
 					+ "Dados da Solicitação: " + "\n" + ticket.getSolicitacao() + "\n";
 
@@ -1673,7 +1687,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			for (int i = 0; i < usuarios.size(); i++) {
 				Usuario usuarioEmail = (Usuario) usuarios.get(i);
 
-				EmailUtils.enviaEmail("Ocorrência - Nº Ticket: " + ocorrencia.getTicket().getCodigo(), mensagem,
+				EmailUtils.enviaEmail("Ocorrência - Nº Chamado: " + ocorrencia.getTicket().getCodigo(), mensagem,
 						usuarioEmail.getEmail());
 			}
 
@@ -1695,7 +1709,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 					+ "\n" + "Atendente: " + ocorrencia.getUsuario().getNome() + "\n" + "Ocorrência: "
 					+ ocorrencia.getOcorrencia() + "\n" + "" + "\n" +
 
-					"Dados do Ticket " + "\n" + "\n" + "Nº Ticket: " + ticket.getCodigo() + "\n" + "Prioridade: "
+					"Dados do Chamado " + "\n" + "\n" + "Nº Chamado: " + ticket.getCodigo() + "\n" + "Prioridade: "
 					+ ticket.getPrioridadeFormatada() + "\n" + "Assunto: " + ticket.getAssunto() + "\n" + "" + "\n"
 					+ "Dados da Solicitação: " + "\n" + ticket.getSolicitacao() + "\n";
 
@@ -1844,8 +1858,6 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void ticketsNaoAtendidos() {
 		try {
-			ticketsSemAtendimento = null;
-
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketsSemAtendimento = ticketDAO.ticketSemAtendente();
 

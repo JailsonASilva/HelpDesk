@@ -14,7 +14,7 @@ import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name="ticket")
+@Table(name = "ticket")
 public class Ticket extends GenericDomain {
 	@ManyToOne
 	@JoinColumn(nullable = true)
@@ -57,7 +57,7 @@ public class Ticket extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String assunto;
 
-	@Column(length = 1000, nullable = false)
+	@Column(length = 10000, nullable = false)
 	private String solicitacao;
 
 	@Column(nullable = true)
@@ -194,11 +194,11 @@ public class Ticket extends GenericDomain {
 
 		return prioridadeFormatada;
 	}
-	
+
 	@Transient
 	public String getDataFormatada() {
 		String dataFormatada = new SimpleDateFormat("dd/MM/yyyy").format(dataAbertura);
-		
+
 		return dataFormatada;
 	}
 

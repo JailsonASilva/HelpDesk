@@ -77,6 +77,7 @@ public class acessoAdministradorBean implements Serializable {
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
 
+	private Long ticketBusca;
 	private String solicitanteBusca;
 	private Long departamentoBusca;
 	private List<Departamento> departamentosBusca;
@@ -490,6 +491,14 @@ public class acessoAdministradorBean implements Serializable {
 		this.departamentosBusca = departamentosBusca;
 	}
 
+	public Long getTicketBusca() {
+		return ticketBusca;
+	}
+
+	public void setTicketBusca(Long ticketBusca) {
+		this.ticketBusca = ticketBusca;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -518,7 +527,9 @@ public class acessoAdministradorBean implements Serializable {
 
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(usuario.getDepartamento().getCodigo());
-			atendentesBusca = usuarios;
+
+			atendentesBusca = usuarioDAO.listarTodosAtendente();
+
 			usuariosAberturaBusca = usuarioDAO.listar("nome");
 
 		} catch (
@@ -586,9 +597,13 @@ public class acessoAdministradorBean implements Serializable {
 				solicitacaoBusca = "";
 			}
 
+			if (ticketBusca == null) {
+				ticketBusca = 0L;
+			}
+
 			TicketDAO ticketDAO = new TicketDAO();
 			tickets = ticketDAO.pesquisaAvancadoAdministrador(departamentoBusca, usuarioAberturaBusca, statusBusca,
-					prioridadeBusca, assuntoBusca, solicitacaoBusca, atendenteBusca);
+					prioridadeBusca, assuntoBusca, solicitacaoBusca, atendenteBusca, ticketBusca);
 
 			ticket = null;
 
@@ -1865,5 +1880,7 @@ public class acessoAdministradorBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+
+
 
 }

@@ -54,6 +54,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	private Ticket ticket;
 	private Ocorrencia ocorrencia;
 	private AutenticacaoBean autenticacaoBean;
+	private Interacao interacao;
 	private Usuario usuario;
 	private Categoria categoria;
 	private Departamento departamento;
@@ -67,6 +68,20 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	private List<Categoria> categorias;
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
+	private List<Interacao> interacoes;
+
+	private String departamentoPesq;
+	private String solicitanteBusca;
+	private List<Cliente> solicitantesBusca;
+	private Long usuarioAberturaBusca;
+	private List<Usuario> usuariosAberturaBusca;
+	private Long atendenteBusca;
+	private Long ticketBusca;
+	private List<Usuario> atendentesBusca;
+	private String prioridadeBusca;
+	private String statusBusca;
+	private String assuntoBusca;
+	private String solicitacaoBusca;
 
 	private FacesMessage message;
 	private String usuarioBusca;
@@ -297,6 +312,118 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 		this.arquivo = arquivo;
 	}
 
+	public List<Interacao> getInteracoes() {
+		return interacoes;
+	}
+
+	public void setInteracoes(List<Interacao> interacoes) {
+		this.interacoes = interacoes;
+	}
+
+	public Interacao getInteracao() {
+		return interacao;
+	}
+
+	public void setInteracao(Interacao interacao) {
+		this.interacao = interacao;
+	}
+
+	public String getSolicitanteBusca() {
+		return solicitanteBusca;
+	}
+
+	public void setSolicitanteBusca(String solicitanteBusca) {
+		this.solicitanteBusca = solicitanteBusca;
+	}
+
+	public List<Cliente> getSolicitantesBusca() {
+		return solicitantesBusca;
+	}
+
+	public void setSolicitantesBusca(List<Cliente> solicitantesBusca) {
+		this.solicitantesBusca = solicitantesBusca;
+	}
+
+	public Long getUsuarioAberturaBusca() {
+		return usuarioAberturaBusca;
+	}
+
+	public void setUsuarioAberturaBusca(Long usuarioAberturaBusca) {
+		this.usuarioAberturaBusca = usuarioAberturaBusca;
+	}
+
+	public List<Usuario> getUsuariosAberturaBusca() {
+		return usuariosAberturaBusca;
+	}
+
+	public void setUsuariosAberturaBusca(List<Usuario> usuariosAberturaBusca) {
+		this.usuariosAberturaBusca = usuariosAberturaBusca;
+	}
+
+	public Long getAtendenteBusca() {
+		return atendenteBusca;
+	}
+
+	public void setAtendenteBusca(Long atendenteBusca) {
+		this.atendenteBusca = atendenteBusca;
+	}
+
+	public Long getTicketBusca() {
+		return ticketBusca;
+	}
+
+	public void setTicketBusca(Long ticketBusca) {
+		this.ticketBusca = ticketBusca;
+	}
+
+	public List<Usuario> getAtendentesBusca() {
+		return atendentesBusca;
+	}
+
+	public void setAtendentesBusca(List<Usuario> atendentesBusca) {
+		this.atendentesBusca = atendentesBusca;
+	}
+
+	public String getPrioridadeBusca() {
+		return prioridadeBusca;
+	}
+
+	public void setPrioridadeBusca(String prioridadeBusca) {
+		this.prioridadeBusca = prioridadeBusca;
+	}
+
+	public String getStatusBusca() {
+		return statusBusca;
+	}
+
+	public void setStatusBusca(String statusBusca) {
+		this.statusBusca = statusBusca;
+	}
+
+	public String getAssuntoBusca() {
+		return assuntoBusca;
+	}
+
+	public void setAssuntoBusca(String assuntoBusca) {
+		this.assuntoBusca = assuntoBusca;
+	}
+
+	public String getSolicitacaoBusca() {
+		return solicitacaoBusca;
+	}
+
+	public void setSolicitacaoBusca(String solicitacaoBusca) {
+		this.solicitacaoBusca = solicitacaoBusca;
+	}
+
+	public String getDepartamentoPesq() {
+		return departamentoPesq;
+	}
+
+	public void setDepartamentoPesq(String departamentoPesq) {
+		this.departamentoPesq = departamentoPesq;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -340,6 +467,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
 			usuarioBusca = usuario.getNome();
+			departamentoPesq = usuario.getDepartamento().getNome();
 
 			TicketDAO ticketDAO = new TicketDAO();
 
@@ -1503,6 +1631,79 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			erro.printStackTrace();
 		}
 
+	}
+
+	public void listarInteracoes(ActionEvent evento) {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			InteracaoDAO interacaoDAO = new InteracaoDAO();
+			interacoes = interacaoDAO.listarInteracaoes(ticket.getCodigo());
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Listar as Interações.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void pesquisarAvancada() {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();			
+
+			departamentoPesq = usuario.getDepartamento().getNome();
+
+			if (statusBusca.equals("Todos os Registros Selecionado")) {
+				statusBusca = "";
+			}
+
+			if (prioridadeBusca.equals("Todos os Registros Selecionado")) {
+				prioridadeBusca = "";
+			}
+
+			if (assuntoBusca.equals("Todos os Registros Selecionado")) {
+				assuntoBusca = "";
+			}
+
+			if (solicitacaoBusca.equals("Todos os Registros Selecionado")) {
+				solicitacaoBusca = "";
+			}
+			
+			if (ticketBusca == null) {
+				ticketBusca = 0L;
+			}
+
+			atendenteBusca = usuario.getCodigo();
+			
+			TicketDAO ticketDAO = new TicketDAO();
+			tickets = ticketDAO.pesquisaAvancado(departamentoPesq, usuarioAberturaBusca, statusBusca, prioridadeBusca,
+					assuntoBusca, solicitacaoBusca, atendenteBusca, ticketBusca);
+
+			ticket = null;
+
+			if (tickets.isEmpty() == true) {
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
+			} else {
+				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoBusca').hide();");
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
 	}
 
 }
