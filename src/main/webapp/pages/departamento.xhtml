@@ -110,15 +110,38 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{departamentoBean.onRowSelect}" />						
+						listener="#{departamentoBean.onRowSelect}" />
 
 					<p:column headerText="Nome" sortBy="#{departamento.nome}">
 						<h:outputText value="#{departamento.nome}" />
 					</p:column>
 
-					<p:column headerText="Atendimento" sortBy="#{departamento.atendimentoFormatado}"
-						width="120" style="text-align:center">
+					<p:column headerText="Atendimento"
+						sortBy="#{departamento.atendimentoFormatado}" width="120"
+						style="text-align:center">
 						<h:outputText value="#{departamento.atendimentoFormatado}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="75"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{departamentoBean.editar}" 
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{departamento}" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{departamentoBean.excluir}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{departamento}" />
+						</p:commandButton>
 					</p:column>
 				</p:dataTable>
 
@@ -141,7 +164,7 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Departamento" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />

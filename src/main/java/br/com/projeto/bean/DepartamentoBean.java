@@ -129,6 +129,44 @@ public class DepartamentoBean implements Serializable {
 		}
 	}
 
+	public void editar(ActionEvent evento) {
+		try {
+			departamento = (Departamento) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirAtalho(ActionEvent evento) {
+		try {
+			departamento = (Departamento) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentoDAO.excluir(departamento);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Registro: " + departamento.getNome());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			departamentos = departamentoDAO.listar("nome");
+
+			departamento = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void onRowSelect(SelectEvent event) {
 
 	}

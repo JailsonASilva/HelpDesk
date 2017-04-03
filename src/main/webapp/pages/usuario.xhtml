@@ -105,7 +105,7 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{usuarioBean.onRowSelect}" />					
+						listener="#{usuarioBean.onRowSelect}" />
 
 					<p:column headerText="Nome" sortBy="#{usuario.nome}">
 						<h:outputText value="#{usuario.nome}" />
@@ -119,18 +119,14 @@
 						width="200" sortBy="#{usuario.departamento.nome}">
 						<h:outputText value="#{usuario.departamento.nome}" />
 					</p:column>
-					
-					<p:column headerText="Ramal" sortBy="#{usuario.ramal}"
-						style="text-align:center" width="70">
-						<h:outputText value="#{usuario.ramal}" />
-					</p:column>
 
 					<p:column headerText="Ativo" sortBy="#{usuario.ativoFormatado}"
-						style="text-align:center" width="70">
+						style="text-align:center" width="50">
 						<h:outputText value="#{usuario.ativoFormatado}" />
 					</p:column>
 
-					<p:column headerText="Senha" width="45">
+					<p:column headerText="Senha" width="45"
+						style="text-align:center;white-space:normal !important;">
 						<p:commandButton icon="fa fa-fw fa-key"
 							actionListener="#{usuarioBean.editarSenha}"
 							update=":formSenha:painelSenha"
@@ -140,6 +136,30 @@
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 					</p:column>
+
+
+					<p:column headerText="Opções" width="75"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{usuarioBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{usuario}" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{usuarioBean.excluir}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{usuario}" />
+						</p:commandButton>
+					</p:column>
+
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -215,11 +235,11 @@
 					<p:selectBooleanCheckbox id="ativo"
 						value="#{usuarioBean.usuario.ativo}" required="true"
 						requiredMessage="O campo 'Ativo' é obrigatório" />
-						
+
 					<p:outputLabel for="administrador" value="Administrador" />
 					<p:selectBooleanCheckbox id="administrador"
 						value="#{usuarioBean.usuario.administrador}" required="true"
-						requiredMessage="O campo 'Administrador' é obrigatório" />						
+						requiredMessage="O campo 'Administrador' é obrigatório" />
 				</h:panelGrid>
 
 				<br></br>

@@ -151,9 +151,9 @@ public class UsuarioBean implements Serializable {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listar("nome");
-			
+
 			AcessoDAO acessoDAO = new AcessoDAO();
-			acessos = acessoDAO.listar("nome");			
+			acessos = acessoDAO.listar("nome");
 
 		} catch (
 
@@ -164,7 +164,7 @@ public class UsuarioBean implements Serializable {
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
 			erro.printStackTrace();
-		}		
+		}
 	}
 
 	public void pesquisar() {
@@ -275,6 +275,44 @@ public class UsuarioBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarioDAO.excluir(usuario);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Registro: " + usuario.getNome());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			usuarios = usuarioDAO.listar("nome");
+
+			usuario = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void editar(ActionEvent evento) {
+		try {
+			usuario = (Usuario) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirAtalho(ActionEvent evento) {
+		try {
+			usuario = (Usuario) evento.getComponent().getAttributes().get("registroSelecionado");
+
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarioDAO.excluir(usuario);
 
