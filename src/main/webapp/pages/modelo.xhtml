@@ -77,6 +77,14 @@
 									url="/pages/acessoAdministador.xhtml"
 									rendered="#{autenticacaoBean.usuarioLogado.administrador}" />
 
+								<p:menuitem value="Abertura por Departamento"
+									url="/pages/aberturaDepartamento.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.aberturaDepartamento}" />
+
+								<p:menuitem value="Abertura por Usuário"
+									url="/pages/aberturaUsuario.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.aberturaUsuario}" />
+
 							</p:submenu>
 						</p:submenu>
 
@@ -202,7 +210,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.5.1.1" />
+					<h:outputText value="Versão 1.9.1" />
 
 				</p:layoutUnit>
 			</div>

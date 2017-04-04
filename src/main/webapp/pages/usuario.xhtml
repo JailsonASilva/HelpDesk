@@ -99,6 +99,9 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="usuario" rows="10" paginatorPosition="bottom">
 
+					<p:ajax event="rowDblselect" listener="#{usuarioBean.duploClique}" 
+						update="formCadastro:painel" />
+
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{usuarioBean.onRowUnselect}" />
@@ -209,6 +212,7 @@
 						<p:commandButton icon="ui-icon-document"
 							style="display: inline-block; vertical-align: top;"
 							title="Novo Departamento"
+							update="formCadastroDepartamento:painelDepartamento"
 							oncomplete="PF('dialogoDepartamento').show();" />
 					</h:panelGroup>
 
@@ -227,8 +231,7 @@
 					</h:panelGroup>
 
 					<p:outputLabel for="ramal" value="Ramal" />
-					<p:inputText id="ramal" maxlength="10" size="15" required="true"
-						requiredMessage="Campo Obrigatório"
+					<p:inputText id="ramal" maxlength="10" size="15"
 						value="#{usuarioBean.usuario.ramal}" />
 
 					<p:outputLabel for="ativo" value="Ativo" />

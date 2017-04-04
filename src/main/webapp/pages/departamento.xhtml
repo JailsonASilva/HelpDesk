@@ -128,7 +128,7 @@
 						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{departamentoBean.editar}" 
+							actionListener="#{departamentoBean.editar}"
 							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
 							<f:attribute name="registroSelecionado" value="#{departamento}" />
 						</p:commandButton>

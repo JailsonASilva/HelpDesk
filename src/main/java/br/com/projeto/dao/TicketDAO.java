@@ -2,6 +2,7 @@ package br.com.projeto.dao;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -162,11 +163,10 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 			Criteria consulta = sessao.createCriteria(Ticket.class);
-			
+
 			if (ticket > 0L) {
 				consulta.add(Restrictions.eq("codigo", ticket));
 			}
-
 
 			if (departamento > 0L) {
 				Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento",
@@ -402,7 +402,7 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
-			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_departamento WHERE Departamento_Codigo = "
+			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_equipe WHERE Departamento_Codigo = "
 					+ usuario.getDepartamento().getCodigo()).list();
 
 			return tickets;
@@ -419,7 +419,55 @@ public class TicketDAO extends GenericDAO<Ticket> {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 		try {
 
-			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_departamento").list();
+			List tickets = sessao.createSQLQuery("SELECT * FROM vs_resumo_equipe").list();
+
+			return tickets;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List aberturaDepartamento(Date dataInicial, Date dataFinal) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		String dataInicialFormatada = new SimpleDateFormat("yyyy/MM/dd").format(dataInicial);
+		String dataFinalFormatada = new SimpleDateFormat("yyyy/MM/dd").format(dataFinal);
+
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			List tickets = sessao
+					.createSQLQuery("CALL sp_abertura_departamento(" + usuario.getDepartamento().getCodigo() + ",'"
+							+ dataInicialFormatada + "','" + dataFinalFormatada + "')")
+					.list();
+
+			return tickets;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public List aberturaUsuario(Date dataInicial, Date dataFinal) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		String dataInicialFormatada = new SimpleDateFormat("yyyy/MM/dd").format(dataInicial);
+		String dataFinalFormatada = new SimpleDateFormat("yyyy/MM/dd").format(dataFinal);
+
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			List tickets = sessao.createSQLQuery("CALL sp_abertura_usuario(" + usuario.getDepartamento().getCodigo()
+					+ ",'" + dataInicialFormatada + "','" + dataFinalFormatada + "')").list();
 
 			return tickets;
 

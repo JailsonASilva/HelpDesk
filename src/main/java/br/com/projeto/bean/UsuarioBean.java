@@ -343,6 +343,8 @@ public class UsuarioBean implements Serializable {
 
 			departamento = new Departamento();
 
+			departamentos = departamentoDAO.listar("nome");
+
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
@@ -375,6 +377,8 @@ public class UsuarioBean implements Serializable {
 	public void editarSenha(ActionEvent evento) {
 		try {
 			usuario = (Usuario) evento.getComponent().getAttributes().get("usuarioSelecionado");
+
+			departamento = new Departamento();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Senha.",
@@ -473,6 +477,19 @@ public class UsuarioBean implements Serializable {
 			usuario.setAcesso(acesso);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqAcesso').hide();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void duploClique(SelectEvent evento) {
+		try {
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",

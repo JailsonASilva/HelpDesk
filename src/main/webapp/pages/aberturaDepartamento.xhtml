@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Abertura por Departamento">
+
+				<h:panelGrid columns="2">
+					<h:panelGrid columns="2">
+						<p:outputLabel for="dataInicial" value="Data Inicial" />
+						<p:calendar id="dataInicial" mask="99/99/99" required="true"
+							showOn="button" requiredMessage="Campo Obrigatório!"
+							yearRange="1900:2222"
+							value="#{aberturaDepartamentoBean.dataInicial}" size="6"
+							locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+						<p:outputLabel for="dataFinal" value="Data Final" />
+						<p:calendar id="dataFinal" mask="99/99/99" required="true"
+							showOn="button" requiredMessage="Campo Obrigatório!"
+							yearRange="1900:2222"
+							value="#{aberturaDepartamentoBean.dataFinal}" size="6"
+							locale="pt_BR" showButtonPanel="true" navigator="true" />
+					</h:panelGrid>
+
+					<p:commandButton id="bitPesquisar" value="Pesquisar"
+						icon="fa fa fw fa-search"
+						actionListener="#{aberturaDepartamentoBean.pesquisar}"
+						update="formListagem:tabela"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+				</h:panelGrid>
+
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="marca" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="marca" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="marca" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					draggableColumns="true" resizableColumns="true" paginator="true"
+					rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{aberturaDepartamentoBean.tickets}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="ticket" rows="10" paginatorPosition="bottom">
+
+					<p:column headerText="Departamento" sortBy="#{ticket[0]}"
+						width="90">
+						<h:outputText value="#{ticket[0]}" />
+					</p:column>
+
+					<p:column headerText="Quantidade" sortBy="#{ticket[1]}"
+						style="text-align:center" width="50">
+						<h:outputText value="#{ticket[1]}" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

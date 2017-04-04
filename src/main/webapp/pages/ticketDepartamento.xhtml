@@ -233,13 +233,13 @@
 					<p:column headerText="Prioridade/Status"
 						sortBy="#{ticket.prioridadeFormatada} / #{ticket.status}"
 						style="text-align:center;white-space:normal !important;"
-						width="35">
+						width="32">
 						<h:outputText
 							value="#{ticket.prioridadeFormatada} / #{ticket.status}" />
 					</p:column>
 
 					<p:column headerText="Responsável"
-						sortBy="#{ticket.usuarioAtendimento.nome}" width="30"
+						sortBy="#{ticket.usuarioAtendimento.nome}" width="28"
 						style="text-align:center;white-space:normal !important;">
 						<h:outputText value="#{ticket.usuarioAtendimento.nome}" />
 					</p:column>
@@ -251,7 +251,7 @@
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Opções" width="50"
+					<p:column headerText="Opções" width="60"
 						style="text-align:center;white-space:normal !important;">
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
