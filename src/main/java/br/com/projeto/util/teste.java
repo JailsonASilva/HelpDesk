@@ -1,23 +1,21 @@
 package br.com.projeto.util;
 
-import org.hibernate.Session;
+import java.net.InetAddress;
 
 public class teste {
 
 	public static void main(String args[]) throws Exception {
 		
-		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		
 
 		try {
 
-			System.out.println((Long) sessao
-					.createSQLQuery("SELECT LAST_INSERT_ID(codigo) FROM pessoa ORDER BY codigo DESC LIMIT 1")
-					.uniqueResult());
+			System.out.println(InetAddress.getLocalHost().getHostAddress());
 
 		} catch (RuntimeException erro) {
 			throw erro;
 		} finally {
-			sessao.close();
+			
 		}
 
 	}

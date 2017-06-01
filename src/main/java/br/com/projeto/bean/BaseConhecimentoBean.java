@@ -18,6 +18,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 import br.com.projeto.dao.ArtigoDAO;
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.domain.Artigo;
 
 @SuppressWarnings("serial")
@@ -76,6 +77,9 @@ public class BaseConhecimentoBean implements Serializable {
 		try {
 			ArtigoDAO artigoDAO = new ArtigoDAO();
 			artigos = artigoDAO.pesquisarBaseConhecimento(busca);
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Base de Conhecimento: '" + busca + "'");			
 
 			if (artigos.isEmpty() == true) {
 				FacesContext context = FacesContext.getCurrentInstance();
@@ -100,6 +104,9 @@ public class BaseConhecimentoBean implements Serializable {
 
 			InputStream stream = new FileInputStream("C:/Artigos/" + artigo.getCodigo() + ".pdf");
 			arquivo = new DefaultStreamedContent(stream, "pdf/pdf", artigo.getCodigo() + ".pdf");
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Baixou Anexo Base de Conhecimento: " + artigo.getTitulo());				
 
 		} catch (FileNotFoundException erro) {
 			Messages.addGlobalError("Ocorreu um erro ao tentar efetuar o download da foto");

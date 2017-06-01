@@ -14,6 +14,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.AcessoDAO;
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.domain.Acesso;
 
 @SuppressWarnings("serial")
@@ -65,6 +66,9 @@ public class AcessoBean implements Serializable {
 
 			acesso = null;
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Acesso: '" + busca + "'");
+
 			if (acessos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
@@ -97,6 +101,17 @@ public class AcessoBean implements Serializable {
 
 			acessos = acessoDAO.listar("nome");
 
+			if (acesso.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Acesso: " + acesso.getNome());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Acesso: " + acesso.getNome());
+			}
+
 			acesso = null;
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -116,6 +131,9 @@ public class AcessoBean implements Serializable {
 		try {
 			AcessoDAO acessoDAO = new AcessoDAO();
 			acessoDAO.excluir(acesso);
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Acesso: " + acesso.getNome());
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + acesso.getNome());

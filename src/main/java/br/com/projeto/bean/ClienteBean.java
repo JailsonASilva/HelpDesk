@@ -14,6 +14,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.domain.Cliente;
@@ -114,6 +115,9 @@ public class ClienteBean implements Serializable {
 
 			departamento = new Departamento();
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Cliente: '" + busca + "'");
+			
 			cliente = null;
 
 			if (clientes.isEmpty() == true) {
@@ -148,6 +152,18 @@ public class ClienteBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			clientes = clienteDAO.listar("nome");
+			
+			if (cliente.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Cliente: " + cliente.getNome());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Cliente: " + cliente.getNome());
+			}
+			
 
 			cliente = null;
 
@@ -164,6 +180,9 @@ public class ClienteBean implements Serializable {
 		try {
 			ClienteDAO clienteDAO = new ClienteDAO();
 			clienteDAO.excluir(cliente);
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Cliente: " + cliente.getNome());			
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + cliente.getNome());
@@ -209,48 +228,6 @@ public class ClienteBean implements Serializable {
 
 	public void onRowUnselect(UnselectEvent event) {
 		cliente = null;
-	}
-
-	public void pesquisarDepartamento() {
-		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.pesquisarDepartamento(buscaDepartamento);
-
-			if (departamentos.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
-	public void selecionarDepartamento(ActionEvent evento) {
-		try {
-			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
-					.get("departamentoSelecionado");
-
-			cliente.setDepartamento(departamentoPesq);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
 	}
 
 }

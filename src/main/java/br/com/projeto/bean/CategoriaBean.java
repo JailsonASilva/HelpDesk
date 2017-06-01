@@ -13,6 +13,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.domain.Categoria;
 
@@ -63,6 +64,9 @@ public class CategoriaBean implements Serializable {
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.pesquisar(busca);
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Categoria: '" + busca + "'");
+
 			categoria = null;
 
 			if (categorias.isEmpty() == true) {
@@ -95,6 +99,17 @@ public class CategoriaBean implements Serializable {
 
 			categorias = categoriaDAO.listar("nome");
 
+			if (categoria.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Categoria: " + categoria.getNome());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Categoria: " + categoria.getNome());
+			}
+
 			categoria = null;
 
 		} catch (RuntimeException erro) {
@@ -110,6 +125,9 @@ public class CategoriaBean implements Serializable {
 		try {
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categoriaDAO.excluir(categoria);
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Categoria: " + categoria.getNome());			
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + categoria.getNome());

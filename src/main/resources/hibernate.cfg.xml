@@ -64,6 +64,7 @@
 		<mapping class="br.com.projeto.domain.Tecnico" />
 		<mapping class="br.com.projeto.domain.Interacao" />
 		<mapping class="br.com.projeto.domain.AberturaEmail" />
+		<mapping class="br.com.projeto.domain.Auditoria" />
 
 	</session-factory>
 

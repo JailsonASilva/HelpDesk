@@ -13,6 +13,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.domain.Departamento;
 
@@ -65,6 +66,9 @@ public class DepartamentoBean implements Serializable {
 
 			departamento = null;
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Departamento: '" + busca + "'");
+
 			if (departamentos.isEmpty() == true) {
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
@@ -95,6 +99,17 @@ public class DepartamentoBean implements Serializable {
 
 			departamentos = departamentoDAO.listar("nome");
 
+			if (departamento.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Departamento: " + departamento.getNome());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Departamento: " + departamento.getNome());
+			}
+
 			departamento = null;
 
 		} catch (RuntimeException erro) {
@@ -110,6 +125,9 @@ public class DepartamentoBean implements Serializable {
 		try {
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentoDAO.excluir(departamento);
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Departamento: " + departamento.getNome());
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + departamento.getNome());
@@ -148,6 +166,9 @@ public class DepartamentoBean implements Serializable {
 
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentoDAO.excluir(departamento);
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Departamento: " + departamento.getNome());
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + departamento.getNome());

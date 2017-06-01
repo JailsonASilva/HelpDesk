@@ -29,6 +29,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 import br.com.projeto.dao.ArtigoDAO;
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.ClassificacaoDAO;
 import br.com.projeto.dao.NivelDAO;
 import br.com.projeto.domain.Artigo;
@@ -199,6 +200,9 @@ public class ArtigoBean implements Serializable {
 			ArtigoDAO artigoDAO = new ArtigoDAO();
 			artigos = artigoDAO.pesquisarPalavraChave(busca);
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Base de Conhecimento: '" + busca + "'");
+
 			artigo = null;
 
 			nivel = new Nivel();
@@ -327,6 +331,17 @@ public class ArtigoBean implements Serializable {
 
 			artigos = artigoDAO.listar("titulo");
 
+			if (artigo.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Artigo: " + artigo.getTitulo());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Artigo: " + artigo.getTitulo());
+			}
+
 			artigo = null;
 
 		} catch (RuntimeException | IOException erro) {
@@ -382,6 +397,9 @@ public class ArtigoBean implements Serializable {
 		try {
 			ArtigoDAO artigoDAO = new ArtigoDAO();
 			artigoDAO.excluir(artigo);
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Artigo: " + artigo.getTitulo());			
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + artigo.getTitulo());

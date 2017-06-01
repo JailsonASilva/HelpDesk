@@ -11,6 +11,7 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
 
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Usuario;
 
@@ -112,6 +113,9 @@ public class TrocaSenhaBean implements Serializable {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage("Aviso!", "Senha Salva com Sucesso!"));
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Trocou de Senha");
 
 		} catch (
 

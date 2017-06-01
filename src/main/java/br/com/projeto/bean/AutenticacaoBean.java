@@ -9,6 +9,7 @@ import javax.faces.bean.SessionScoped;
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Usuario;
 
@@ -55,6 +56,9 @@ public class AutenticacaoBean {
 			} else {
 				Faces.redirect("./pages/meusTickets.xhtml");
 			}
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Logou no Sistema");				
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -68,7 +72,10 @@ public class AutenticacaoBean {
 			usuarioLogado = null;
 
 			Faces.redirect("./pages/autenticacao.xhtml");
-
+			
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Desconectou no Sistema");	
+			
 		} catch (IOException erro) {
 			erro.printStackTrace();
 			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());

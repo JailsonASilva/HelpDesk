@@ -15,6 +15,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
 import br.com.projeto.dao.AcessoDAO;
+import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Acesso;
@@ -154,7 +155,6 @@ public class UsuarioBean implements Serializable {
 
 			AcessoDAO acessoDAO = new AcessoDAO();
 			acessos = acessoDAO.listar("nome");
-		
 
 		} catch (
 
@@ -178,55 +178,10 @@ public class UsuarioBean implements Serializable {
 
 			usuario = null;
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Pesquisou Usuário: '" + busca + "'");
+
 			if (usuarios.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
-	public void pesquisarDepartamento() {
-		try {
-			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
-			departamentos = departamentoDAO.pesquisar(buscaDepartamento);
-
-			if (departamentos.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
-
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
-			}
-
-		} catch (
-
-		RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Pesquisar Registro.",
-					"Erro: " + erro.getMessage());
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-
-			erro.printStackTrace();
-		}
-	}
-
-	public void pesquisarAcesso() {
-		try {
-			AcessoDAO acessoDAO = new AcessoDAO();
-			acessos = acessoDAO.pesquisar(buscaAcesso);
-
-			if (acessos.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -263,6 +218,17 @@ public class UsuarioBean implements Serializable {
 
 			usuarios = usuarioDAO.listar("nome");
 
+			if (usuario.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Usuário: " + usuario.getNome());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Usuário: " + usuario.getNome());
+			}
+
 			usuario = null;
 
 		} catch (RuntimeException erro) {
@@ -281,6 +247,9 @@ public class UsuarioBean implements Serializable {
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + usuario.getNome());
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Usuário: " + usuario.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
@@ -316,6 +285,9 @@ public class UsuarioBean implements Serializable {
 
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarioDAO.excluir(usuario);
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Usuário: " + usuario.getNome());
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Registro: " + usuario.getNome());
@@ -398,6 +370,9 @@ public class UsuarioBean implements Serializable {
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarioDAO.merge(usuario);
 
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Senha Salva: " + usuario.getNome());
+
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoSenha').hide();");
 
 			usuarios = usuarioDAO.listar("nome");
@@ -413,79 +388,12 @@ public class UsuarioBean implements Serializable {
 		}
 	}
 
-	public void selecionarDepartamento(ActionEvent evento) {
-		try {
-
-			Departamento departamentoPesq = (Departamento) evento.getComponent().getAttributes()
-					.get("departamentoSelecionado");
-
-			usuario.setDepartamento(departamentoPesq);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
-			org.primefaces.context.DefaultRequestContext.getCurrentInstance().update(":formCadastro:departamento");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
-	public void selecionarAcesso(ActionEvent evento) {
-		try {
-			Acesso acessoPesq = (Acesso) evento.getComponent().getAttributes().get("acessoSelecionado");
-
-			usuario.setAcesso(acessoPesq);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqAcesso').hide();");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
 	public void onRowSelect(SelectEvent event) {
 
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
 		usuario = null;
-	}
-
-	public void duploCliqueDepartamento(SelectEvent evento) {
-		try {
-			usuario.setDepartamento(departamento);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqDepartamento').hide();");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
-	}
-
-	public void duploCliqueAcesso(SelectEvent evento) {
-		try {
-			usuario.setAcesso(acesso);
-
-			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoPesqAcesso').hide();");
-
-		} catch (RuntimeException erro) {
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
-					"Erro Inesperado!");
-
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
-			erro.printStackTrace();
-		}
 	}
 
 	public void duploClique(SelectEvent evento) {
