@@ -35,7 +35,7 @@ public class Ocorrencia extends GenericDomain {
 	@JoinColumn(nullable = false)
 	private Usuario usuario;
 
-	@Column(nullable = true)
+	@Column(nullable = true, columnDefinition = "boolean default False")
 	private Boolean emailEnviado;
 
 	@Column(nullable = true)

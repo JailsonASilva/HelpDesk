@@ -52,7 +52,7 @@ public class BarraFerramentaBean implements Serializable {
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
-			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+			Messages.addGlobalError("Não foi possível acessar Ticket Interno. Erro: " + erro.getMessage());
 		}
 	}
 
@@ -62,7 +62,7 @@ public class BarraFerramentaBean implements Serializable {
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
-			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+			Messages.addGlobalError("Não foi possível acessar Ticket Externo. Erro: " + erro.getMessage());
 		}
 	}
 
@@ -72,7 +72,7 @@ public class BarraFerramentaBean implements Serializable {
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
-			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+			Messages.addGlobalError("Não foi possível acessar Ticket por Departamento. Erro: " + erro.getMessage());
 		}
 	}
 
@@ -82,7 +82,7 @@ public class BarraFerramentaBean implements Serializable {
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
-			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+			Messages.addGlobalError("Não foi possível acessar Meus Atendimentos. Erro: " + erro.getMessage());
 		}
 	}
 
@@ -92,7 +92,7 @@ public class BarraFerramentaBean implements Serializable {
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
-			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+			Messages.addGlobalError("Não foi possível acessar Meus Ticket's. Erro: " + erro.getMessage());
 		}
 	}
 
@@ -102,7 +102,17 @@ public class BarraFerramentaBean implements Serializable {
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
-			Messages.addGlobalError("Não foi possível Desconectar. Erro: " + erro.getMessage());
+			Messages.addGlobalError("Não foi possível acessar Base de Conhecimento. Erro: " + erro.getMessage());
+		}
+	}
+
+	public void trocarSenha() {
+		try {
+			Faces.redirect("./pages/trocarSenha.xhtml");
+
+		} catch (IOException erro) {
+			erro.printStackTrace();
+			Messages.addGlobalError("Não foi possível acessar Troca de Senha. Erro: " + erro.getMessage());
 		}
 	}
 

@@ -615,7 +615,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null,
-					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));
+					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + " Ticket Salvo com Sucesso"));
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
@@ -647,6 +647,11 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null,
+					new FacesMessage("Aviso!", "Ocorrência Salva! Ticket Nº " + ticket.getCodigo()));			
 
 			interacao("Salvou uma Ocorrência");
 
@@ -1455,7 +1460,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 	public void novoTicket() {
 		try {
-			Faces.redirect("./pages/ticketInterno.xhtml");
+			Faces.redirect("./pages/ticketExterno.xhtml");
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -1655,7 +1660,7 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 	public void pesquisarAvancada() {
 		try {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
-			Usuario usuario = autenticacaoBean.getUsuarioLogado();			
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
 
 			departamentoPesq = usuario.getDepartamento().getNome();
 
@@ -1674,13 +1679,13 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 			if (solicitacaoBusca.equals("Todos os Registros Selecionado")) {
 				solicitacaoBusca = "";
 			}
-			
+
 			if (ticketBusca == null) {
 				ticketBusca = 0L;
 			}
 
 			atendenteBusca = usuario.getCodigo();
-			
+
 			TicketDAO ticketDAO = new TicketDAO();
 			tickets = ticketDAO.pesquisaAvancado(departamentoPesq, usuarioAberturaBusca, statusBusca, prioridadeBusca,
 					assuntoBusca, solicitacaoBusca, atendenteBusca, ticketBusca);
@@ -1702,6 +1707,63 @@ public class ticketAtendimentoUsuarioBean implements Serializable {
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
+			erro.printStackTrace();
+		}
+	}
+
+	public void concluirEnviarEmail() throws EmailException, IOException {
+		try {
+			if (ocorrencia.getCaminho() != null) {
+				ocorrencia.setCodigoAnexo(ticket.getCodigo() + "" + ocorrencias.size());
+				ocorrencia.setTipoAnexo(tipoArquivo);
+
+				interacao("Salvou uma Ocorrência com Anexo");
+
+				Path origem = Paths.get(ocorrencia.getCaminho());
+				Path destino = Paths
+						.get("C:/Ocorrencias/" + ticket.getCodigo() + ocorrencias.size() + "." + tipoArquivo);
+
+				Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+			}
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			// enviarEmail();
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket Concluído!");
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Concluído");
+			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			// interacao("Concluiu o Ticket e Enviou o E-mail");
+			interacao("Concluiu e Salvou Ticket");
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Ticket Salvo e Concluído com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
+
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
 	}

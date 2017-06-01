@@ -15,12 +15,14 @@ import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
+import br.com.projeto.dao.AcessoDAO;
 import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
 import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.dao.UsuarioDAO;
+import br.com.projeto.domain.Acesso;
 import br.com.projeto.domain.Categoria;
 import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
@@ -40,7 +42,6 @@ public class TicketInternoBean implements Serializable {
 	private Cliente cliente;
 	private Usuario usuario;
 	private Equipamento equipamento;
-
 	private AutenticacaoBean autenticacaoBean;
 
 	private List<Ticket> tickets;
@@ -50,6 +51,7 @@ public class TicketInternoBean implements Serializable {
 	private List<Categoria> categorias;
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
+	private List<Acesso> acessos;
 
 	private FacesMessage message;
 
@@ -236,21 +238,31 @@ public class TicketInternoBean implements Serializable {
 		this.departamentosCliente = departamentosCliente;
 	}
 
+	public List<Acesso> getAcessos() {
+		return acessos;
+	}
+
+	public void setAcessos(List<Acesso> acessos) {
+		this.acessos = acessos;
+	}
+
 	@PostConstruct
 	public void inicializar() {
 		try {
-
 			novo();
 
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listarAtendimento();
 			departamentosCliente = departamentoDAO.listar("nome");
 
-			ClienteDAO clienteDAO = new ClienteDAO();
-			clientes = clienteDAO.listar("nome");
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarios = usuarioDAO.listar("nome");
 
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.listar("nome");
+			
+			AcessoDAO acessoDAO = new AcessoDAO();
+			acessos = acessoDAO.listar("nome");
 
 		} catch (
 
@@ -298,17 +310,20 @@ public class TicketInternoBean implements Serializable {
 		ticket.setDataAbertura(new java.util.Date());
 		ticket.setUltimaInteracao(new java.util.Date());
 		ticket.setPrioridade("Normal");
-		ticket.setEmailEnviado(false);
+		ticket.setEmailDepartamento(false);
+		ticket.setEmailSolicitante(false);
 
 		categoria = new Categoria();
 		departamento = new Departamento();
 		cliente = new Cliente();
+		usuario = new Usuario();
 	}
 
 	public void salvar() throws EmailException {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
-			ticket.setEmailEnviado(false);
+			ticket.setEmailDepartamento(false);
+			ticket.setEmailSolicitante(false);
 			ticketDAO.merge(ticket);
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -682,6 +697,26 @@ public class TicketInternoBean implements Serializable {
 			categoria = new Categoria();
 
 			categorias = categoriaDAO.listar("nome");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarUsuario() {
+		try {
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarioDAO.merge(usuario);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoUsuario').hide();");
+
+			usuarios = usuarioDAO.listar("nome");
+
+			usuario = new Usuario();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",

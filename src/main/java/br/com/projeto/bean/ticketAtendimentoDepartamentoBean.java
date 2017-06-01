@@ -722,7 +722,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null,
-					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));
+					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + " Ticket Salvo com Sucesso"));
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
@@ -768,8 +768,16 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null,
+					new FacesMessage("Aviso!", "Ocorrência Salva! Ticket Nº " + ticket.getCodigo()));			
 
 			interacao("Salvou uma Ocorrência");
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketsPendentes = ticketDAO.ticketPendentes();
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -827,6 +835,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			interacao("Atendeu o Ticket");
 
+			ticketsPendentes = ticketDAO.ticketPendentes();
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
@@ -861,15 +871,24 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
-
+			
+			ticketsSemAtendimento = ticketDAO.ticketSemAtendente();
+			
 			interacao("Atendeu o Ticket");
+
+			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
+
+			interacao("Listou as Ocorrências");
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').show();");			
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Ticket Atendido com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
 
-			ticket = null;
+			//ticket = null;
 
 			listarPendentes();
 
@@ -896,6 +915,10 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ticketDAO.merge(ticket);
 
 			interacao("Encaminou o Ticket");
+
+			ticketsNaoAtendidos();
+
+			ticketsPendentes = ticketDAO.ticketPendentes();
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEncaminhar').hide();");
 
@@ -943,6 +966,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			interacao("Suspendeu o Ticket");
 
+			ticketsPendentes = ticketDAO.ticketPendentes();
+
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
 
@@ -983,6 +1008,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			interacao("Suspendeu o Ticket");
 
+			ticketsNaoAtendidos();
+
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
 
@@ -1020,6 +1047,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ticketDAO.merge(ticket);
 
 			interacao("Concluiu o Ticket");
+
+			ticketsPendentes = ticketDAO.ticketPendentes();
 
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
@@ -1060,7 +1089,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
 
-			enviarEmail();
+			// enviarEmail();
 
 			novaOcorrencia();
 			ocorrencia.setOcorrencia("Ticket Concluído!");
@@ -1073,7 +1102,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
-			interacao("Concluiu o Ticket e Enviou o E-mail");
+			// interacao("Concluiu o Ticket e Enviou o E-mail");
+			interacao("Concluiu e Salvou Ticket");
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
 
@@ -1082,7 +1112,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
-			context.addMessage(null, new FacesMessage("Ticket Salvo e E-mail Enviado com Sucesso!",
+			context.addMessage(null, new FacesMessage("Ticket Salvo e Concluído com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
 
 			ticket = null;
@@ -1116,6 +1146,8 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 			ticketDAO.merge(ticket);
 
 			interacao("Concluiu o Ticket");
+
+			ticketsNaoAtendidos();
 
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
@@ -1663,7 +1695,7 @@ public class ticketAtendimentoDepartamentoBean implements Serializable {
 
 	public void novoTicket() {
 		try {
-			Faces.redirect("./pages/ticketInterno.xhtml");
+			Faces.redirect("./pages/ticketExterno.xhtml");
 
 		} catch (IOException erro) {
 			erro.printStackTrace();

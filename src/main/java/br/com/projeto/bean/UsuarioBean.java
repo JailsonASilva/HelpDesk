@@ -154,6 +154,7 @@ public class UsuarioBean implements Serializable {
 
 			AcessoDAO acessoDAO = new AcessoDAO();
 			acessos = acessoDAO.listar("nome");
+		
 
 		} catch (
 

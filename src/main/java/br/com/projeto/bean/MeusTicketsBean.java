@@ -473,6 +473,8 @@ public class MeusTicketsBean implements Serializable {
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(usuario.getDepartamento().getCodigo());
 
+			atendentesBusca = usuarioDAO.listarTodosAtendente();
+
 		} catch (
 
 		RuntimeException erro) {
@@ -546,9 +548,8 @@ public class MeusTicketsBean implements Serializable {
 		try {
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
-			
-			interacao("Listou as Ocorrências");
 
+			interacao("Listou as Ocorrências");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Abrir Ocorrencias.",
@@ -565,7 +566,7 @@ public class MeusTicketsBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ticket.getCodigo());
-			
+
 			interacao("Listou as Ocorrências");
 
 		} catch (RuntimeException erro) {
@@ -593,18 +594,16 @@ public class MeusTicketsBean implements Serializable {
 			TicketDAO ticketDAO = new TicketDAO();
 			ticketDAO.merge(ticket);
 
+			interacao("Alterou Dados do Ticket");
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null,
-					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + "Ticket Salvo com Sucesso"));
+					new FacesMessage("Aviso!", "Ticket Nº " + ticket.getCodigo() + " Ticket Salvo com Sucesso"));
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			ticket = null;
-			
-			interacao("Alterou Dados do Ticket");
-
-			// enviarEmail();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -620,7 +619,7 @@ public class MeusTicketsBean implements Serializable {
 			if (ocorrencia.getCaminho() != null) {
 				ocorrencia.setCodigoAnexo(ticket.getCodigo() + "" + ocorrencias.size());
 				ocorrencia.setTipoAnexo(tipoArquivo);
-				
+
 				interacao("Salvou uma Ocorrência com Anexo");
 
 				Path origem = Paths.get(ocorrencia.getCaminho());
@@ -632,7 +631,7 @@ public class MeusTicketsBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
-			
+
 			interacao("Salvou uma Ocorrência");
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
@@ -662,7 +661,7 @@ public class MeusTicketsBean implements Serializable {
 			ocorrencias = ocorrenciaDAO.pesquisarOcorrenciaTicket(ocorrencia.getTicket().getCodigo());
 
 			ocorrencia = null;
-			
+
 			interacao("Ocorrência Salva com o Envio de E-mail");
 
 		} catch (RuntimeException erro) {
@@ -695,7 +694,7 @@ public class MeusTicketsBean implements Serializable {
 					"Ticket Nº " + ticket.getCodigo() + " em Atendimento!"));
 
 			ticket = null;
-			
+
 			interacao("Atendeu o Ticket");
 
 			listarPendentes();
@@ -719,7 +718,7 @@ public class MeusTicketsBean implements Serializable {
 
 			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
 			ocorrenciaDAO.merge(ocorrencia);
-			
+
 			interacao("Atendeu o Ticket");
 
 			ticket.setStatus("Em Atendimento");
@@ -1368,7 +1367,7 @@ public class MeusTicketsBean implements Serializable {
 	public void duploTicket(SelectEvent evento) {
 		try {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
-			
+
 			interacao("Visualizou o Ticket");
 
 		} catch (RuntimeException erro) {
@@ -1442,7 +1441,7 @@ public class MeusTicketsBean implements Serializable {
 
 	public void novoTicket() {
 		try {
-			Faces.redirect("./pages/ticketInterno.xhtml");
+			Faces.redirect("./pages/ticketExterno.xhtml");
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -1637,7 +1636,7 @@ public class MeusTicketsBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void interacao(String descricao) {
 		try {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");

@@ -8,7 +8,8 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	template="/pages/modelo.xhtml">
 
-	<ui:define name="conteudo">
+	<ui:define name="conteudo">	
+   	
 		<h:form id="formListagem">
 
 			<p:growl id="messages" showDetail="true" />
@@ -40,7 +41,7 @@
 
 						<p:outputLabel for="prioridade" value="Prioridade" />
 						<p:selectOneMenu id="prioridade" filter="true" required="true"
-							requiredMessage="Campo Obrigatório!"
+							requiredMessage="Campo 'Prioridade' Obrigatório!"
 							converter="omnifaces.SelectItemsConverter"
 							value="#{ticketExternoBean.ticket.prioridade}">
 
@@ -56,12 +57,12 @@
 
 						<p:outputLabel for="assunto" value="Assunto" />
 						<p:inputText id="assunto" maxlength="100" size="63"
-							required="true" requiredMessage="Campo Obrigatório!"
+							required="true" requiredMessage="Campo 'Assunto' Obrigatório!"
 							value="#{ticketExternoBean.ticket.assunto}" />
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
 						<p:inputTextarea id="solicitacao" rows="4" cols="60"
-							required="true" requiredMessage="Campo Obrigatório!"
+							required="true" requiredMessage="Campo 'Solicitação' Obrigatório!"
 							counter="display" maxlength="10000"
 							counterTemplate="{0} caracteres restantes." autoResize="false"
 							value="#{ticketExternoBean.ticket.solicitacao}" />

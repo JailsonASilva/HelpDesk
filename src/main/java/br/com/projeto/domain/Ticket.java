@@ -60,8 +60,11 @@ public class Ticket extends GenericDomain {
 	@Column(length = 10000, nullable = false)
 	private String solicitacao;
 
-	@Column(nullable = true)
-	private Boolean emailEnviado;
+	@Column(nullable = true, columnDefinition = "boolean default False")
+	private Boolean emailDepartamento;
+
+	@Column(nullable = true, columnDefinition = "boolean default False")
+	private Boolean emailSolicitante;
 
 	@Column(nullable = true)
 	@Temporal(TemporalType.DATE)
@@ -155,20 +158,28 @@ public class Ticket extends GenericDomain {
 		this.usuarioAtendimento = usuarioAtendimento;
 	}
 
-	public Boolean getEmailEnviado() {
-		return emailEnviado;
-	}
-
-	public void setEmailEnviado(Boolean emailEnviado) {
-		this.emailEnviado = emailEnviado;
-	}
-
 	public Date getUltimaInteracao() {
 		return ultimaInteracao;
 	}
 
 	public void setUltimaInteracao(Date ultimaInteracao) {
 		this.ultimaInteracao = ultimaInteracao;
+	}
+
+	public Boolean getEmailDepartamento() {
+		return emailDepartamento;
+	}
+
+	public void setEmailDepartamento(Boolean emailDepartamento) {
+		this.emailDepartamento = emailDepartamento;
+	}
+
+	public Boolean getEmailSolicitante() {
+		return emailSolicitante;
+	}
+
+	public void setEmailSolicitante(Boolean emailSolicitante) {
+		this.emailSolicitante = emailSolicitante;
 	}
 
 	@Transient

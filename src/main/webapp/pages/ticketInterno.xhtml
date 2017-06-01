@@ -23,24 +23,24 @@
 				draggable="false" resizable="false" modal="false" closable="true">
 				<h:form id="formCadastro">
 
-					<h:panelGrid id="painel" columns="4" class="ui-noborder">
+					<h:panelGrid id="painel" columns="2" class="ui-noborder">
 
-						<p:outputLabel for="cliente" value="Solicitante " />
+						<p:outputLabel for="usuario" value="Solicitante " />
 						<h:panelGroup>
-							<p:selectOneMenu id="cliente" filter="true"
-								value="#{ticketInternoBean.ticket.cliente}" required="true"
-								requiredMessage="O campo 'Cliente' é obrigatório"
+							<p:selectOneMenu id="usuario" filter="true"
+								value="#{ticketInternoBean.ticket.usuario}" required="true"
+								requiredMessage="O campo 'Solicitante' é obrigatório"
 								converter="omnifaces.SelectItemsConverter">
 								<f:selectItem noSelectionOption="true"
 									itemLabel="Nenhum Registro Selecionado" />
-								<f:selectItems value="#{ticketInternoBean.clientes}"
-									var="cliente" itemValue="#{cliente}"
-									itemLabel="#{cliente.nome}" />
+								<f:selectItems value="#{ticketInternoBean.usuarios}"
+									var="usuario" itemValue="#{usuario}"
+									itemLabel="#{usuario.nome}" />
 							</p:selectOneMenu>
 
-							<p:commandButton icon="ui-icon-document" title="Novo Cliente"
+							<p:commandButton icon="ui-icon-document"
 								style="display: inline-block; vertical-align: top;"
-								oncomplete="PF('dialogoCliente').show();" />
+								title="Novo Usuário" oncomplete="PF('dialogoUsuario').show();" />
 						</h:panelGroup>
 
 						<p:outputLabel for="departamento" value="Departamento " />
@@ -66,8 +66,7 @@
 						<p:outputLabel for="categoria" value="Categoria " />
 						<h:panelGroup>
 							<p:selectOneMenu id="categoria" filter="true"
-								value="#{ticketInternoBean.ticket.categoria}" required="true"
-								requiredMessage="O campo 'Categoria' é obrigatório"
+								value="#{ticketInternoBean.ticket.categoria}"
 								converter="omnifaces.SelectItemsConverter">
 								<f:selectItem noSelectionOption="true"
 									itemLabel="Nenhum Registro Selecionado" />
@@ -84,22 +83,9 @@
 							</p:commandButton>
 						</h:panelGroup>
 
-						<p:outputLabel for="data" value="Data Abertura" />
-						<p:calendar id="data" mask="99/99/99" required="true"
-							showOn="button"
-							requiredMessage="Campo Data Abertura Obrigatório!"
-							yearRange="1900:2222"
-							value="#{ticketInternoBean.ticket.dataAbertura}" size="12"
-							locale="pt_BR" showButtonPanel="true" navigator="true" />
-
-						<p:outputLabel for="assunto" value="Assunto" />
-						<p:inputText id="assunto" maxlength="100" size="33"
-							required="true" requiredMessage="Campo Obrigatório!"
-							value="#{ticketInternoBean.ticket.assunto}" />
-
 						<p:outputLabel for="prioridade" value="Prioridade" />
 						<p:selectOneMenu id="prioridade" filter="true" required="true"
-							requiredMessage="Campo Obrigatório!"
+							requiredMessage="Campo 'Prioridade' Obrigatório!"
 							converter="omnifaces.SelectItemsConverter"
 							value="#{ticketInternoBean.ticket.prioridade}">
 
@@ -112,15 +98,20 @@
 								itemLabel="Nenhum Registro Selecionado" />
 							<f:selectItems />
 						</p:selectOneMenu>
+
+						<p:outputLabel for="assunto" value="Assunto" />
+						<p:inputText id="assunto" maxlength="100" size="71"
+							required="true" requiredMessage="Campo 'Assunto' Obrigatório!"
+							value="#{ticketInternoBean.ticket.assunto}" />
 					</h:panelGrid>
 
-					<p:separator />
+					<br></br>
 
 					<h:panelGrid id="painel3" columns="1" class="ui-noborder">
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
-						<p:inputTextarea id="solicitacao" rows="5" cols="95"
-							required="true" requiredMessage="Campo Obrigatório!"
+						<p:inputTextarea id="solicitacao" rows="5" cols="85"
+							required="true" requiredMessage="Campo 'Solicitação' Obrigatório!"
 							counter="display" maxlength="10000"
 							counterTemplate="{0} caracteres restantes." autoResize="false"
 							value="#{ticketInternoBean.ticket.solicitacao}" />
@@ -134,7 +125,7 @@
 
 						<p:outputLabel for="equipamento" value="Equipamento " />
 						<h:panelGroup>
-							<p:inputText id="equipamento" size="93" readonly="true"
+							<p:inputText id="equipamento" size="84" readonly="true"
 								value="#{ticketInternoBean.ticket.nomeEquipamento}" />
 
 							<p:commandButton icon="ui-icon-search" title="Pesquisa"
@@ -272,21 +263,24 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Solicitante" widgetVar="dialogoCliente"
+		<p:dialog header="Cadastro de Usuário" widgetVar="dialogoUsuario"
 			draggable="false" resizable="false" closable="true">
-			<h:form id="formCadastroCliente">
-				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
+			<h:form id="formCadastroUsuario">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 
-					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="40" required="true"
+					<p:outputLabel for="nome" value="Nome " />
+					<p:inputText id="nome" maxlength="100" size="43" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{ticketInternoBean.cliente.nome}" />
+						value="#{ticketInternoBean.usuario.nome}" />
 
+					<p:outputLabel for="email" value="E-mail " />
+					<p:inputText id="email" maxlength="100" size="43" required="true"
+						value="#{ticketInternoBean.usuario.email}" />
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
 						<p:selectOneMenu id="departamento" filter="true"
-							value="#{ticketInternoBean.cliente.departamento}" required="true"
+							value="#{ticketInternoBean.usuario.departamento}" required="true"
 							requiredMessage="O campo 'Departamento' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
@@ -295,22 +289,49 @@
 								var="departamento" itemValue="#{departamento}"
 								itemLabel="#{departamento.nome}" />
 						</p:selectOneMenu>
-
 					</h:panelGroup>
+
+
+					<p:outputLabel for="acesso" value="Acesso " />
+					<h:panelGroup>
+						<p:selectOneMenu id="acesso" filter="true"
+							value="#{ticketInternoBean.usuario.acesso}" required="true"
+							requiredMessage="O campo 'Acesso' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{ticketInternoBean.acessos}" var="acesso"
+								itemValue="#{acesso}" itemLabel="#{acesso.nome}" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+
+					<p:outputLabel for="ramal" value="Ramal" />
+					<p:inputText id="ramal" maxlength="10" size="15"
+						value="#{ticketInternoBean.usuario.ramal}" />
+
+					<p:outputLabel for="ativo" value="Ativo" />
+					<p:selectBooleanCheckbox id="ativo"
+						value="#{ticketInternoBean.usuario.ativo}" required="true"
+						requiredMessage="O campo 'Ativo' é obrigatório" />
+
+					<p:outputLabel for="administrador" value="Administrador" />
+					<p:selectBooleanCheckbox id="administrador"
+						value="#{ticketInternoBean.usuario.administrador}" required="true"
+						requiredMessage="O campo 'Administrador' é obrigatório" />
 				</h:panelGrid>
 
 				<br></br>
 				<p:separator />
 
-				<h:panelGrid columns="2">
+				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketInternoBean.salvarCliente}"
-						update=":formCadastroCliente:painelCliente :formListagem:formCadastro:cliente"
+						actionListener="#{ticketInternoBean.salvarUsuario}"
+						update=":formCadastroUsuario:painel :formListagem:formCadastro:usuario"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogoCliente').hide();" />
+						oncomplete="PF('dialogoUsuario').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+
+		<h:form id="formSenha">
+
+			<p:growl id="messages" showDetail="true" />
+
+			<p:dialog widgetVar="iconeDeProcessamento">
+				<f:facet name="header">
+					<h:graphicImage value="/imagens/ampulheta.png" />
+					<h:outputText id="dialogHeader"
+						value="Aguarde... Estamos Processando sua Informação..." />
+				</f:facet>
+			</p:dialog>
+
+			<p:dialog header="Trocar Senha" widgetVar="dialogo" visible="true"
+				draggable="false" resizable="false" modal="false" closable="true">
+				<h:form id="formCadastro">
+					<h:panelGrid id="painel" columns="1" class="ui-noborder">
+
+						<p:outputLabel for="senhaAtual" value="Senha Atual" />
+						<p:password id="senhaAtual" maxlength="100" size="35"
+							value="#{trocaSenhaBean.senhaAtual}" required="true"
+							requiredMessage="O campo 'Senha Atual' é obrigatório">
+						</p:password>
+
+						<p:outputLabel for="confirmeSenha" value="Confirme sua Senha" />
+						<p:password id="confirmeSenha" maxlength="100" size="35"
+							value="#{trocaSenhaBean.confirmaSenha}" required="true"
+							requiredMessage="O campo 'Confirme sua Senha' é obrigatório">
+						</p:password>
+						
+						<p:outputLabel for="novaSenha" value="Nova Senha" />
+						<p:password id="novaSenha" maxlength="100" size="35"
+							value="#{trocaSenhaBean.novaSenha}" required="true"
+							requiredMessage="O campo 'Nova Senha' é obrigatório">
+						</p:password>						
+
+					</h:panelGrid>
+
+					<p:separator />
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{trocaSenhaBean.trocarSenha}"
+							update=":formSenha:formCadastro:painel :formSenha:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogo').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

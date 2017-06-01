@@ -33,7 +33,7 @@
 					</p:selectOneMenu>
 
 					<p:commandButton id="bitPesquisar" style="margin:0 10px"
-						value="Pesquisar" icon="ui-icon-script"
+						value="Pesquisar" icon="fa fa fw fa-search"
 						actionListener="#{meusTicketsBean.pesquisar}"
 						update="formListagem:tabela :formListagem:tool formListagem:painelBusca"
 						onstart="PF('iconeDeProcessamento').show()"
@@ -69,7 +69,7 @@
 
 						<p:commandButton title="Editar" process=":formListagem:tabela"
 							disabled="#{meusTicketsBean.ticket == null}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4 :formCadastro:painelDados"
+							update=":formCadastro:painel :formCadastro:painelDados"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -137,7 +137,7 @@
 
 					<p:ajax event="rowDblselect"
 						listener="#{meusTicketsBean.duploTicket}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4 :formCadastro:painelDados" />
+						update=":formCadastro:painel :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
@@ -227,52 +227,21 @@
 		</p:dialog>
 
 		<p:dialog header="Dados do Ticket" widgetVar="dialogo" visible="false"
-			draggable="false" resizable="false" modal="false" closable="true">
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
 			<h:form id="formCadastro">
 				<p:panel id="painelDados" style="border:none;"
 					header="Nº Ticket: #{meusTicketsBean.ticket.codigo} Hora: #{meusTicketsBean.ticket.hora}" />
 
-				<h:panelGrid id="painel" columns="4" class="ui-noborder">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 
-					<p:outputLabel for="cliente" value="Solicitante " />
-					<h:panelGroup>
-						<p:selectOneMenu id="cliente" filter="true"
-							value="#{meusTicketsBean.ticket.cliente}"
-							converter="omnifaces.SelectItemsConverter">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{meusTicketsBean.clientes}" var="cliente"
-								itemValue="#{cliente}" itemLabel="#{cliente.nome}" />
-						</p:selectOneMenu>
-
-						<p:commandButton icon="ui-icon-document" title="Novo Cliente"
-							style="display: inline-block; vertical-align: top;"
-							oncomplete="PF('dialogoCliente').show();" />
-					</h:panelGroup>
+					<p:outputLabel for="departamento" value="Departamento" />
+					<p:inputText id="departamento" size="32" readonly="true"
+						value="#{meusTicketsBean.ticket.departamento.nome}" />
 
 					<p:outputLabel value="Status" />
-					<p:inputText maxlength="40" size="29" readonly="true"
+					<p:inputText maxlength="40" size="32" readonly="true"
 						isabled="true" value="#{meusTicketsBean.ticket.status}" />
-
-
-					<p:outputLabel for="departamento" value="Departamento " />
-					<h:panelGroup>
-						<p:selectOneMenu id="departamento" filter="true"
-							value="#{meusTicketsBean.ticket.departamento}" required="true"
-							requiredMessage="O campo 'Departamento' é obrigatório"
-							converter="omnifaces.SelectItemsConverter">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{meusTicketsBean.departamentos}"
-								var="departamento" itemValue="#{departamento}"
-								itemLabel="#{departamento.nome}" />
-						</p:selectOneMenu>
-
-						<p:commandButton icon="ui-icon-document"
-							style="display: inline-block; vertical-align: top;"
-							title="Novo Departamento"
-							oncomplete="PF('dialogoDepartamento').show();" />
-					</h:panelGroup>
 
 
 					<p:outputLabel for="prioridade" value="Prioridade" />
@@ -289,85 +258,33 @@
 						<f:selectItems />
 					</p:selectOneMenu>
 
-					<p:outputLabel for="categoria" value="Categoria " />
-					<h:panelGroup>
-						<p:selectOneMenu id="categoria" filter="true"
-							value="#{meusTicketsBean.ticket.categoria}"
-							converter="omnifaces.SelectItemsConverter">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{meusTicketsBean.categorias}"
-								var="categoria" itemValue="#{categoria}"
-								itemLabel="#{categoria.nome}" />
-						</p:selectOneMenu>
-
-						<p:commandButton icon="ui-icon-document"
-							style="display: inline-block; vertical-align: top;"
-							title="Novo Departamento"
-							oncomplete="PF('dialogoCategoria').show();">
-
-						</p:commandButton>
-					</h:panelGroup>
-
 					<p:outputLabel for="usuario" value="Usuario " />
-					<p:inputText id="usuario" size="29" required="true" readonly="true"
+					<p:inputText id="usuario" size="32" readonly="true"
 						value="#{meusTicketsBean.ticket.nomeUsuario}" />
-				</h:panelGrid>
-
-				<p:separator />
-
-				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 					<p:outputLabel for="assunto" value="Assunto" />
-					<p:inputText id="assunto" maxlength="47" size="57" required="true"
-						style="margin:0 39px 0 39px" requiredMessage="Campo Obrigatório!"
+					<p:inputText id="assunto" maxlength="47" size="83" required="true"
+						requiredMessage="Campo 'Assunto' Obrigatório!"
 						value="#{meusTicketsBean.ticket.assunto}" />
 
-					<p:outputLabel for="data" value="Data Abertura" />
-					<p:calendar id="data" mask="99/99/99" required="true"
-						showOn="button" requiredMessage="Campo Obrigatório!"
-						yearRange="1900:2222"
-						value="#{meusTicketsBean.ticket.dataAbertura}" size="12"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
-				</h:panelGrid>
-
-				<h:panelGrid id="painel3" columns="2" class="ui-noborder">
-
 					<p:outputLabel for="solicitacao" value="Solicitação" />
-					<p:inputTextarea id="solicitacao" rows="6" cols="95"
-						style="margin:0 25px 0 25px" required="true"
-						requiredMessage="Campo Obrigatório!" counter="display"
-						maxlength="10000" counterTemplate="{0} caracteres restantes."
-						autoResize="false" value="#{meusTicketsBean.ticket.solicitacao}" />
+					<p:inputTextarea id="solicitacao" rows="6" cols="80"
+						required="true" requiredMessage="Campo 'Solciitação' Obrigatório!"
+						counter="display" maxlength="10000"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{meusTicketsBean.ticket.solicitacao}" />
 
 					<br></br>
-					<h:outputText id="display" style="margin:0 25px 0 25px" />
+					<h:outputText id="display"/>
 				</h:panelGrid>
 
-				<h:panelGrid id="painel4" columns="1" class="ui-noborder">
-					<p:separator />
-
-					<p:outputLabel for="equipamento" value="Equipamento " />
-					<h:panelGroup>
-						<p:inputText id="equipamento" size="110" readonly="true"
-							value="#{meusTicketsBean.ticket.nomeEquipamento}" />
-
-						<p:commandButton icon="ui-icon-search" title="Pesquisa"
-							process="@this" update="@none"
-							oncomplete="PF('dialogoPesqEquipamento').show();">
-
-							<p:resetInput target="equipamento" />
-						</p:commandButton>
-					</h:panelGroup>
-
-				</h:panelGrid>
 
 				<p:separator />
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{meusTicketsBean.salvar}"
-						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painel4"
+						update=":formListagem:tabela :formListagem:messages :formListagem:tool :formCadastro:painel"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -380,7 +297,7 @@
 
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
 			width="1000" height="450" draggable="false" resizable="false"
-			closable="true">
+			appendTo="@(body)" modal="true" closable="true">
 			<h:form id="formListagemOcorrencia">
 
 				<p:tabView id="tabView">
@@ -450,7 +367,7 @@
 
 							<p:ajax event="rowDblselect"
 								listener="#{meusTicketsBean.duploTicket}"
-								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+								update=":formCadastro:painel :formCadastro:painelDados" />
 
 							<p:ajax event="rowUnselect"
 								update=":formListagem:messages :formListagem:tool"
@@ -525,7 +442,7 @@
 
 		<p:dialog header="Cadastro de Ocorrência"
 			widgetVar="dialogoOcorrencia" draggable="false" resizable="false"
-			closable="true">
+			appendTo="@(body)" modal="true" closable="true">
 			<h:form id="formCadastroOcorrencia">
 				<h:panelGrid id="painelOcorrencia" columns="1" class="ui-noborder">
 
@@ -574,7 +491,7 @@
 
 		<p:dialog header="Pesquisa de Equipamento" width="800" height="600"
 			widgetVar="dialogoPesqEquipamento" draggable="false"
-			resizable="false" closable="true">
+			resizable="false" appendTo="@(body)" modal="true" closable="true">
 			<h:form id="formPesqEquipamento">
 
 				<div style="margin-top: 5px; margin-bottom: 20px">
@@ -601,8 +518,7 @@
 					paginatorPosition="bottom">
 
 					<p:ajax event="rowDblselect"
-						listener="#{meusTicketsBean.duploCliqueEquipamento}"
-						update=":formCadastro:equipamento" />
+						listener="#{meusTicketsBean.duploCliqueEquipamento}" />
 
 					<p:column headerText="Nome">
 						<h:outputText
@@ -611,8 +527,7 @@
 
 					<p:column style="width: 30px; text-align: center">
 						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{meusTicketsBean.selecionarEquipamento}"
-							update=":formCadastro:equipamento">
+							actionListener="#{meusTicketsBean.selecionarEquipamento}">
 							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
 						</p:commandButton>
 					</p:column>
@@ -622,7 +537,8 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Categoria" widgetVar="dialogoCategoria"
-			draggable="false" resizable="false" closable="true">
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
 			<h:form id="formCadastroCategoria">
 				<h:panelGrid id="painelCategoria" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
@@ -638,7 +554,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{meusTicketsBean.salvarCategoria}"
-						update=":formCadastroCategoria:painelCategoria :formCadastro:categoria"
+						update=":formCadastroCategoria:painelCategoria"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -650,7 +566,7 @@
 
 		<p:dialog header="Cadastro de Departamento"
 			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
-			closable="true">
+			appendTo="@(body)" modal="true" closable="true">
 			<h:form id="formCadastroDepartamento">
 				<h:panelGrid id="painelDepartamento" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
@@ -682,7 +598,8 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Solicitante" widgetVar="dialogoCliente"
-			draggable="false" resizable="false" closable="true">
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
 			<h:form id="formCadastroCliente">
 				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
 
@@ -714,7 +631,7 @@
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{meusTicketsBean.salvarCliente}"
-						update=":formCadastroCliente:painelCliente :formCadastro:cliente"
+						update=":formCadastroCliente:painelCliente"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -725,7 +642,8 @@
 		</p:dialog>
 
 		<p:dialog header="Encaminhar Ticket" widgetVar="dialogoEncaminhar"
-			draggable="false" resizable="false" closable="true">
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
 			<h:form id="formEncaminhar">
 
 				<h:panelGrid id="painelUsuario" columns="2" class="ui-noborder">
@@ -760,7 +678,7 @@
 
 		<p:dialog header="Envio de Ocorrencia por E-mail"
 			widgetVar="dialogoEmailOcorrencia" draggable="false"
-			resizable="false" closable="true">
+			resizable="false" appendTo="@(body)" modal="true" closable="true">
 			<h:form id="formEmailOcorrencia">
 				<h:panelGrid id="painelOcorrencia" columns="1" class="ui-noborder">
 
@@ -792,7 +710,8 @@
 		</p:dialog>
 
 		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
-			draggable="false" resizable="false" closable="true">
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
 			<h:form id="formBusca">
 
 				<h:panelGrid columns="2" class="ui-noborder">
@@ -870,7 +789,7 @@
 
 					<br></br>
 
-					<p:commandButton value="Pesquisar" icon="ui-icon-script"
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
 						actionListener="#{meusTicketsBean.pesquisarAvancada}"
 						update="formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"

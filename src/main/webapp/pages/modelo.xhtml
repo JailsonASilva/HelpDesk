@@ -30,6 +30,8 @@
 
 							<p:menuitem value="Usuários" url="/pages/usuario.xhtml"
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.usuario}" />
+
+							<p:menuitem value="Trocar Senha" url="/pages/trocarSenha.xhtml" />
 						</p:submenu>
 
 						<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
@@ -173,9 +175,11 @@
 						</p:submenu>
 
 						<f:facet name="options">
-							<p:commandButton icon="ui-icon-document" title="Novo Ticket"
+							<p:commandButton icon="ui-icon-document"
+								title="Novo Ticket Externo"
 								action="#{barraFerramentaBean.ticketExterno}"
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
+
 
 							<p:commandButton icon="fa fa fw fa-list"
 								title="Ticket por Departamento"
@@ -195,9 +199,12 @@
 								title="Cadastro de Artigo (Base de Conhecimento)"
 								action="#{barraFerramentaBean.artigo}" />
 
-							<p:commandButton value="Desconectar"
+							<p:commandButton icon="fa fa fw fa-key" title="Trocar de Senha"
+								action="#{barraFerramentaBean.trocarSenha}" />
+
+							<p:commandButton title="Desconectar"
 								actionListener="#{autenticacaoBean.desconectar}"
-								icon="ui-icon-extlink" />
+								icon="fa fa fw fa-power-off" />
 						</f:facet>
 					</p:menubar>
 				</h:form>
@@ -210,7 +217,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.9.1" />
+					<h:outputText value="Versão 1.4.1.5" />
 
 				</p:layoutUnit>
 			</div>
