@@ -166,7 +166,7 @@ public class TicketExternoBean implements Serializable {
 			ticketDAO.merge(ticket);
 
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar("Abriu Tikcet Externo");
+			auditoriaDAO.auditar("Abriu Ticket Externo");
 
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage("Ticket Aberto com Sucesso!",

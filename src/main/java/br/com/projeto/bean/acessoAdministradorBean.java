@@ -767,6 +767,65 @@ public class acessoAdministradorBean implements Serializable {
 		}
 	}
 
+	public void concluirEnviarEmail() throws EmailException, IOException {
+		try {
+			if (ocorrencia.getCaminho() != null) {
+				ocorrencia.setCodigoAnexo(ticket.getCodigo() + "" + ocorrencias.size());
+				ocorrencia.setTipoAnexo(tipoArquivo);
+
+				interacao("Salvou uma Ocorrência com Anexo");
+
+				Path origem = Paths.get(ocorrencia.getCaminho());
+				Path destino = Paths
+						.get("C:/Ocorrencias/" + ticket.getCodigo() + ocorrencias.size() + "." + tipoArquivo);
+
+				Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+			}
+
+			OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
+			ocorrenciaDAO.merge(ocorrencia);
+
+			// enviarEmail();
+
+			novaOcorrencia();
+			ocorrencia.setOcorrencia("Ticket Concluído!");
+			ocorrenciaDAO.merge(ocorrencia);
+
+			ticket.setStatus("Concluído");
+			ticket.setUsuarioAtendimento(usuario);
+			ticket.setUltimaInteracao(new java.util.Date());
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			interacao("Concluiu e Salvou Ticket");
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Concluir e Salvou Ticket: " + ticket.getCodigo() + "(Administrador)");
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
+
+			org.primefaces.context.RequestContext.getCurrentInstance()
+					.execute("PF('dialogoListagemOcorrencia').hide();");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Ticket Salvo e Concluído com Sucesso!",
+					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
+
+			ticket = null;
+
+			listarPendentes();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Concluir este Ticket.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 	public void editarTicket() {
 		try {
 
@@ -1190,11 +1249,10 @@ public class acessoAdministradorBean implements Serializable {
 			ocorrenciaDAO.excluir(ocorrencia);
 
 			interacao("Excluiu uma Ocorrência");
-			
+
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar(
-					"Excluiu Ocorrência (" + ocorrencia.getDataFormatada() + "/" + ocorrencia.getHora() + ") Ticket: "
-							+ ticket.getCodigo() + "(Administrador). Ocorrência: " + ocorrencia.getOcorrencia());
+			auditoriaDAO.auditar("Excluiu Ocorrência (" + ocorrencia.getDataFormatada() + "/" + ocorrencia.getHora()
+					+ ") Ticket: " + ticket.getCodigo() + "(Administrador). Ocorrência: " + ocorrencia.getOcorrencia());
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
 					"Ocorrência Excluída - Nº Ticket: " + ocorrencia.getTicket().getCodigo() + " / Assunto: "
@@ -1301,9 +1359,9 @@ public class acessoAdministradorBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
 
 			interacao("Visualizou o Ticket");
-			
+
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar("Visualizou o Ticket: " + ticket.getCodigo() + "(Administrador)");			
+			auditoriaDAO.auditar("Visualizou o Ticket: " + ticket.getCodigo() + "(Administrador)");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
@@ -1324,7 +1382,7 @@ public class acessoAdministradorBean implements Serializable {
 			categoria = new Categoria();
 
 			categorias = categoriaDAO.listar("nome");
-			
+
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
 			auditoriaDAO.auditar("Cadastro uma Nova Categoria (Por Administrador)");
 
@@ -1347,7 +1405,7 @@ public class acessoAdministradorBean implements Serializable {
 			departamento = new Departamento();
 
 			departamentos = departamentoDAO.listar("nome");
-			
+
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
 			auditoriaDAO.auditar("Cadastro um Novo Departamento (Administrador)");
 
@@ -1370,7 +1428,7 @@ public class acessoAdministradorBean implements Serializable {
 			cliente = new Cliente();
 
 			clientes = clienteDAO.listar("nome");
-			
+
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
 			auditoriaDAO.auditar("Cadastro um Novo Solicitante (Administrador)");
 
@@ -1519,7 +1577,7 @@ public class acessoAdministradorBean implements Serializable {
 						ocorrencia.getCodigo() + "." + ocorrencia.getTipoAnexo());
 
 				interacao("Baixou um Anexo da Ocorrência");
-				
+
 				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
 				auditoriaDAO.auditar("Baixou um Anexo da Ocorrência (" + ocorrencia.getDataFormatada() + "/"
 						+ ocorrencia.getHora() + " - Ticket: " + ticket.getCodigo() + "(Administrador)");
@@ -1567,10 +1625,10 @@ public class acessoAdministradorBean implements Serializable {
 	public void resumoEquipe() {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
-			ticketsResumo = ticketDAO.resumoGeral();			
+			ticketsResumo = ticketDAO.resumoGeral();
 
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar("Visualizou o Resumo da Equipe (Administrador)");			
+			auditoriaDAO.auditar("Visualizou o Resumo da Equipe (Administrador)");
 
 		} catch (
 
@@ -1642,9 +1700,9 @@ public class acessoAdministradorBean implements Serializable {
 
 			InteracaoDAO interacaoDAO = new InteracaoDAO();
 			interacoes = interacaoDAO.listarInteracaoes(ticket.getCodigo());
-			
+
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar("Listou as Interações - Ticket: " + ticket.getCodigo() + "(Administrador)");			
+			auditoriaDAO.auditar("Listou as Interações - Ticket: " + ticket.getCodigo() + "(Administrador)");
 
 		} catch (
 

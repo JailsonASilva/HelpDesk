@@ -195,10 +195,10 @@
 					selection="#{acessoAdministradorBean.ticket}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{ticket.codigo}" paginator="true"
-					rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					rowsPerPageTemplate="5,8,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
 					value="#{acessoAdministradorBean.tickets}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="ticket" rows="10" paginatorPosition="bottom">
+					var="ticket" rows="8" paginatorPosition="bottom">
 
 					<p:ajax event="rowDblselect"
 						listener="#{acessoAdministradorBean.duploTicket}"
@@ -672,9 +672,9 @@
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
-					<p:commandButton value="Salvar e Enviar E-mail" icon="ui-icon-disk"
-						actionListener="#{acessoAdministradorBean.salvarOcorrenciaEmail}"
-						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
+					<p:commandButton value="Concluir e Salvar" icon="ui-icon-disk"
+						actionListener="#{acessoAdministradorBean.concluirEnviarEmail}"  
+						update=":formCadastroOcorrencia:painelOcorrencia :formListagem:messages :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -1369,7 +1369,7 @@
 
 					<br></br>
 
-					<p:commandButton value="Pesquisar" icon="ui-icon-script"
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
 						actionListener="#{acessoAdministradorBean.pesquisarAvancada}"
 						update="formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"

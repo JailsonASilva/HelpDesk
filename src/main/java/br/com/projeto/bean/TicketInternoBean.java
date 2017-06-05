@@ -332,7 +332,7 @@ public class TicketInternoBean implements Serializable {
 			novo();
 
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar("Abriu Tikcet Interno");
+			auditoriaDAO.auditar("Abriu Ticket Interno");
 		
 
 		} catch (RuntimeException erro) {

@@ -32,6 +32,9 @@
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.usuario}" />
 
 							<p:menuitem value="Trocar Senha" url="/pages/trocarSenha.xhtml" />
+
+							<p:menuitem value="Auditoria" url="/pages/auditoria.xhtml"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.auditoria}" />
 						</p:submenu>
 
 						<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
@@ -217,7 +220,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.4.2.1" />
+					<h:outputText value="Versão 1.4.3.2" />
 
 				</p:layoutUnit>
 			</div>

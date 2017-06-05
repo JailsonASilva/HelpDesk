@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Auditoria do Sistema">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{auditoriaBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{auditoriaBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:commandButton value="Busca Avançada" icon="fa fa fw fa-search"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							update=":formBusca:painel" oncomplete="PF('dialogoBusca').show()">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="auditoria" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="auditoria" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="auditoria" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{auditoriaBean.auditoria}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{auditoria.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{auditoriaBean.auditorias}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="auditoria" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{auditoriaBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{auditoriaBean.onRowSelect}" />
+
+					<p:column headerText="Ação" sortBy="#{auditoria.acao}">
+						<h:outputText value="#{auditoria.acao}" />
+					</p:column>
+
+					<p:column headerText="Data" width="80" style="text-align:center"
+						sortBy="#{auditoria.data}">
+						<h:outputText value="#{auditoria.data}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Hora" sortBy="#{auditoria.hora}" width="80"
+						style="text-align:center">
+						<h:outputText value="#{auditoria.hora}" />
+					</p:column>
+
+					<p:column headerText="Usuário" sortBy="#{auditoria.usuario.nome}"
+						style="text-align:center" width="160">
+						<h:outputText value="#{auditoria.usuario.nome}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+		</h:form>
+
+		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
+			<h:form id="formBusca">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="usuario" value="Usuário" />
+					<p:selectOneMenu id="usuario" filter="true"
+						value="#{auditoriaBean.usuario}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel="Todos os Registros Selecionado"
+							itemValue="0" />
+						<f:selectItems value="#{auditoriaBean.usuarios}" var="usuario"
+							itemValue="#{usuario.codigo}" itemLabel="#{usuario.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="acao" value="Ação" />
+					<p:inputText id="acao" size="33" value="#{auditoriaBean.acao}" />
+
+					<p:outputLabel for="dataInicial" value="Data Inicial" />
+					<p:calendar id="dataInicial" mask="99/99/99" yearRange="1900:2222"
+						showOn="button" required="true"
+						requiredMessage="Campo (Data Inicial) Obrigatório!"
+						value="#{auditoriaBean.dataInicial}" size="9" locale="pt_BR"
+						showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataFinal" value="Data Final" />
+					<p:calendar id="dataFinal" mask="99/99/99" yearRange="1900:2222"
+						showOn="button" required="true"
+						requiredMessage="Campo (Data Final) Obrigatório!"
+						value="#{auditoriaBean.dataFinal}" size="9" locale="pt_BR"
+						showButtonPanel="true" navigator="true" />
+				</h:panelGrid>
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						actionListener="#{auditoriaBean.pesquisarAvancada}"
+						update="formListagem:tabela :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoBusca').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
