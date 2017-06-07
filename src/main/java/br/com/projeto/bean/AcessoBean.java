@@ -164,4 +164,18 @@ public class AcessoBean implements Serializable {
 	public void onRowUnselect(UnselectEvent event) {
 		acesso = null;
 	}
+
+	public void duploClique(SelectEvent evento) {
+		try {
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 }

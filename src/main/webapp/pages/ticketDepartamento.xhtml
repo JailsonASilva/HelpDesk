@@ -20,7 +20,7 @@
 					<p:selectOneMenu id="status" filter="true" required="true"
 						requiredMessage="Campo Obrigatório!"
 						converter="omnifaces.SelectItemsConverter"
-						value="#{ticketAtendimentoDepartamentoBean.status}">
+						value="#{ticketDepartamentoBean.status}">
 						<f:selectItem noSelectionOption="false" itemValue="Aberto"
 							itemLabel="Aberto" />
 
@@ -34,8 +34,8 @@
 
 					<p:commandButton id="bitPesquisar" style="margin:0 10px"
 						value="Pesquisar" icon="fa fa fw fa-search"
-						actionListener="#{ticketAtendimentoDepartamentoBean.pesquisar}"
-						update="formListagem:tabela :formListagem:tool formListagem:painelBusca :formAtendimento:tabela"
+						actionListener="#{ticketDepartamentoBean.pesquisar}"
+						update="formListagem:tabela :formListagem:tool :formMensagem:tabela :formListagem:painelBusca :formAtendimento:tabela"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -46,8 +46,8 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Atender"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicket}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
+							actionListener="#{ticketDepartamentoBean.atenderTicket}"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
@@ -59,8 +59,8 @@
 						</p:commandButton>
 
 						<p:commandButton value="Suspender"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-							actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicket}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
+							actionListener="#{ticketDepartamentoBean.suspenderTicket}"
 							style="margin:0 3px"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
@@ -73,8 +73,8 @@
 						</p:commandButton>
 
 						<p:commandButton value="Concluir"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-							actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicket}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
+							actionListener="#{ticketDepartamentoBean.concluirTicket}"
 							style="margin:0 3px"
 							update="formListagem:tabela :formListagem:messages :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
@@ -87,7 +87,7 @@
 						</p:commandButton>
 
 						<p:commandButton value="Encaminhar"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
 							style="margin:0 3px" oncomplete="PF('dialogoEncaminhar').show()"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
@@ -98,12 +98,12 @@
 						</p:commandButton>
 
 						<p:commandButton value="Ocorrência"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
 							icon="fa fa fw fa-sitemap" style="margin:0 3px"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrencia}"
+							actionListener="#{ticketDepartamentoBean.listarOcorrencia}"
 							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -114,15 +114,15 @@
 						</span>
 
 						<p:commandButton title="Novo Ticket" icon="ui-icon-document"
-							actionListener="#{ticketAtendimentoDepartamentoBean.novoTicket}">
+							actionListener="#{ticketDepartamentoBean.novoTicket}">
 
 						</p:commandButton>
 
 						<p:commandButton title="Editar"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.editarTicket}"
+							actionListener="#{ticketDepartamentoBean.editarTicket}"
 							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -130,8 +130,8 @@
 						</p:commandButton>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{ticketAtendimentoDepartamentoBean.excluirTicket}"
-							disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+							actionListener="#{ticketDepartamentoBean.excluirTicket}"
+							disabled="#{ticketDepartamentoBean.ticket == null}"
 							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -158,8 +158,8 @@
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							oncomplete="PF('dialogoResumo').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.resumoEquipe}"
-							update=":formResumo:tabela">
+							actionListener="#{ticketDepartamentoBean.resumoEquipe}"
+							update=":formResumo:tabela :formMensagem:tabela">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -191,26 +191,25 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single"
-					selection="#{ticketAtendimentoDepartamentoBean.ticket}"
+					selectionMode="single" selection="#{ticketDepartamentoBean.ticket}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{ticket.codigo}" paginator="true"
 					rowsPerPageTemplate="5,8,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{ticketAtendimentoDepartamentoBean.tickets}"
+					value="#{ticketDepartamentoBean.tickets}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="8" paginatorPosition="bottom">
 
 					<p:ajax event="rowDblselect"
-						listener="#{ticketAtendimentoDepartamentoBean.duploTicket}"
+						listener="#{ticketDepartamentoBean.duploTicket}"
 						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{ticketAtendimentoDepartamentoBean.onRowUnselect}" />
+						listener="#{ticketDepartamentoBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{ticketAtendimentoDepartamentoBean.onRowSelect}" />
+						listener="#{ticketDepartamentoBean.onRowSelect}" />
 
 					<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
 						style="text-align:center" width="5">
@@ -255,8 +254,8 @@
 						style="text-align:center;white-space:normal !important;">
 
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
-							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
+							actionListener="#{ticketDepartamentoBean.atenderTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -267,8 +266,8 @@
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-ban" title="Suspender Ticket"
-							actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							actionListener="#{ticketDepartamentoBean.suspenderTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -280,8 +279,8 @@
 
 						<p:commandButton icon="fa fa-fw fa-check-circle"
 							title="Concluir Ticket"
-							actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							actionListener="#{ticketDepartamentoBean.concluirTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -294,8 +293,8 @@
 						<p:commandButton icon="fa fa-fw fa-user-md"
 							title="Encaminhar Ticket"
 							oncomplete="PF('dialogoEncaminhar').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool :formEncaminhar:painelUsuario"
+							actionListener="#{ticketDepartamentoBean.encaminharTicketAtalho}"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool :formEncaminhar:painelUsuario"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -305,8 +304,8 @@
 
 						<p:commandButton icon="fa fa-fw fa-sitemap" title="Ocorrências"
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrenciaAtalho}"
-							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
+							actionListener="#{ticketDepartamentoBean.listarOcorrenciaAtalho}"
+							update=":formListagemOcorrencia:tabView  :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -317,8 +316,20 @@
 						<p:commandButton icon="fa fa-fw fa-ellipsis-h"
 							title="Listar Interações"
 							oncomplete="PF('dialogoInteracao').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.listarInteracoes}"
-							update=":formInteracao:tabView :formInteracao:tabView:tabelaInteracao"
+							actionListener="#{ticketDepartamentoBean.listarInteracoes}"
+							update=":formInteracao:tabView :formInteracao:tabView:tabelaInteracao :formMensagem:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-lock"
+							title="Informações Interna"
+							oncomplete="PF('dialogoInterno').show()"
+							actionListener="#{ticketDepartamentoBean.listarInterno}"
+							update=":formListagemInterno:tabView :formListagemInterno:tabView:tabelaInterno"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -352,19 +363,18 @@
 			closable="true">
 			<h:form id="formCadastro">
 				<p:panel id="painelDados" style="border:none;"
-					header="Nº Ticket: #{ticketAtendimentoDepartamentoBean.ticket.codigo} Hora: #{ticketAtendimentoDepartamentoBean.ticket.hora}" />
+					header="Nº Ticket: #{ticketDepartamentoBean.ticket.codigo} Hora: #{ticketDepartamentoBean.ticket.hora}" />
 
 				<h:panelGrid id="painel" columns="4" class="ui-noborder">
 
 					<p:outputLabel for="cliente" value="Solicitante " />
 					<h:panelGroup>
 						<p:selectOneMenu id="cliente" filter="true"
-							value="#{ticketAtendimentoDepartamentoBean.ticket.cliente}"
+							value="#{ticketDepartamentoBean.ticket.cliente}"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems
-								value="#{ticketAtendimentoDepartamentoBean.clientes}"
+							<f:selectItems value="#{ticketDepartamentoBean.clientes}"
 								var="cliente" itemValue="#{cliente}" itemLabel="#{cliente.nome}" />
 						</p:selectOneMenu>
 
@@ -375,21 +385,19 @@
 
 					<p:outputLabel value="Status" />
 					<p:inputText maxlength="40" size="29" readonly="true"
-						isabled="true"
-						value="#{ticketAtendimentoDepartamentoBean.ticket.status}" />
+						isabled="true" value="#{ticketDepartamentoBean.ticket.status}" />
 
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
 						<p:selectOneMenu id="departamento" filter="true"
-							value="#{ticketAtendimentoDepartamentoBean.ticket.departamento}"
+							value="#{ticketDepartamentoBean.ticket.departamento}"
 							required="true"
 							requiredMessage="O campo 'Departamento' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems
-								value="#{ticketAtendimentoDepartamentoBean.departamentos}"
+							<f:selectItems value="#{ticketDepartamentoBean.departamentos}"
 								var="departamento" itemValue="#{departamento}"
 								itemLabel="#{departamento.nome}" />
 						</p:selectOneMenu>
@@ -405,7 +413,7 @@
 					<p:selectOneMenu id="prioridade" filter="true" required="true"
 						requiredMessage="Campo 'Prioridade' Obrigatório!"
 						converter="omnifaces.SelectItemsConverter"
-						value="#{ticketAtendimentoDepartamentoBean.ticket.prioridade}">
+						value="#{ticketDepartamentoBean.ticket.prioridade}">
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Nenhum Registro Selecionado" />
 						<f:selectItem itemValue="4-Baixa" itemLabel="Baixa" />
@@ -418,12 +426,11 @@
 					<p:outputLabel for="categoria" value="Categoria " />
 					<h:panelGroup>
 						<p:selectOneMenu id="categoria" filter="true"
-							value="#{ticketAtendimentoDepartamentoBean.ticket.categoria}"
+							value="#{ticketDepartamentoBean.ticket.categoria}"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems
-								value="#{ticketAtendimentoDepartamentoBean.categorias}"
+							<f:selectItems value="#{ticketDepartamentoBean.categorias}"
 								var="categoria" itemValue="#{categoria}"
 								itemLabel="#{categoria.nome}" />
 						</p:selectOneMenu>
@@ -438,7 +445,7 @@
 
 					<p:outputLabel for="usuario" value="Usuario " />
 					<p:inputText id="usuario" size="29" required="true" readonly="true"
-						value="#{ticketAtendimentoDepartamentoBean.ticket.nomeUsuario}" />
+						value="#{ticketDepartamentoBean.ticket.nomeUsuario}" />
 				</h:panelGrid>
 
 				<p:separator />
@@ -449,7 +456,7 @@
 					<p:inputText id="assunto" maxlength="100" size="83" required="true"
 						style="margin:0 42px 0 42px"
 						requiredMessage="Campo 'Assunto' Obrigatório!"
-						value="#{ticketAtendimentoDepartamentoBean.ticket.assunto}" />
+						value="#{ticketDepartamentoBean.ticket.assunto}" />
 				</h:panelGrid>
 
 				<h:panelGrid id="painel3" columns="2" class="ui-noborder">
@@ -460,7 +467,7 @@
 						requiredMessage="Campo 'Assunto' Obrigatório!" counter="display"
 						maxlength="10000" counterTemplate="{0} caracteres restantes."
 						autoResize="false"
-						value="#{ticketAtendimentoDepartamentoBean.ticket.solicitacao}" />
+						value="#{ticketDepartamentoBean.ticket.solicitacao}" />
 
 					<br></br>
 					<h:outputText id="display" style="margin:0 25px 0 25px" />
@@ -470,7 +477,7 @@
 
 				<h:panelGrid columns="5">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketAtendimentoDepartamentoBean.salvar}"
+						actionListener="#{ticketDepartamentoBean.salvar}"
 						update=":formListagem:tabela :formListagem:messages :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -479,8 +486,8 @@
 						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
 						oncomplete="PF('dialogoListagemOcorrencia').show()"
-						actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrenciaAtender}"
-						update=":formListagem:tabela :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
+						actionListener="#{ticketDepartamentoBean.listarOcorrenciaAtender}"
+						update=":formListagem:tabela :formListagemOcorrencia:tabView :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
 						<p:confirm header="Confirmação"
 							message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
 						<f:actionListener
@@ -491,8 +498,8 @@
 						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
 						oncomplete="PF('dialogoListagemOcorrencia').show()"
-						actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrencia}"
-						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
+						actionListener="#{ticketDepartamentoBean.listarOcorrencia}"
+						update=":formListagemOcorrencia:tabView :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:commandButton>
@@ -502,7 +509,7 @@
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
 						oncomplete="PF('dialogoOcorrencia').show();"
-						actionListener="#{ticketAtendimentoDepartamentoBean.novaOcorrencia}"
+						actionListener="#{ticketDepartamentoBean.novaOcorrencia}"
 						update=":formListagem:messages :formCadastroOcorrencia:painelOcorrencia">
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -514,7 +521,6 @@
 			</h:form>
 		</p:dialog>
 
-
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
 			width="1000" height="450" draggable="false" resizable="false"
 			appendTo="@(body)" modal="true" closable="true">
@@ -522,7 +528,7 @@
 
 				<p:tabView id="tabView">
 					<p:tab
-						title="Nº Ticket: #{ticketAtendimentoDepartamentoBean.ticket.codigo} / Status: #{ticketAtendimentoDepartamentoBean.ticket.status} / Prioridade: #{ticketAtendimentoDepartamentoBean.ticket.prioridadeFormatada} / Assunto: #{ticketAtendimentoDepartamentoBean.ticket.assunto}">
+						title="Nº Ticket: #{ticketDepartamentoBean.ticket.codigo} / Status: #{ticketDepartamentoBean.ticket.status} / Prioridade: #{ticketDepartamentoBean.ticket.prioridadeFormatada} / Assunto: #{ticketDepartamentoBean.ticket.assunto}">
 
 						<p:toolbar id="toolOcorrencia">
 							<f:facet name="left">
@@ -530,15 +536,15 @@
 								<p:commandButton value="Nova Ocorrência"
 									oncomplete="PF('dialogoOcorrencia').show();"
 									icon="ui-icon-document"
-									actionListener="#{ticketAtendimentoDepartamentoBean.novaOcorrencia}"
+									actionListener="#{ticketDepartamentoBean.novaOcorrencia}"
 									update=":formCadastroOcorrencia:painelOcorrencia">
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
 
 								<p:commandButton value="Suspender"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-									actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicket}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
+									actionListener="#{ticketDepartamentoBean.suspenderTicket}"
 									style="margin:0 3px"
 									update="formListagem:tabela :formListagem:messages"
 									onstart="PF('iconeDeProcessamento').show()"
@@ -551,8 +557,8 @@
 								</p:commandButton>
 
 								<p:commandButton value="Concluir"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-									actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicket}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
+									actionListener="#{ticketDepartamentoBean.concluirTicket}"
 									style="margin:0 3px"
 									update="formListagem:tabela :formListagem:messages"
 									onstart="PF('iconeDeProcessamento').show()"
@@ -577,11 +583,11 @@
 
 						<p:dataTable id="tabelaOcorrencia"
 							emptyMessage="Nenhum registro encontrado." selectionMode="single"
-							selection="#{ticketAtendimentoDepartamentoBean.ocorrencia}"
+							selection="#{ticketDepartamentoBean.ocorrencia}"
 							draggableColumns="true" resizableColumns="true"
 							rowKey="#{ocorrencia.codigo}" paginator="true"
 							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-							value="#{ticketAtendimentoDepartamentoBean.ocorrencias}"
+							value="#{ticketDepartamentoBean.ocorrencias}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							var="ocorrencia" rows="10" paginatorPosition="bottom">
 
@@ -611,7 +617,7 @@
 							<p:column headerText="Opções" width="100"
 								style="text-align:center">
 								<p:commandButton icon="ui-icon-pencil" title="Editar Ocorrência"
-									actionListener="#{ticketAtendimentoDepartamentoBean.editarOcorrencia}"
+									actionListener="#{ticketDepartamentoBean.editarOcorrencia}"
 									update=":formCadastroOcorrencia:painelOcorrencia"
 									oncomplete="PF('dialogoOcorrencia').show();">
 									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
@@ -621,7 +627,7 @@
 
 								<p:commandButton icon="fa fa fw fa-mail-forward"
 									title="Enviar E-mail"
-									actionListener="#{ticketAtendimentoDepartamentoBean.selecionarOcorrenciaEmail}"
+									actionListener="#{ticketDepartamentoBean.selecionarOcorrenciaEmail}"
 									update=":formEmailOcorrencia:painelOcorrencia"
 									oncomplete="PF('dialogoEmailOcorrencia').show();">
 									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
@@ -630,11 +636,10 @@
 								</p:commandButton>
 
 								<p:commandButton icon="ui-icon-arrowthick-1-s" title="Download"
-									actionListener="#{ticketAtendimentoDepartamentoBean.download}"
+									actionListener="#{ticketDepartamentoBean.download}"
 									ajax="false">
 									<f:attribute name="ocorrenciaSelecionada" value="#{ocorrencia}" />
-									<p:fileDownload
-										value="#{ticketAtendimentoDepartamentoBean.arquivo}" />
+									<p:fileDownload value="#{ticketDepartamentoBean.arquivo}" />
 								</p:commandButton>
 
 							</p:column>
@@ -664,7 +669,7 @@
 						requiredMessage="Campo Obrigatório" counter="display"
 						maxlength="600" counterTemplate="{0} caracteres restantes."
 						autoResize="false"
-						value="#{ticketAtendimentoDepartamentoBean.ocorrencia.ocorrencia}" />
+						value="#{ticketDepartamentoBean.ocorrencia.ocorrencia}" />
 
 					<h:outputText id="display" />
 
@@ -672,7 +677,7 @@
 
 					<p:outputLabel for="arquivo" value="Anexar Arquivo" />
 					<p:fileUpload id="arquivo" required="false"
-						fileUploadListener="#{ticketAtendimentoDepartamentoBean.upload}"
+						fileUploadListener="#{ticketDepartamentoBean.upload}"
 						mode="advanced" dragDropSupport="false" fileLimit="1"
 						allowTypes="/(\.|\/)(pdf|png|jpeg|doc|docx|txt|xls|xlsx)$/" />
 
@@ -684,13 +689,13 @@
 
 				<h:panelGrid columns="4">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketAtendimentoDepartamentoBean.salvarOcorrencia}"
+						actionListener="#{ticketDepartamentoBean.salvarOcorrencia}"
 						update=":formCadastroOcorrencia:painelOcorrencia :formListagem:messages :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool :formPendente:tabView:tabela"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Concluir e Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketAtendimentoDepartamentoBean.concluirEnviarEmail}" 
+						actionListener="#{ticketDepartamentoBean.concluirEnviarEmail}"
 						update=":formCadastroOcorrencia:painelOcorrencia :formListagem:messages :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -708,7 +713,7 @@
 
 				<div style="margin-top: 5px; margin-bottom: 20px">
 					<p:inputText id="nome" size="45"
-						value="#{ticketAtendimentoDepartamentoBean.buscaEquipamento}"
+						value="#{ticketDepartamentoBean.buscaEquipamento}"
 						placeholder="Informe o Nome do Equipamento" />
 
 					<p:spacer width="10px" />
@@ -716,21 +721,21 @@
 					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{ticketAtendimentoDepartamentoBean.pesquisarEquipamento}"
+						action="#{ticketDepartamentoBean.pesquisarEquipamento}"
 						update="tabelaEquipamento" />
 				</div>
 
 				<p:dataTable id="tabelaEquipamento"
-					selection="#{ticketAtendimentoDepartamentoBean.equipamento}"
+					selection="#{ticketDepartamentoBean.equipamento}"
 					selectionMode="single" draggableColumns="true"
 					resizableColumns="true" rowKey="#{equipamento.codigo}"
-					value="#{ticketAtendimentoDepartamentoBean.equipamentos}"
-					var="equipamento" emptyMessage="Nenhum Registro Encontrado."
-					rows="10" paginator="true" paginatorAlwaysVisible="false"
+					value="#{ticketDepartamentoBean.equipamentos}" var="equipamento"
+					emptyMessage="Nenhum Registro Encontrado." rows="10"
+					paginator="true" paginatorAlwaysVisible="false"
 					paginatorPosition="bottom">
 
 					<p:ajax event="rowDblselect"
-						listener="#{ticketAtendimentoDepartamentoBean.duploCliqueEquipamento}" />
+						listener="#{ticketDepartamentoBean.duploCliqueEquipamento}" />
 
 					<p:column headerText="Nome">
 						<h:outputText
@@ -739,7 +744,7 @@
 
 					<p:column style="width: 30px; text-align: center">
 						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{ticketAtendimentoDepartamentoBean.selecionarEquipamento}"
+							actionListener="#{ticketDepartamentoBean.selecionarEquipamento}"
 							update=":formCadastro:equipamento">
 							<f:attribute name="equipamentoSelecionado" value="#{equipamento}" />
 						</p:commandButton>
@@ -757,7 +762,7 @@
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{ticketAtendimentoDepartamentoBean.categoria.nome}" />
+						value="#{ticketDepartamentoBean.categoria.nome}" />
 					<p:message for="nome" display="Nome" />
 				</h:panelGrid>
 
@@ -766,7 +771,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketAtendimentoDepartamentoBean.salvarCategoria}"
+						actionListener="#{ticketDepartamentoBean.salvarCategoria}"
 						update=":formCadastroCategoria:painelCategoria :formCadastro:categoria"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -785,11 +790,11 @@
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{ticketAtendimentoDepartamentoBean.departamento.nome}" />
+						value="#{ticketDepartamentoBean.departamento.nome}" />
 
 					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
 					<p:selectBooleanCheckbox id="atendimento"
-						value="#{ticketAtendimentoDepartamentoBean.departamento.atendimento}"
+						value="#{ticketDepartamentoBean.departamento.atendimento}"
 						required="true"
 						requiredMessage="O campo 'Atendimento' é obrigatório" />
 				</h:panelGrid>
@@ -799,7 +804,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketAtendimentoDepartamentoBean.salvarDepartamento}"
+						actionListener="#{ticketDepartamentoBean.salvarDepartamento}"
 						update=":formCadastroDepartamento:painelDepartamento :formCadastro:departamento"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -819,20 +824,20 @@
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="40" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{ticketAtendimentoDepartamentoBean.cliente.nome}" />
+						value="#{ticketDepartamentoBean.cliente.nome}" />
 
 
 					<p:outputLabel for="departamento" value="Departamento " />
 					<h:panelGroup>
 						<p:selectOneMenu id="departamento" filter="true"
-							value="#{ticketAtendimentoDepartamentoBean.cliente.departamento}"
+							value="#{ticketDepartamentoBean.cliente.departamento}"
 							required="true"
 							requiredMessage="O campo 'Departamento' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
 							<f:selectItems
-								value="#{ticketAtendimentoDepartamentoBean.departamentosCliente}"
+								value="#{ticketDepartamentoBean.departamentosCliente}"
 								var="departamento" itemValue="#{departamento}"
 								itemLabel="#{departamento.nome}" />
 						</p:selectOneMenu>
@@ -845,7 +850,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketAtendimentoDepartamentoBean.salvarCliente}"
+						actionListener="#{ticketDepartamentoBean.salvarCliente}"
 						update=":formCadastroCliente:painelCliente :formCadastro:cliente"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -865,13 +870,12 @@
 					<p:outputLabel for="usuario" value="Para: " />
 					<h:panelGroup>
 						<p:selectOneMenu id="usuario" filter="true"
-							value="#{ticketAtendimentoDepartamentoBean.ticket.usuarioAtendimento}"
+							value="#{ticketDepartamentoBean.ticket.usuarioAtendimento}"
 							required="true" requiredMessage="O campo 'Usuario' é obrigatório"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems
-								value="#{ticketAtendimentoDepartamentoBean.usuarios}"
+							<f:selectItems value="#{ticketDepartamentoBean.usuarios}"
 								var="usuario" itemValue="#{usuario}" itemLabel="#{usuario.nome}" />
 						</p:selectOneMenu>
 					</h:panelGroup>
@@ -880,7 +884,7 @@
 				<h:panelGrid columns="2" class="ui-noborder">
 					<h:panelGrid columns="2">
 						<p:commandButton value="Encaminhar" icon="ui-icon-disk"
-							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicket}"
+							actionListener="#{ticketDepartamentoBean.encaminharTicket}"
 							update="formListagem:tabela :formEncaminhar:usuario :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -900,12 +904,11 @@
 
 					<p:outputLabel for="usuario" value="Usuário " />
 					<p:selectOneMenu id="usuario" filter="true"
-						value="#{ticketAtendimentoDepartamentoBean.usuarioEmail}"
+						value="#{ticketDepartamentoBean.usuarioEmail}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Nenhum Usuário Selecionado" />
-						<f:selectItems
-							value="#{ticketAtendimentoDepartamentoBean.usuarios}"
+						<f:selectItems value="#{ticketDepartamentoBean.usuarios}"
 							var="usuario" itemValue="#{usuario.email}"
 							itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
@@ -915,7 +918,7 @@
 				<h:panelGrid columns="2" class="ui-noborder">
 					<h:panelGrid columns="2">
 						<p:commandButton value="Enviar" icon="ui-icon-disk"
-							actionListener="#{ticketAtendimentoDepartamentoBean.enviarEmailOcorrencia}"
+							actionListener="#{ticketDepartamentoBean.enviarEmailOcorrencia}"
 							update=":formEmailOcorrencia:painelOcorrencia :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -939,8 +942,8 @@
 						<p:toolbar id="tool">
 							<f:facet name="left">
 								<p:commandButton value="Atender"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-									actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicket}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
+									actionListener="#{ticketDepartamentoBean.atenderTicket}"
 									onstart="PF('iconeDeProcessamento').show()"
 									onsuccess="PF('iconeDeProcessamento').hide()"
 									update="formListagem:tabela :formListagem:messages :formListagem:tool :formPendente:tabView :formPendente:tabView:tabela"
@@ -952,8 +955,8 @@
 								</p:commandButton>
 
 								<p:commandButton value="Suspender"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-									actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicket}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
+									actionListener="#{ticketDepartamentoBean.suspenderTicket}"
 									style="margin:0 3px"
 									update="formListagem:tabela :formListagem:messages :formListagem:tool :formPendente:tabView :formPendente:tabView:tabela"
 									onstart="PF('iconeDeProcessamento').show()"
@@ -966,8 +969,8 @@
 								</p:commandButton>
 
 								<p:commandButton value="Concluir"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
-									actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicket}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
+									actionListener="#{ticketDepartamentoBean.concluirTicket}"
 									style="margin:0 3px"
 									update="formListagem:tabela :formListagem:messages :formListagem:tool :formPendente:tabView :formPendente:tabView:tabela"
 									onstart="PF('iconeDeProcessamento').show()"
@@ -980,7 +983,7 @@
 								</p:commandButton>
 
 								<p:commandButton value="Encaminhar"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
 									style="margin:0 3px"
 									oncomplete="PF('dialogoEncaminhar').show()"
 									onstart="PF('iconeDeProcessamento').show()"
@@ -992,12 +995,12 @@
 								</p:commandButton>
 
 								<p:commandButton value="Ocorrência"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
 									icon="fa fa fw fa-sitemap" style="margin:0 3px"
 									onstart="PF('iconeDeProcessamento').show()"
 									onsuccess="PF('iconeDeProcessamento').hide()"
 									oncomplete="PF('dialogoListagemOcorrencia').show()"
-									actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrencia}"
+									actionListener="#{ticketDepartamentoBean.listarOcorrencia}"
 									update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -1009,7 +1012,7 @@
 
 								<p:commandButton title="Editar"
 									process=":formPendente:tabView:tabela"
-									disabled="#{ticketAtendimentoDepartamentoBean.ticket == null}"
+									disabled="#{ticketDepartamentoBean.ticket == null}"
 									update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
 									icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 									<f:actionListener
@@ -1024,25 +1027,25 @@
 
 						<p:dataTable id="tabela"
 							emptyMessage="Nenhum registro encontrado." selectionMode="single"
-							selection="#{ticketAtendimentoDepartamentoBean.ticket}"
+							selection="#{ticketDepartamentoBean.ticket}"
 							draggableColumns="true" resizableColumns="true"
 							rowKey="#{ticket.codigo}" paginator="true"
 							rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-							value="#{ticketAtendimentoDepartamentoBean.ticketsPendentes}"
+							value="#{ticketDepartamentoBean.ticketsPendentes}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							var="ticket" rows="10" paginatorPosition="bottom">
 
 							<p:ajax event="rowDblselect"
-								listener="#{ticketAtendimentoDepartamentoBean.duploTicket}"
+								listener="#{ticketDepartamentoBean.duploTicket}"
 								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
 
 							<p:ajax event="rowUnselect"
 								update=":formListagem:messages :formPendente:tabView"
-								listener="#{ticketAtendimentoDepartamentoBean.onRowUnselectPendente}" />
+								listener="#{ticketDepartamentoBean.onRowUnselectPendente}" />
 
 							<p:ajax event="rowSelect"
 								update=":formListagem:messages :formPendente:tabView"
-								listener="#{ticketAtendimentoDepartamentoBean.onRowSelectPendente}" />
+								listener="#{ticketDepartamentoBean.onRowSelectPendente}" />
 
 							<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
 								style="text-align:center" width="5">
@@ -1081,7 +1084,7 @@
 							emptyMessage="Nenhum registro encontrado."
 							draggableColumns="true" resizableColumns="true" paginator="true"
 							rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-							value="#{ticketAtendimentoDepartamentoBean.ticketsDepartamentos}"
+							value="#{ticketDepartamentoBean.ticketsDepartamentos}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							var="ticket" rows="10" paginatorPosition="bottom">
 
@@ -1138,7 +1141,7 @@
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
 					draggableColumns="true" resizableColumns="true" paginator="true"
 					rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{ticketAtendimentoDepartamentoBean.ticketsResumo}"
+					value="#{ticketDepartamentoBean.ticketsResumo}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="10" paginatorPosition="bottom">
 
@@ -1190,26 +1193,25 @@
 			closable="true">
 			<h:form id="formAtendimento">
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single"
-					selection="#{ticketAtendimentoDepartamentoBean.ticket}"
+					selectionMode="single" selection="#{ticketDepartamentoBean.ticket}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{ticket.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10, 15,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{ticketAtendimentoDepartamentoBean.ticketsSemAtendimento}"
+					value="#{ticketDepartamentoBean.ticketsSemAtendimento}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="10" paginatorPosition="bottom">
 
 					<p:ajax event="rowDblselect"
-						listener="#{ticketAtendimentoDepartamentoBean.duploTicket}"
+						listener="#{ticketDepartamentoBean.duploTicket}"
 						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formAtendimento:tabela"
-						listener="#{ticketAtendimentoDepartamentoBean.onRowUnselectSemAtendimento}" />
+						listener="#{ticketDepartamentoBean.onRowUnselectSemAtendimento}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formAtendimento:tabela"
-						listener="#{ticketAtendimentoDepartamentoBean.onRowSelectSemAtendimento}" />
+						listener="#{ticketDepartamentoBean.onRowSelectSemAtendimento}" />
 
 					<p:column headerText="Nº Ticket" sortBy="#{ticket.codigo}"
 						style="text-align:center" width="5">
@@ -1235,7 +1237,7 @@
 
 					<p:column headerText="Opções" width="65" style="text-align:center">
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
-							actionListener="#{ticketAtendimentoDepartamentoBean.atenderTicketAtalho}"
+							actionListener="#{ticketDepartamentoBean.atenderTicketAtalho}"
 							update=":formAtendimento:tabela :formListagem:tabela :formListagem:messages :formListagem:tool :formAtendimento:tabela :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -1247,7 +1249,7 @@
 						</p:commandButton>
 
 						<p:commandButton icon="fa fa-fw fa-ban" title="Suspender Ticket"
-							actionListener="#{ticketAtendimentoDepartamentoBean.suspenderTicketAtalho}"
+							actionListener="#{ticketDepartamentoBean.suspenderTicketAtalho}"
 							update=":formAtendimento:tabela :formListagem:tabela :formListagem:messages :formListagem:tool :formAtendimento:tabela"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -1260,7 +1262,7 @@
 
 						<p:commandButton icon="fa fa-fw fa-check-circle"
 							title="Concluir Ticket"
-							actionListener="#{ticketAtendimentoDepartamentoBean.concluirTicketAtalho}"
+							actionListener="#{ticketDepartamentoBean.concluirTicketAtalho}"
 							update=":formAtendimento:tabela :formListagem:tabela :formListagem:messages :formListagem:tool :formAtendimento:tabela"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -1274,7 +1276,7 @@
 						<p:commandButton icon="fa fa-fw fa-user-md"
 							title="Encaminhar Ticket"
 							oncomplete="PF('dialogoEncaminhar').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.encaminharTicketAtalho}"
+							actionListener="#{ticketDepartamentoBean.encaminharTicketAtalho}"
 							update=":formAtendimento:tabela :formListagem:tabela :formListagem:messages :formListagem:tool :formEncaminhar:painelUsuario :formAtendimento:tabela"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -1285,7 +1287,7 @@
 
 						<p:commandButton icon="fa fa-fw fa-sitemap" title="Ocorrências"
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
-							actionListener="#{ticketAtendimentoDepartamentoBean.listarOcorrenciaAtalho}"
+							actionListener="#{ticketDepartamentoBean.listarOcorrenciaAtalho}"
 							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formAtendimento:tabela"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
@@ -1311,7 +1313,7 @@
 
 					<p:outputLabel for="ticket" value="Nº Ticket" />
 					<p:inputText id="ticket" maxlength="20" size="10"
-						value="#{ticketAtendimentoDepartamentoBean.ticketBusca}"
+						value="#{ticketDepartamentoBean.ticketBusca}"
 						converterMessage="Informe um valor válido para o campo 'Nº do Ticket'"
 						validatorMessage="Informe um valor Inteiro para o campo 'Nº do Ticket'">
 						<f:validateLongRange minimum="0" maximum="99999999" />
@@ -1319,12 +1321,12 @@
 
 					<p:outputLabel for="usuario" value="Solicitantes" />
 					<p:selectOneMenu id="usuario" filter="true"
-						value="#{ticketAtendimentoDepartamentoBean.usuarioAberturaBusca}"
+						value="#{ticketDepartamentoBean.usuarioAberturaBusca}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem itemLabel="Todos os Registros Selecionado"
 							itemValue="0" />
 						<f:selectItems
-							value="#{ticketAtendimentoDepartamentoBean.usuariosAberturaBusca}"
+							value="#{ticketDepartamentoBean.usuariosAberturaBusca}"
 							var="usuario" itemValue="#{usuario.codigo}"
 							itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
@@ -1332,12 +1334,11 @@
 
 					<p:outputLabel for="atendente" value="Atendentes" />
 					<p:selectOneMenu id="atendente" filter="true"
-						value="#{ticketAtendimentoDepartamentoBean.atendenteBusca}"
+						value="#{ticketDepartamentoBean.atendenteBusca}"
 						converter="omnifaces.SelectItemsConverter">
 						<f:selectItem itemLabel="Todos os Registros Selecionado"
 							itemValue="0" />
-						<f:selectItems
-							value="#{ticketAtendimentoDepartamentoBean.atendentesBusca}"
+						<f:selectItems value="#{ticketDepartamentoBean.atendentesBusca}"
 							var="atendente" itemValue="#{atendente.codigo}"
 							itemLabel="#{atendente.nome}" />
 					</p:selectOneMenu>
@@ -1346,7 +1347,7 @@
 					<p:outputLabel for="status" value="Status" />
 					<p:selectOneMenu id="status" filter="true"
 						converter="omnifaces.SelectItemsConverter"
-						value="#{ticketAtendimentoDepartamentoBean.statusBusca}">
+						value="#{ticketDepartamentoBean.statusBusca}">
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Todos os Registros Selecionado" />
 
@@ -1362,7 +1363,7 @@
 					<p:outputLabel for="prioridade" value="Prioridade" />
 					<p:selectOneMenu id="prioridade" filter="true"
 						converter="omnifaces.SelectItemsConverter"
-						value="#{ticketAtendimentoDepartamentoBean.prioridadeBusca}">
+						value="#{ticketDepartamentoBean.prioridadeBusca}">
 						<f:selectItem noSelectionOption="true"
 							itemLabel="Todos os Registros Selecionado" />
 
@@ -1375,19 +1376,19 @@
 
 					<p:outputLabel for="assunto" value="Assunto" />
 					<p:inputText id="assunto" maxlength="100" size="57"
-						value="#{ticketAtendimentoDepartamentoBean.assuntoBusca}" />
+						value="#{ticketDepartamentoBean.assuntoBusca}" />
 
 
 					<p:outputLabel for="solicitacao" value="Solicitação" />
 					<p:inputTextarea id="solicitacao" rows="4" cols="55"
 						maxlength="1000" autoResize="false"
-						value="#{ticketAtendimentoDepartamentoBean.solicitacaoBusca}" />
+						value="#{ticketDepartamentoBean.solicitacaoBusca}" />
 
 					<br></br>
 
 					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						actionListener="#{ticketAtendimentoDepartamentoBean.pesquisarAvancada}"
-						update="formListagem:tabela :formListagem:tool :formListagem:messages"
+						actionListener="#{ticketDepartamentoBean.pesquisarAvancada}"
+						update="formListagem:tabela :formListagem:tool :formMensagem:tabela :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -1400,15 +1401,15 @@
 			<h:form id="formInteracao">
 				<p:tabView id="tabView">
 					<p:tab
-						title="Nº Ticket: #{ticketAtendimentoDepartamentoBean.ticket.codigo} -  Assunto: #{ticketAtendimentoDepartamentoBean.ticket.assunto}">
+						title="Nº Ticket: #{ticketDepartamentoBean.ticket.codigo} -  Assunto: #{ticketDepartamentoBean.ticket.assunto}">
 
 						<p:dataTable id="tabelaInteracao"
 							emptyMessage="Nenhum registro encontrado." selectionMode="single"
-							selection="#{ticketAtendimentoDepartamentoBean.interacao}"
+							selection="#{ticketDepartamentoBean.interacao}"
 							draggableColumns="true" resizableColumns="true"
 							rowKey="#{interacao.codigo}" paginator="true"
 							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-							value="#{ticketAtendimentoDepartamentoBean.interacoes}"
+							value="#{ticketDepartamentoBean.interacoes}"
 							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 							var="interacao" rows="10" paginatorPosition="bottom">
 
@@ -1438,6 +1439,193 @@
 
 				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 					oncomplete="PF('dialogoInteracao').hide();" />
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Controle Interno" widgetVar="dialogoInterno"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			width="800" height="415" closable="true">
+			<h:form id="formListagemInterno">
+
+				<p:tabView id="tabView">
+					<p:tab
+						title="Nº Ticket: #{ticketDepartamentoBean.ticket.codigo} -  Assunto: #{ticketDepartamentoBean.ticket.assunto}">
+
+						<p:toolbar id="toolOcorrencia">
+							<f:facet name="left">
+
+								<p:commandButton value="Novo"
+									oncomplete="PF('dialogoNovoInterno').show();"
+									icon="ui-icon-document"
+									actionListener="#{ticketDepartamentoBean.novoInterno}"
+									update=":formInterno:painel">
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+							</f:facet>
+						</p:toolbar>
+
+						<p:dataTable id="tabelaInterno"
+							emptyMessage="Nenhum registro encontrado." selectionMode="single"
+							selection="#{ticketDepartamentoBean.internoNotificacao}"
+							draggableColumns="true" resizableColumns="true"
+							rowKey="#{internoNotificacao.codigo}" paginator="true"
+							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+							value="#{ticketDepartamentoBean.internoNotificacoes}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							var="internoNotificacao" rows="10" paginatorPosition="bottom">
+
+							<p:column headerText="Observação" width="160"
+								sortBy="#{internoNotificacao.interno.usuario.nome} #{internoNotificacao.interno.observacao}"
+								style="white-space:normal !important;">
+								<h:outputText
+									value="#{internoNotificacao.interno.usuario.nome}: #{internoNotificacao.interno.observacao}" />
+							</p:column>
+
+							<p:column headerText="Data" style="text-align:center"
+								sortBy="#{internoNotificacao.interno.dataFormatada}" width="45">
+								<h:outputText
+									value="#{internoNotificacao.interno.dataFormatada}" />
+							</p:column>
+
+							<p:column headerText="Hora" style="text-align:center"
+								sortBy="#{internoNotificacao.interno.hora}" width="45">
+								<h:outputText value="#{internoNotificacao.interno.hora}" />
+							</p:column>
+
+							<p:column headerText="Lido" style="text-align:center"
+								sortBy="#{internoNotificacao.lidoFormatado}" width="25">
+								<h:outputText value="#{internoNotificacao.lidoFormatado}" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoInterno').hide();" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nova Mensagem" widgetVar="dialogoNovoInterno"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
+			<h:form id="formInterno">
+
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+
+					<p:outputLabel for="observacao" value="Observação" />
+					<p:inputTextarea id="observacao" rows="5" cols="65" required="true"
+						requiredMessage="Campo Obrigatório" counter="display"
+						maxlength="600" counterTemplate="{0} caracteres restantes."
+						autoResize="false"
+						value="#{ticketDepartamentoBean.interno.observacao}" />
+
+					<h:outputText id="display" />
+
+					<p:separator />
+
+					<h:panelGrid columns="4">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{ticketDepartamentoBean.salvarInterno}"
+							update=":formInterno:painel :formListagem:messages :formListagemInterno:tabView :formListagemInterno:tabView:tabelaInterno"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoNovoInterno').hide();" />
+					</h:panelGrid>
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Mensagens não Lidas" widgetVar="dialogoMensagem"
+			width="800" height="450" draggable="false" resizable="false"
+			appendTo="@(body)" modal="true" closable="true">
+			<h:form id="formMensagem">
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single"
+					selection="#{ticketDepartamentoBean.internoNotificacao}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{internoNotificacao.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{ticketDepartamentoBean.internoNotificacoes}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="internoNotificacao" rows="5" paginatorPosition="bottom">
+
+					<p:column headerText="Nº Ticket" width="10"
+						sortBy="#{internoNotificacao.ticket.codigo}"
+						style="text-align:center">
+						<h:outputText value="#{internoNotificacao.ticket.codigo}" />
+					</p:column>
+
+					<p:column headerText="Mensagem" width="80"
+						sortBy="#{internoNotificacao.interno.observacao}"
+						style="white-space:normal !important;">
+						<h:outputText value="#{internoNotificacao.interno.observacao}" />
+					</p:column>
+
+					<p:column headerText="Remetente" width="40"
+						sortBy="#{internoNotificacao.interno.usuario.nome}"
+						style="text-align:center;white-space:normal !important;">
+						<h:outputText value="#{internoNotificacao.interno.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Data/Hora" width="23"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{internoNotificacao.interno.dataFormatada} #{internoNotificacao.interno.hora}">
+						<h:outputText
+							value="#{internoNotificacao.interno.dataFormatada} #{internoNotificacao.interno.hora}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="fa fa-fw fa-check" title="Confimar leitura"
+							actionListener="#{ticketDepartamentoBean.confirmarLeitura}"
+							update=":formListagem:messages :formMensagem:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação" message="Confirma a Leitura?"
+								icon="ui-icon-alert" />
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-lock"
+							title="Informações Interna"
+							oncomplete="PF('dialogoInterno').show()"
+							actionListener="#{ticketDepartamentoBean.listarInternoMensagem}"
+							update=":formListagemInterno:tabView :formListagemInterno:tabView:tabelaInterno"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-edit" title="Visualizar Ticket"
+							actionListener="#{ticketDepartamentoBean.editarTicketInterno}"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoMensagem').hide();" />
 
 			</h:form>
 		</p:dialog>

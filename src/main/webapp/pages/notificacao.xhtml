@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Notificações">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{internoNotificacaoBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{internoNotificacaoBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela"
+									fileName="internoNotificacao" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela"
+									fileName="internoNotificacao" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela"
+									fileName="internoNotificacao" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single"
+					selection="#{internoNotificacaoBean.internoNotificacao}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{internoNotificacao.codigo}" paginator="true"
+					rowsPerPageTemplate="5,8,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{internoNotificacaoBean.internoNotificacoes}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="internoNotificacao" rows="8" paginatorPosition="bottom">
+
+					<p:column headerText="Nº Ticket" width="10"
+						sortBy="#{internoNotificacao.ticket.codigo}"
+						style="text-align:center">
+						<h:outputText value="#{internoNotificacao.ticket.codigo}" />
+					</p:column>
+
+					<p:column headerText="Mensagem" width="80"
+						sortBy="#{internoNotificacao.interno.observacao}"
+						style="white-space:normal !important;">
+						<h:outputText value="#{internoNotificacao.interno.observacao}" />
+					</p:column>
+
+					<p:column headerText="Remetente" width="40"
+						sortBy="#{internoNotificacao.interno.usuario.nome}"
+						style="text-align:center;white-space:normal !important;">
+						<h:outputText value="#{internoNotificacao.interno.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Data/Hora" width="23"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{internoNotificacao.interno.dataFormatada} #{internoNotificacao.interno.hora}">
+						<h:outputText
+							value="#{internoNotificacao.interno.dataFormatada} #{internoNotificacao.interno.hora}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Lido" style="text-align:center"
+						sortBy="#{internoNotificacao.lidoFormatado}" width="25">
+						<h:outputText value="#{internoNotificacao.lidoFormatado}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="20"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="fa fa-fw fa-check" title="Confimar leitura"
+							actionListener="#{internoNotificacaoBean.confirmarLeitura}"
+							update=":formListagem:messages :formListagem:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação" message="Confirma a Leitura?"
+								icon="ui-icon-alert" />
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

@@ -35,7 +35,7 @@
 					<p:commandButton id="bitPesquisar" style="margin:0 10px"
 						value="Pesquisar" icon="fa fa fw fa-search"
 						actionListener="#{acessoAdministradorBean.pesquisar}"
-						update="formListagem:tabela :formListagem:tool formListagem:painelBusca"
+						update="formListagem:tabela :formListagem:tool :formMensagem:tabela formListagem:painelBusca"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 				</h:panelGrid>
@@ -50,7 +50,7 @@
 							actionListener="#{acessoAdministradorBean.atenderTicket}"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							icon="fa fa-fw fa-user-md">
 							<p:confirm header="Confirmação"
 								message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
@@ -62,7 +62,7 @@
 							disabled="#{acessoAdministradorBean.ticket == null}"
 							actionListener="#{acessoAdministradorBean.suspenderTicket}"
 							style="margin:0 3px"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							icon="fa fa-fw fa-ban">
@@ -76,7 +76,7 @@
 							disabled="#{acessoAdministradorBean.ticket == null}"
 							actionListener="#{acessoAdministradorBean.concluirTicket}"
 							style="margin:0 3px"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							icon="fa fa-fw fa-check-circle">
@@ -91,7 +91,7 @@
 							style="margin:0 3px" oncomplete="PF('dialogoEncaminhar').show()"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							update="formListagem:tabela formEncaminhar:usuario :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela formEncaminhar:usuario :formMensagem:tabela :formListagem:messages :formListagem:tool"
 							icon="fa fa-fw fa-user-md">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -104,7 +104,7 @@
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
 							actionListener="#{acessoAdministradorBean.listarOcorrencia}"
-							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
+							update=":formListagemOcorrencia:tabView :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -123,7 +123,7 @@
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							actionListener="#{acessoAdministradorBean.editarTicket}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
+							update=":formCadastro:painel :formCadastro:painel2 :formMensagem:tabela :formCadastro:painel3 :formCadastro:painelDados"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -132,7 +132,7 @@
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
 							actionListener="#{acessoAdministradorBean.excluirTicket}"
 							disabled="#{acessoAdministradorBean.ticket == null}"
-							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							update=":formListagem:tabela :formListagem:tool :formMensagem:tabela :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
@@ -159,7 +159,7 @@
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							oncomplete="PF('dialogoResumo').show()"
 							actionListener="#{acessoAdministradorBean.resumoEquipe}"
-							update=":formResumo:tabela">
+							update=":formResumo:tabela  :formMensagem:tabela">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -259,9 +259,10 @@
 
 					<p:column headerText="Opções" width="60"
 						style="text-align:center;white-space:normal !important;">
+						
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{acessoAdministradorBean.atenderTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -273,7 +274,7 @@
 
 						<p:commandButton icon="fa fa-fw fa-ban" title="Suspender Ticket"
 							actionListener="#{acessoAdministradorBean.suspenderTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -286,7 +287,7 @@
 						<p:commandButton icon="fa fa-fw fa-check-circle"
 							title="Concluir Ticket"
 							actionListener="#{acessoAdministradorBean.concluirTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -300,7 +301,7 @@
 							title="Encaminhar Ticket"
 							oncomplete="PF('dialogoEncaminhar').show()"
 							actionListener="#{acessoAdministradorBean.encaminharTicketAtalho}"
-							update="formListagem:tabela :formListagem:messages :formListagem:tool :formEncaminhar:painelUsuario"
+							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool :formEncaminhar:painelUsuario"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -311,7 +312,7 @@
 						<p:commandButton icon="fa fa-fw fa-sitemap" title="Ocorrências"
 							oncomplete="PF('dialogoListagemOcorrencia').show()"
 							actionListener="#{acessoAdministradorBean.listarOcorrenciaAtalho}"
-							update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia"
+							update=":formListagemOcorrencia:tabView :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -323,7 +324,19 @@
 							title="Listar Interações"
 							oncomplete="PF('dialogoInteracao').show()"
 							actionListener="#{acessoAdministradorBean.listarInteracoes}"
-							update=":formInteracao:tabView :formInteracao:tabView:tabelaInteracao"
+							update=":formInteracao:tabView :formMensagem:tabela :formInteracao:tabView:tabelaInteracao"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="ticketSelecionado" value="#{ticket}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-lock"
+							title="Informações Interna"
+							oncomplete="PF('dialogoInterno').show()"
+							actionListener="#{acessoAdministradorBean.listarInterno}"
+							update=":formListagemInterno:tabView :formMensagem:tabela :formListagemInterno:tabView:tabelaInterno"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="ticketSelecionado" value="#{ticket}" />
@@ -486,7 +499,7 @@
 						onsuccess="PF('iconeDeProcessamento').hide()"
 						oncomplete="PF('dialogoListagemOcorrencia').show()"
 						actionListener="#{acessoAdministradorBean.listarOcorrenciaAtender}"
-						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia">
+						update=":formListagemOcorrencia:tabView  :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
 						<p:confirm header="Confirmação"
 							message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
 						<f:actionListener
@@ -673,7 +686,7 @@
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Concluir e Salvar" icon="ui-icon-disk"
-						actionListener="#{acessoAdministradorBean.concluirEnviarEmail}"  
+						actionListener="#{acessoAdministradorBean.concluirEnviarEmail}"
 						update=":formCadastroOcorrencia:painelOcorrencia :formListagem:messages :formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -860,7 +873,7 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Encaminhar" icon="ui-icon-disk"
 							actionListener="#{acessoAdministradorBean.encaminharTicket}"
-							update="formListagem:tabela :formEncaminhar:usuario :formListagem:messages"
+							update="formListagem:tabela :formEncaminhar:usuario :formMensagem:tabela :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -1422,6 +1435,193 @@
 
 				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 					oncomplete="PF('dialogoInteracao').hide();" />
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Controle Interno" widgetVar="dialogoInterno"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			width="800" height="415" closable="true">
+			<h:form id="formListagemInterno">
+
+				<p:tabView id="tabView">
+					<p:tab
+						title="Nº Ticket: #{acessoAdministradorBean.ticket.codigo} -  Assunto: #{acessoAdministradorBean.ticket.assunto}">
+
+						<p:toolbar id="toolOcorrencia">
+							<f:facet name="left">
+
+								<p:commandButton value="Novo"
+									oncomplete="PF('dialogoNovoInterno').show();"
+									icon="ui-icon-document"
+									actionListener="#{acessoAdministradorBean.novoInterno}"
+									update=":formInterno:painel">
+									<f:actionListener
+										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+								</p:commandButton>
+							</f:facet>
+						</p:toolbar>
+
+						<p:dataTable id="tabelaInterno"
+							emptyMessage="Nenhum registro encontrado." selectionMode="single"
+							selection="#{acessoAdministradorBean.internoNotificacao}"
+							draggableColumns="true" resizableColumns="true"
+							rowKey="#{internoNotificacao.codigo}" paginator="true"
+							rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+							value="#{acessoAdministradorBean.internoNotificacoes}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							var="internoNotificacao" rows="10" paginatorPosition="bottom">
+
+							<p:column headerText="Observação" width="160"
+								sortBy="#{internoNotificacao.interno.usuario.nome} #{internoNotificacao.interno.observacao}"
+								style="white-space:normal !important;">
+								<h:outputText
+									value="#{internoNotificacao.interno.usuario.nome}: #{internoNotificacao.interno.observacao}" />
+							</p:column>
+
+							<p:column headerText="Data" style="text-align:center"
+								sortBy="#{internoNotificacao.interno.dataFormatada}" width="45">
+								<h:outputText
+									value="#{internoNotificacao.interno.dataFormatada}" />
+							</p:column>
+
+							<p:column headerText="Hora" style="text-align:center"
+								sortBy="#{internoNotificacao.interno.hora}" width="45">
+								<h:outputText value="#{internoNotificacao.interno.hora}" />
+							</p:column>
+
+							<p:column headerText="Lido" style="text-align:center"
+								sortBy="#{internoNotificacao.lidoFormatado}" width="25">
+								<h:outputText value="#{internoNotificacao.lidoFormatado}" />
+							</p:column>
+						</p:dataTable>
+					</p:tab>
+				</p:tabView>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoInterno').hide();" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Nova Mensagem" widgetVar="dialogoNovoInterno"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
+			<h:form id="formInterno">
+
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+
+					<p:outputLabel for="observacao" value="Observação" />
+					<p:inputTextarea id="observacao" rows="5" cols="65" required="true"
+						requiredMessage="Campo Obrigatório" counter="display"
+						maxlength="600" counterTemplate="{0} caracteres restantes."
+						autoResize="false"
+						value="#{acessoAdministradorBean.interno.observacao}" />
+
+					<h:outputText id="display" />
+
+					<p:separator />
+
+					<h:panelGrid columns="4">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{acessoAdministradorBean.salvarInterno}"
+							update=":formInterno:painel :formListagem:messages :formListagemInterno:tabView :formListagemInterno:tabView:tabelaInterno"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoNovoInterno').hide();" />
+					</h:panelGrid>
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Mensagens não Lidas" widgetVar="dialogoMensagem"
+			width="800" height="450" draggable="false" resizable="false"
+			appendTo="@(body)" modal="true" closable="true">
+			<h:form id="formMensagem">
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single"
+					selection="#{acessoAdministradorBean.internoNotificacao}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{internoNotificacao.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{acessoAdministradorBean.internoNotificacoes}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="internoNotificacao" rows="5" paginatorPosition="bottom">
+
+					<p:column headerText="Nº Ticket" width="10"
+						sortBy="#{internoNotificacao.ticket.codigo}"
+						style="text-align:center">
+						<h:outputText value="#{internoNotificacao.ticket.codigo}" />
+					</p:column>
+
+					<p:column headerText="Mensagem" width="80"
+						sortBy="#{internoNotificacao.interno.observacao}"
+						style="white-space:normal !important;">
+						<h:outputText value="#{internoNotificacao.interno.observacao}" />
+					</p:column>
+
+					<p:column headerText="Remetente" width="40"
+						sortBy="#{internoNotificacao.interno.usuario.nome}"
+						style="text-align:center;white-space:normal !important;">
+						<h:outputText value="#{internoNotificacao.interno.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Data/Hora" width="23"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{internoNotificacao.interno.dataFormatada} #{internoNotificacao.interno.hora}">
+						<h:outputText
+							value="#{internoNotificacao.interno.dataFormatada} #{internoNotificacao.interno.hora}">
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="fa fa-fw fa-check" title="Confimar leitura"
+							actionListener="#{acessoAdministradorBean.confirmarLeitura}"
+							update=":formListagem:messages :formMensagem:tabela"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação" message="Confirma a Leitura?"
+								icon="ui-icon-alert" />
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-lock"
+							title="Informações Interna"
+							oncomplete="PF('dialogoInterno').show()"
+							actionListener="#{acessoAdministradorBean.listarInternoMensagem}"
+							update=":formListagemInterno:tabView :formListagemInterno:tabView:tabelaInterno"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton icon="fa fa-fw fa-edit" title="Visualizar Ticket"
+							actionListener="#{acessoAdministradorBean.editarTicketInterno}"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="internoNotificacaoSelecionado"
+								value="#{internoNotificacao}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoMensagem').hide();" />
 
 			</h:form>
 		</p:dialog>

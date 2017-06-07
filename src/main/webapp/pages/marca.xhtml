@@ -17,7 +17,7 @@
 					value="#{marcaBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
-					value="Pesquisar" icon="ui-icon-script"
+					value="Pesquisar" icon="fa fa fw fa-search"
 					actionListener="#{marcaBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
@@ -134,7 +134,7 @@
 		<p:dialog header="Cadastro de Marca" widgetVar="dialogo"
 			draggable="false" resizable="false" modal="false" closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel"  columns="3" class="ui-noborder">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"

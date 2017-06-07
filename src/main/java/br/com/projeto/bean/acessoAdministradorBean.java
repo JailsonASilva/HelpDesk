@@ -1,3 +1,4 @@
+
 package br.com.projeto.bean;
 
 import java.io.FileInputStream;
@@ -35,6 +36,8 @@ import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
 import br.com.projeto.dao.InteracaoDAO;
+import br.com.projeto.dao.InternoDAO;
+import br.com.projeto.dao.InternoNotificacaoDAO;
 import br.com.projeto.dao.OcorrenciaDAO;
 import br.com.projeto.dao.TicketDAO;
 import br.com.projeto.dao.UsuarioDAO;
@@ -43,6 +46,8 @@ import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
 import br.com.projeto.domain.Interacao;
+import br.com.projeto.domain.Interno;
+import br.com.projeto.domain.InternoNotificacao;
 import br.com.projeto.domain.Ocorrencia;
 import br.com.projeto.domain.Ticket;
 import br.com.projeto.domain.Usuario;
@@ -57,6 +62,8 @@ public class acessoAdministradorBean implements Serializable {
 	private AutenticacaoBean autenticacaoBean;
 	private Usuario usuario;
 	private Interacao interacao;
+	private Interno interno;
+	private InternoNotificacao internoNotificacao;
 	private Categoria categoria;
 	private Departamento departamento;
 	private Departamento departamentoCliente;
@@ -72,6 +79,8 @@ public class acessoAdministradorBean implements Serializable {
 	private List<Ticket> ticketsResumo;
 	private List<Cliente> clientes;
 	private List<Interacao> interacoes;
+	private List<Interno> internos;
+	private List<InternoNotificacao> internoNotificacoes;
 	private List<Departamento> departamentos;
 	private List<Departamento> departamentosCliente;
 	private List<Categoria> categorias;
@@ -500,6 +509,38 @@ public class acessoAdministradorBean implements Serializable {
 		this.ticketBusca = ticketBusca;
 	}
 
+	public Interno getInterno() {
+		return interno;
+	}
+
+	public void setInterno(Interno interno) {
+		this.interno = interno;
+	}
+
+	public InternoNotificacao getInternoNotificacao() {
+		return internoNotificacao;
+	}
+
+	public void setInternoNotificacao(InternoNotificacao internoNotificacao) {
+		this.internoNotificacao = internoNotificacao;
+	}
+
+	public List<Interno> getInternos() {
+		return internos;
+	}
+
+	public void setInternos(List<Interno> internos) {
+		this.internos = internos;
+	}
+
+	public List<InternoNotificacao> getInternoNotificacoes() {
+		return internoNotificacoes;
+	}
+
+	public void setInternoNotificacoes(List<InternoNotificacao> internoNotificacoes) {
+		this.internoNotificacoes = internoNotificacoes;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -739,6 +780,16 @@ public class acessoAdministradorBean implements Serializable {
 		ocorrencia.setData(new java.util.Date());
 	}
 
+	public void novoInterno() {
+		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+		usuario = autenticacaoBean.getUsuarioLogado();
+
+		interno = new Interno();
+		interno.setTicket(ticket);
+		interno.setUsuario(usuario);
+		interno.setData(new java.util.Date());
+	}
+
 	public void salvar() {
 		try {
 			TicketDAO ticketDAO = new TicketDAO();
@@ -761,6 +812,64 @@ public class acessoAdministradorBean implements Serializable {
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarInterno() throws IOException {
+		try {
+			InternoDAO internoDAO = new InternoDAO();
+			internoDAO.merge(interno);
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			InternoNotificacaoDAO internoNotificacaoDAO = new InternoNotificacaoDAO();
+
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			if (usuario.getCodigo().equals(ticket.getUsuario().getCodigo())) {
+
+				internoNotificacaoDAO.salvarInteracaoNotificacao(ticket.getCodigo(),
+						ticket.getUsuarioAtendimento().getCodigo(), true);
+
+			} else {
+
+				internoNotificacaoDAO.salvarInteracaoNotificacao(ticket.getCodigo(),
+						ticket.getUsuarioAtendimento().getCodigo(), false);
+			}
+
+			context.addMessage(null,
+					new FacesMessage("Aviso!", "Controle Interno Salvo! Ticket Nº " + ticket.getCodigo()));
+
+			if (interno.getCodigo() == null) {
+
+				interacao("Novo Controle Interno");
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Nova Controle Interno (" + interno.getDataFormatada() + ")" + " - Ticket: "
+						+ " - Ticket: " + ticket.getCodigo() + " (Administrador)");
+
+			} else {
+
+				interacao("Editou Ocorrência");
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Editou Controle Interno (" + interno.getDataFormatada() + "/" + interno.getHora()
+						+ ") - Ticket: " + ticket.getCodigo() + " (Administrador)");
+			}
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoNovoInterno').hide();");
+
+			internoNotificacoes = internoNotificacaoDAO.listarInternos(ticket.getCodigo());
+
+			interno = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Salvar Controle Interno.", "Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
@@ -842,6 +951,24 @@ public class acessoAdministradorBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+	
+	public void editarTicketInterno(ActionEvent evento) {
+		try {
+			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes().get("internoNotificacaoSelecionado");
+			
+			ticket = internoNotificacao.getTicket(); 
+			
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 
 	public void salvarOcorrencia() throws IOException {
 		try {
@@ -1120,7 +1247,7 @@ public class acessoAdministradorBean implements Serializable {
 			interacao("Concluiu o Ticket");
 
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
-			auditoriaDAO.auditar("Concluiu o Ticket: " + ticket.getCodigo() + "(Por Departamento)");
+			auditoriaDAO.auditar("Concluiu o Ticket: " + ticket.getCodigo() + "(Administrador)");
 
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
@@ -1709,6 +1836,110 @@ public class acessoAdministradorBean implements Serializable {
 		RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Listar as Interações.",
 					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void listarInterno(ActionEvent evento) {
+		try {
+			ticket = (Ticket) evento.getComponent().getAttributes().get("ticketSelecionado");
+
+			InternoNotificacaoDAO InternoNotificacaoDAO = new InternoNotificacaoDAO();
+			internoNotificacoes = InternoNotificacaoDAO.listarInternos(ticket.getCodigo());
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Listou Controle Internos - Ticket: " + ticket.getCodigo() + " (Administrador)");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Controle Interno.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void listarInternoMensagem(ActionEvent evento) {
+		try {
+			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes()
+					.get("internoNotificacaoSelecionado");
+
+			ticket = internoNotificacao.getTicket();
+
+			InternoNotificacaoDAO InternoNotificacaoDAO = new InternoNotificacaoDAO();
+			internoNotificacoes = InternoNotificacaoDAO.listarInternos(ticket.getCodigo());
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Listou Controle Internos - Ticket: " + ticket.getCodigo() + " (Administrador)");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Controle Interno.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void listarInternoNaoLido() {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			InternoNotificacaoDAO internoNotificacaoDAO = new InternoNotificacaoDAO();
+			internoNotificacoes = internoNotificacaoDAO.pesquisarInternoNaoLido(usuario);
+
+			if (internoNotificacoes.isEmpty() == false) {
+				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoMensagem').show();");
+			}
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Controle Interno Não Lido.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			erro.printStackTrace();
+		}
+	}
+
+	public void confirmarLeitura(ActionEvent evento) {
+		try {
+			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+			Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes()
+					.get("internoNotificacaoSelecionado");
+			internoNotificacao.setLido(true);
+
+			InternoNotificacaoDAO internoNotificacaoDAO = new InternoNotificacaoDAO();
+			internoNotificacaoDAO.merge(internoNotificacao);
+
+			internoNotificacoes = internoNotificacaoDAO.pesquisarInternoNaoLido(usuario);
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Confirmação de Leitura!", "Confirmação Efetuada com Sucesso!"));
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Confirmou Leitura Mensagem - Ticket: "
+					+ internoNotificacao.getInterno().getTicket().getCodigo() + " (Administrador)");
+
+		} catch (
+
+		RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Listar Confirmar Leitura.", "Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 

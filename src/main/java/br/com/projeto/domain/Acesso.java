@@ -95,6 +95,9 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean auditoria;
 
+	@Column(nullable = true)
+	private Boolean mensagem;
+
 	public String getNome() {
 		return nome;
 	}
@@ -325,6 +328,14 @@ public class Acesso extends GenericDomain {
 
 	public void setAuditoria(Boolean auditoria) {
 		this.auditoria = auditoria;
+	}
+
+	public Boolean getMensagem() {
+		return mensagem;
+	}
+
+	public void setMensagem(Boolean mensagem) {
+		this.mensagem = mensagem;
 	}
 
 }

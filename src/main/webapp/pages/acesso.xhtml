@@ -17,7 +17,7 @@
 					value="#{acessoBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
-					value="Pesquisar" icon="ui-icon-script"
+					value="Pesquisar" icon="fa fa fw fa-search"
 					actionListener="#{acessoBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
@@ -105,6 +105,9 @@
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{acessoBean.onRowUnselect}" />
 
+					<p:ajax event="rowDblselect" listener="#{acessoBean.duploClique}"
+						update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento" />
+
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{acessoBean.onRowSelect}" /> />							
@@ -158,7 +161,7 @@
 
 							<p:outputLabel value="Usuário" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.usuario}" />
-							
+
 							<p:outputLabel value="Auditoria" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.auditoria}" />
 
@@ -196,7 +199,7 @@
 					</p:tab>
 
 					<p:tab title="Ticket">
-						<h:panelGrid id="painelTicket" columns="2" class="ui-noborder">
+						<h:panelGrid id="painelTicket" columns="4" class="ui-noborder">
 
 							<p:outputLabel value="Cliente" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.cliente}" />
@@ -231,6 +234,9 @@
 							<p:outputLabel value="Abertura por Usuário" />
 							<p:selectBooleanCheckbox
 								value="#{acessoBean.acesso.aberturaUsuario}" />
+
+							<p:outputLabel value="Mensagens" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.mensagem}" />
 						</h:panelGrid>
 					</p:tab>
 

@@ -4,14 +4,17 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.omnifaces.util.Faces;
 import org.omnifaces.util.Messages;
 
 import br.com.projeto.domain.Ticket;
+import br.com.projeto.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ViewScoped
@@ -19,6 +22,7 @@ import br.com.projeto.domain.Ticket;
 public class BarraFerramentaBean implements Serializable {
 	private Ticket ticket;
 	private List<Ticket> tickets;
+	private Usuario usuario;
 
 	private FacesMessage message;
 
@@ -46,9 +50,33 @@ public class BarraFerramentaBean implements Serializable {
 		this.tickets = tickets;
 	}
 
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	@PostConstruct
+	public void inicializar() {
+
+		AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+		usuario = autenticacaoBean.getUsuarioLogado();
+
+	}
+
 	public void ticketInterno() {
 		try {
-			Faces.redirect("./pages/ticketInterno.xhtml");
+			if (usuario.getAcesso().getTicketInterno() == true) {
+
+				Faces.redirect("./pages/ticketInterno.xhtml");
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -58,7 +86,16 @@ public class BarraFerramentaBean implements Serializable {
 
 	public void ticketExterno() {
 		try {
-			Faces.redirect("./pages/ticketExterno.xhtml");
+
+			if (usuario.getAcesso().getTicketExterno() == true) {
+
+				Faces.redirect("./pages/ticketExterno.xhtml");
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -68,7 +105,16 @@ public class BarraFerramentaBean implements Serializable {
 
 	public void ticketDepartamento() {
 		try {
-			Faces.redirect("./pages/ticketDepartamento.xhtml");
+
+			if (usuario.getAcesso().getTicketDepartamento() == true) {
+
+				Faces.redirect("./pages/ticketDepartamento.xhtml");
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -78,7 +124,16 @@ public class BarraFerramentaBean implements Serializable {
 
 	public void ticketUsuario() {
 		try {
-			Faces.redirect("./pages/ticketUsuario.xhtml");
+
+			if (usuario.getAcesso().getTicketUsuario() == true) {
+
+				Faces.redirect("./pages/ticketUsuario.xhtml");
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
@@ -98,11 +153,39 @@ public class BarraFerramentaBean implements Serializable {
 
 	public void artigo() {
 		try {
-			Faces.redirect("./pages/artigo.xhtml");
+
+			if (usuario.getAcesso().getArtigo() == true) {
+
+				Faces.redirect("./pages/artigo.xhtml");
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
 
 		} catch (IOException erro) {
 			erro.printStackTrace();
 			Messages.addGlobalError("Não foi possível acessar Base de Conhecimento. Erro: " + erro.getMessage());
+		}
+	}
+
+	public void mensagem() {
+		try {
+
+			if (usuario.getAcesso().getMensagem() == true) {
+
+				Faces.redirect("./pages/notificacao.xhtml"); 
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
+
+		} catch (IOException erro) {
+			erro.printStackTrace();
+			Messages.addGlobalError("Não foi possível acessar Mensagens. Erro: " + erro.getMessage());
 		}
 	}
 

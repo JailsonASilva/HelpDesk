@@ -36,7 +36,7 @@ public class Usuario extends GenericDomain {
 
 	@Column(nullable = false)
 	private Boolean ativo;
-	
+
 	@Column(nullable = false)
 	private Boolean administrador;
 
@@ -142,6 +142,4 @@ public class Usuario extends GenericDomain {
 	public void setAdministrador(Boolean administrador) {
 		this.administrador = administrador;
 	}
-	
-	
 }

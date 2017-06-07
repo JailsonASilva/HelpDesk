@@ -19,7 +19,8 @@
 		<p:layout fullPage="true">
 			<p:layoutUnit position="north" size="47" resizable="true">
 
-				<h:form>
+				<h:form id="formPrincipal">
+					<p:growl id="messages" showDetail="true" />
 					<p:menubar style="border:none;">
 						<p:submenu label="Sistemas" icon="fa fa fw fa-user">
 							<p:menuitem value="Departamentos" url="/pages/departamento.xhtml"
@@ -89,6 +90,9 @@
 								<p:menuitem value="Abertura por Usuário"
 									url="/pages/aberturaUsuario.xhtml"
 									rendered="#{autenticacaoBean.usuarioLogado.acesso.aberturaUsuario}" />
+
+								<p:menuitem value="Mensagens" url="/pages/notificacao.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.mensagem}" />
 
 							</p:submenu>
 						</p:submenu>
@@ -179,33 +183,39 @@
 
 						<f:facet name="options">
 							<p:commandButton icon="ui-icon-document"
-								title="Novo Ticket Externo"
+								title="Novo Ticket Externo" update="formPrincipal:messages"
 								action="#{barraFerramentaBean.ticketExterno}"
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketExterno}" />
 
-
 							<p:commandButton icon="fa fa fw fa-list"
-								title="Ticket por Departamento"
+								title="Ticket por Departamento" update="formPrincipal:messages"
 								action="#{barraFerramentaBean.ticketDepartamento}"
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketDepartamento}" />
 
 							<p:commandButton icon="fa fa fw fa-user-md"
-								title="Meus Atendimento"
+								title="Meus Atendimento" update="formPrincipal:messages"
 								action="#{barraFerramentaBean.ticketUsuario}"
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketUsuario}" />
 
 							<p:commandButton icon="fa fa fw fa-list-alt"
-								title="Acompanhar meus Ticket's"
+								title="Acompanhar meus Ticket's" update="formPrincipal:messages"
 								action="#{barraFerramentaBean.meusTickets}" />
 
 							<p:commandButton icon="fa fa fw fa-graduation-cap"
+								update="formPrincipal:messages"
 								title="Cadastro de Artigo (Base de Conhecimento)"
 								action="#{barraFerramentaBean.artigo}" />
 
+							<p:commandButton icon="fa fa fw fa-envelope-o" title="Mensagens"
+								action="#{barraFerramentaBean.mensagem}"
+								update="formPrincipal:messages" />
+
 							<p:commandButton icon="fa fa fw fa-key" title="Trocar de Senha"
-								action="#{barraFerramentaBean.trocarSenha}" />
+								action="#{barraFerramentaBean.trocarSenha}"
+								update="formPrincipal:messages" />
 
 							<p:commandButton title="Desconectar"
+								update="formPrincipal:messages"
 								actionListener="#{autenticacaoBean.desconectar}"
 								icon="fa fa fw fa-power-off" />
 						</f:facet>
@@ -220,7 +230,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.4.3.2" />
+					<h:outputText value="Versão 1.4.3.5" />
 
 				</p:layoutUnit>
 			</div>
