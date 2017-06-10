@@ -17,7 +17,7 @@
 					value="#{eventoBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
-					value="Pesquisar" icon="ui-icon-script"
+					value="Pesquisar" icon="fa fa fw fa-search"
 					actionListener="#{eventoBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
@@ -31,15 +31,15 @@
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{eventoBean.novo}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3">
+							update=":formCadastro:painel  ">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
 							disabled="#{eventoBean.evento == null}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
-							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							update=":formCadastro:painel  " icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -100,6 +100,9 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="evento" rows="10" paginatorPosition="bottom">
 
+					<p:ajax event="rowDblselect" listener="#{eventoBean.duploClique}"
+						update=":formCadastro:painel" />
+
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{eventoBean.onRowUnselect}" />
@@ -108,44 +111,49 @@
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{eventoBean.onRowSelect}" />
 
-					<p:column headerText="Título" sortBy="#{evento.titulo}">
+					<p:column headerText="Título" sortBy="#{evento.titulo}" width="220"
+						style="white-space:normal !important;">
 						<h:outputText value="#{evento.titulo}" />
 					</p:column>
 
-					<p:column headerText="Local" width="250"
+					<p:column headerText="Local" width="130"
 						sortBy="#{evento.local.nome}">
 						<h:outputText value="#{evento.local.nome}" />
 					</p:column>
 
-					<p:column headerText="Tipo" width="180"
-						sortBy="#{evento.tipoEvento.nome}">
-						<h:outputText value="#{evento.tipoEvento.nome}" />
-					</p:column>
-
-					<p:column headerText="Data Início" width="180"
-						style="text-align:center" sortBy="#{evento.dataHoraInicial}">
+					<p:column headerText="Data Início" width="100"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{evento.dataHoraInicial}">
 						<h:outputText value="#{evento.dataHoraInicial}">
 							<f:convertDateTime eventoe="pt_BR" pattern="dd/MM/yyyy HH:mm:ss" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Data Término" width="180"
-						style="text-align:center" sortBy="#{evento.dataHoraFinal}">
+					<p:column headerText="Data Término" width="100"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{evento.dataHoraFinal}">
 						<h:outputText value="#{evento.dataHoraFinal}">
 							<f:convertDateTime eventoe="pt_BR" pattern="dd/MM/yyyy HH:mm:ss" />
 						</h:outputText>
 					</p:column>
 
-					<p:column headerText="Materiais" width="68"
-						style="text-align:center">
-						<p:commandButton icon="fa fa fw fa-list-ol"
-							actionListener="#{eventoBean.exibirMateriais}"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()">
-							<f:attribute name="eventoSelecionado" value="#{evento}" />
-
-						</p:commandButton>
+					<p:column headerText="Usuário" width="120"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{evento.usuario.nome}">
+						<h:outputText value="#{evento.usuario.nome}" />
 					</p:column>
+
+					<p:column headerText="Realizado"
+						sortBy="#{evento.realizadoFormatado}" style="text-align:center"
+						width="50">
+						<h:outputText value="#{evento.realizadoFormatado}" />
+					</p:column>
+
+					<p:column headerText="Nº Ticket" sortBy="#{evento.ticket.codigo}"
+						style="text-align:center" width="50">
+						<h:outputText value="#{evento.ticket.codigo}" />
+					</p:column>
+
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -167,17 +175,16 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Evento" widgetVar="dialogo"
-			draggable="false" resizable="false" modal="false" closable="true">
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
 			<h:form id="formCadastro">
 
-				<h:panelGrid id="painel" columns="3" class="ui-noborder">
-					<p:outputLabel for="titulo" value="Título: " />
-					<p:inputText id="titulo" maxlength="100" size="84" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{eventoBean.evento.titulo}" />
-				</h:panelGrid>
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 
-				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
+					<p:outputLabel for="titulo" value="Título: " />
+					<p:inputText id="titulo" maxlength="100" size="37" required="true"
+						requiredMessage="Campo 'Título' Obrigatório"
+						value="#{eventoBean.evento.titulo}" />
 
 					<p:outputLabel for="local" value="Local " />
 					<h:panelGroup>
@@ -196,48 +203,48 @@
 							title="Novo Local" oncomplete="PF('dialogoLocal').show();" />
 					</h:panelGroup>
 
-					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início" />
-					<p:calendar id="dataHoraInicial" size="24" mask="99/99/99 99:99:99"
-						yearRange="1900:2222" value="#{eventoBean.evento.dataHoraInicial}"
-						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
-						showButtonPanel="true" navigator="true" showOn="button"
-						requiredMessage="Campo Obrigatório!" />
-
-					<p:outputLabel for="tipo" value="Tipo " />
+					<p:outputLabel for="tipo" value="Tipo" />
 					<h:panelGroup>
 						<p:selectOneMenu id="tipo" filter="true"
-							value="#{eventoBean.evento.tipoEvento}" required="true"
-							requiredMessage="O campo 'Tipo' é obrigatório"
+							value="#{eventoBean.evento.tipoEvento}"
 							converter="omnifaces.SelectItemsConverter">
 							<f:selectItem noSelectionOption="true"
 								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{eventoBean.tipoEventos}"
-								var="tipo" itemValue="#{tipo}"
-								itemLabel="#{tipo.nome}" />
+							<f:selectItems value="#{eventoBean.tipoEventos}" var="tipo"
+								itemValue="#{tipo}" itemLabel="#{tipo.nome}" />
 						</p:selectOneMenu>
 
 						<p:commandButton icon="ui-icon-document"
 							style="display: inline-block; vertical-align: top;"
-							title="Novo Tipo"
-							oncomplete="PF('dialogoTipo').show();" />
+							title="Novo Tipo" oncomplete="PF('dialogoTipo').show();" />
 					</h:panelGroup>
 
+					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início" />
+					<p:calendar id="dataHoraInicial" size="20" mask="99/99/99 99:99:99"
+						yearRange="1900:2222" value="#{eventoBean.evento.dataHoraInicial}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo 'Data/Hora Inicial' Obrigatório!" />
+
 					<p:outputLabel for="dataHoraFinal" value="Data/Hora Término" />
-					<p:calendar id="dataHoraFinal" size="24" mask="99/99/99 99:99:99"
+					<p:calendar id="dataHoraFinal" size="20" mask="99/99/99 99:99:99"
 						yearRange="1900:2222" value="#{eventoBean.evento.dataHoraFinal}"
 						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
 						showButtonPanel="true" navigator="true" showOn="button"
-						requiredMessage="Campo Obrigatório!" />
-				</h:panelGrid>
+						requiredMessage="Campo 'Data/Hora Final' Obrigatório!" />
 
-				<h:panelGrid id="painel3" columns="1" class="ui-noborder">
 					<p:outputLabel for="observacao" value="Observação"
 						style="margin4px" />
-					<p:inputTextarea id="observacao" rows="6" cols="89"
-						counter="display" maxlength="500"
+					<p:inputTextarea id="observacao" rows="5" cols="60"
+						counter="display" maxlength="10000"
 						counterTemplate="{0} caracteres restantes." autoResize="false"
 						value="#{eventoBean.evento.observacao}" />
+					<br></br>
 					<h:outputText id="display" />
+
+					<p:outputLabel for="realizado" value="Realizado" />
+					<p:selectBooleanCheckbox id="realizado"
+						value="#{eventoBean.evento.realizado}" />
 				</h:panelGrid>
 
 				<br></br>
@@ -246,18 +253,19 @@
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{eventoBean.salvar}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formListagem:tabela :formListagem:tool :formListagem:messages"
+						update=":formCadastro:painel   :formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogo').hide();" />			
+						oncomplete="PF('dialogo').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Local" widgetVar="dialogoLocal"
-			draggable="false" resizable="false" closable="true">
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
 			<h:form id="formCadastroLocal">
 				<h:panelGrid id="painelLocal" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
@@ -283,7 +291,8 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Tipo de Evento" widgetVar="dialogoTipo"
-			draggable="false" resizable="false" closable="true">
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
 			<h:form id="formCadastroTipo">
 				<h:panelGrid id="painelTipo" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />

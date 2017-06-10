@@ -21,8 +21,8 @@ public class InteracaoDAO extends GenericDAO<Interacao> {
 			Criteria consultaTicket = consulta.createCriteria("ticket", "ticket", Criteria.INNER_JOIN,
 					Restrictions.eq("ticket.codigo", ticket));
 
-			consulta.addOrder(Order.desc("interno.data"));
-			consulta.addOrder(Order.desc("interno.codigo"));
+			consulta.addOrder(Order.desc("data")); 
+			consulta.addOrder(Order.desc("codigo"));
 
 
 			List<Interacao> resultado = consulta.list();

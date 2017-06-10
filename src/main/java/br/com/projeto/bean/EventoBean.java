@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
 
+import org.omnifaces.util.Faces;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
@@ -19,6 +20,7 @@ import br.com.projeto.dao.TipoEventoDAO;
 import br.com.projeto.domain.Evento;
 import br.com.projeto.domain.Local;
 import br.com.projeto.domain.TipoEvento;
+import br.com.projeto.domain.Usuario;
 
 @SuppressWarnings("serial")
 @ManagedBean
@@ -148,7 +150,12 @@ public class EventoBean implements Serializable {
 	}
 
 	public void novo() {
+		AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+		Usuario usuario = autenticacaoBean.getUsuarioLogado();
+		
 		evento = new Evento();
+		evento.setRealizado(false);
+		evento.setUsuario(usuario);
 
 		local = new Local();
 		tipoEvento = new TipoEvento();
@@ -157,7 +164,7 @@ public class EventoBean implements Serializable {
 	public void salvar() {
 		try {
 			evento.setDataEvento(evento.getDataHoraInicial());
-			EventoDAO eventoDAO = new EventoDAO();			
+			EventoDAO eventoDAO = new EventoDAO();
 			eventoDAO.merge(evento);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
@@ -238,7 +245,7 @@ public class EventoBean implements Serializable {
 
 	public void exibirMateriais(ActionEvent eventoMaterial) {
 		try {
-			evento = (Evento) eventoMaterial.getComponent().getAttributes().get("eventoSelecionado");			
+			evento = (Evento) eventoMaterial.getComponent().getAttributes().get("eventoSelecionado");
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Exibir Materiais.",
@@ -256,4 +263,18 @@ public class EventoBean implements Serializable {
 	public void onRowUnselect(UnselectEvent event) {
 		evento = null;
 	}
+
+	public void duploClique(SelectEvent evento) {
+		try {
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 }

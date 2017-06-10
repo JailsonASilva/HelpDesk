@@ -154,6 +154,7 @@ public class TicketExternoBean implements Serializable {
 		ticket.setPrioridade("Normal");
 		ticket.setEmailDepartamento(false);
 		ticket.setEmailSolicitante(false);
+		ticket.setEvento(false);
 	}
 
 	public void salvar() throws EmailException {

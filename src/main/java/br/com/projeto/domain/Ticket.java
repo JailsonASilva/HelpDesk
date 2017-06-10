@@ -70,6 +70,9 @@ public class Ticket extends GenericDomain {
 	@Temporal(TemporalType.DATE)
 	private Date ultimaInteracao;
 
+	@Column(nullable = true, columnDefinition = "boolean default False")
+	private Boolean evento;
+
 	public Categoria getCategoria() {
 		return categoria;
 	}
@@ -281,6 +284,14 @@ public class Ticket extends GenericDomain {
 
 	public void setHora(Date hora) {
 		this.hora = hora;
+	}
+
+	public Boolean getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Boolean evento) {
+		this.evento = evento;
 	}
 
 }

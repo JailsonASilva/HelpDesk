@@ -147,4 +147,22 @@ public class InternoNotificacaoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
+
+	public void duploClique(SelectEvent evento) {
+		try {
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDetalhe').show();");
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Visualizou Mensagem: " + internoNotificacao.getInterno().getTicket().getCodigo());
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 }

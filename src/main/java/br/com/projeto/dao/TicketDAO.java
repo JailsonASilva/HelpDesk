@@ -477,4 +477,22 @@ public class TicketDAO extends GenericDAO<Ticket> {
 			sessao.close();
 		}
 	}
+
+	public void realizarEvento(Long ticket) {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		try {
+			sessao.getTransaction().begin();
+			
+			sessao.createSQLQuery("UPDATE evento SET realizado = true WHERE ticket_codigo = " + ticket.toString())
+					.executeUpdate();
+
+			sessao.getTransaction().commit();
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
 }

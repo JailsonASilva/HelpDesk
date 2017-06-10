@@ -20,7 +20,7 @@
 			</p:dialog>
 
 			<p:dialog header="Novo Ticket" widgetVar="dialogo" visible="true"
-				draggable="false" resizable="false" modal="false" closable="true">
+				draggable="false" resizable="false" modal="false" closable="false">
 				<h:form id="formCadastro">
 
 					<h:panelGrid id="painel" columns="2" class="ui-noborder">
@@ -111,7 +111,8 @@
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
 						<p:inputTextarea id="solicitacao" rows="5" cols="85"
-							required="true" requiredMessage="Campo 'Solicitação' Obrigatório!"
+							required="true"
+							requiredMessage="Campo 'Solicitação' Obrigatório!"
 							counter="display" maxlength="10000"
 							counterTemplate="{0} caracteres restantes." autoResize="false"
 							value="#{ticketInternoBean.ticket.solicitacao}" />
@@ -146,9 +147,6 @@
 							update=":formListagem:formCadastro:painel :formListagem:formCadastro:painel3 :formListagem:formCadastro:painel4 :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
-
-						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-							oncomplete="PF('dialogo').hide();" />
 					</h:panelGrid>
 				</h:form>
 			</p:dialog>

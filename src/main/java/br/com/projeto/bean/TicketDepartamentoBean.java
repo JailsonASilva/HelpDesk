@@ -34,21 +34,27 @@ import br.com.projeto.dao.CategoriaDAO;
 import br.com.projeto.dao.ClienteDAO;
 import br.com.projeto.dao.DepartamentoDAO;
 import br.com.projeto.dao.EquipamentoDAO;
+import br.com.projeto.dao.EventoDAO;
 import br.com.projeto.dao.InteracaoDAO;
 import br.com.projeto.dao.InternoDAO;
 import br.com.projeto.dao.InternoNotificacaoDAO;
+import br.com.projeto.dao.LocalDAO;
 import br.com.projeto.dao.OcorrenciaDAO;
 import br.com.projeto.dao.TicketDAO;
+import br.com.projeto.dao.TipoEventoDAO;
 import br.com.projeto.dao.UsuarioDAO;
 import br.com.projeto.domain.Categoria;
 import br.com.projeto.domain.Cliente;
 import br.com.projeto.domain.Departamento;
 import br.com.projeto.domain.Equipamento;
+import br.com.projeto.domain.Evento;
 import br.com.projeto.domain.Interacao;
 import br.com.projeto.domain.Interno;
 import br.com.projeto.domain.InternoNotificacao;
+import br.com.projeto.domain.Local;
 import br.com.projeto.domain.Ocorrencia;
 import br.com.projeto.domain.Ticket;
+import br.com.projeto.domain.TipoEvento;
 import br.com.projeto.domain.Usuario;
 import br.com.projeto.util.EmailUtils;
 
@@ -66,9 +72,11 @@ public class TicketDepartamentoBean implements Serializable {
 	private Categoria categoria;
 	private Departamento departamento;
 	private Departamento departamentoCliente;
-
 	private Cliente cliente;
 	private Equipamento equipamento;
+	private Evento evento;
+	private Local local;
+	private TipoEvento tipoEvento;
 
 	private List<Ocorrencia> ocorrencias;
 	private List<Ticket> tickets;
@@ -85,6 +93,9 @@ public class TicketDepartamentoBean implements Serializable {
 	private List<Categoria> categorias;
 	private List<Equipamento> equipamentos;
 	private List<Usuario> usuarios;
+	private List<Evento> eventos;
+	private List<Local> locais;
+	private List<TipoEvento> tipoEventos;
 
 	private String solicitanteBusca;
 	private List<Cliente> solicitantesBusca;
@@ -522,6 +533,54 @@ public class TicketDepartamentoBean implements Serializable {
 		this.internoNotificacoes = internoNotificacoes;
 	}
 
+	public Evento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(Evento evento) {
+		this.evento = evento;
+	}
+
+	public List<Evento> getEventos() {
+		return eventos;
+	}
+
+	public void setEventos(List<Evento> eventos) {
+		this.eventos = eventos;
+	}
+
+	public Local getLocal() {
+		return local;
+	}
+
+	public void setLocal(Local local) {
+		this.local = local;
+	}
+
+	public TipoEvento getTipoEvento() {
+		return tipoEvento;
+	}
+
+	public void setTipoEvento(TipoEvento tipoEvento) {
+		this.tipoEvento = tipoEvento;
+	}
+
+	public List<Local> getLocais() {
+		return locais;
+	}
+
+	public void setLocais(List<Local> locais) {
+		this.locais = locais;
+	}
+
+	public List<TipoEvento> getTipoEventos() {
+		return tipoEventos;
+	}
+
+	public void setTipoEventos(List<TipoEvento> tipoEventos) {
+		this.tipoEventos = tipoEventos;
+	}
+
 	@PostConstruct
 	public void abrirTabelas() {
 		try {
@@ -535,6 +594,9 @@ public class TicketDepartamentoBean implements Serializable {
 			departamentoCliente = new Departamento();
 			cliente = new Cliente();
 			equipamento = new Equipamento();
+			evento = new Evento();
+			tipoEvento = new TipoEvento();
+			local = new Local();
 
 			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
 			departamentos = departamentoDAO.listarAtendimento();
@@ -546,6 +608,15 @@ public class TicketDepartamentoBean implements Serializable {
 
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.listar("nome");
+
+			EventoDAO eventoDAO = new EventoDAO();
+			eventos = eventoDAO.listar("titulo");
+
+			LocalDAO localDAO = new LocalDAO();
+			locais = localDAO.listar("nome");
+
+			TipoEventoDAO tipoEventoDAO = new TipoEventoDAO();
+			tipoEventos = tipoEventoDAO.listar("nome");
 
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
@@ -648,8 +719,10 @@ public class TicketDepartamentoBean implements Serializable {
 			auditoriaDAO.auditar("Busca Avançada (Por Departamento)");
 
 			if (tickets.isEmpty() == true) {
+
 				FacesContext context = FacesContext.getCurrentInstance();
 				context.addMessage(null, new FacesMessage("Registro não Encontrado!", "Por favor tente novamente."));
+
 			} else {
 				org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoBusca').hide();");
 			}
@@ -783,10 +856,39 @@ public class TicketDepartamentoBean implements Serializable {
 		autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 		usuario = autenticacaoBean.getUsuarioLogado();
 
-		interno = new Interno();
-		interno.setTicket(ticket);
-		interno.setUsuario(usuario);
-		interno.setData(new java.util.Date());
+		if (ticket.getUsuarioAtendimento() == null) {
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Operação não Permitida! Ticket sem Atendente."));
+
+			return;
+
+		} else {
+			interno = new Interno();
+			interno.setTicket(ticket);
+			interno.setUsuario(usuario);
+			interno.setData(new java.util.Date());
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoNovoInterno').show();");
+		}
+	}
+
+	public void novoEvento() {
+		AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
+		Usuario usuario = autenticacaoBean.getUsuarioLogado();
+
+		evento = new Evento();
+		local = new Local();
+		tipoEvento = new TipoEvento();
+
+		evento.setTicket(ticket);
+		evento.setTitulo(ticket.getAssunto());
+		evento.setObservacao(ticket.getSolicitacao());
+		evento.setUsuario(usuario);
+		evento.setRealizado(false);
+
+		org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEvento').show();");
 	}
 
 	public void salvar() {
@@ -1278,6 +1380,10 @@ public class TicketDepartamentoBean implements Serializable {
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
+			if (ticket.getEvento() == true) {
+				ticketDAO.realizarEvento(ticket.getCodigo());
+			}
+
 			context.addMessage(null, new FacesMessage("Ticket Concluído com Sucesso!",
 					"Ticket Nº " + ticket.getCodigo() + " Concluído!"));
 
@@ -1319,6 +1425,10 @@ public class TicketDepartamentoBean implements Serializable {
 			auditoriaDAO.auditar("Concluiu o Ticket: " + ticket.getCodigo() + " (Por Departamento)");
 
 			ticketsNaoAtendidos();
+			
+			if (ticket.getEvento() == true) {
+				ticketDAO.realizarEvento(ticket.getCodigo());
+			}
 
 			org.primefaces.context.RequestContext.getCurrentInstance()
 					.execute("PF('dialogoListagemOcorrencia').hide();");
@@ -1340,13 +1450,14 @@ public class TicketDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void editarTicketInterno(ActionEvent evento) {
 		try {
-			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes().get("internoNotificacaoSelecionado");
-			
-			ticket = internoNotificacao.getTicket(); 
-			
+			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes()
+					.get("internoNotificacaoSelecionado");
+
+			ticket = internoNotificacao.getTicket();
+
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
 
 		} catch (RuntimeException erro) {
@@ -1920,11 +2031,12 @@ public class TicketDepartamentoBean implements Serializable {
 			erro.printStackTrace();
 		}
 	}
-	
+
 	public void listarInternoMensagem(ActionEvent evento) {
 		try {
-			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes().get("internoNotificacaoSelecionado");
-			
+			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes()
+					.get("internoNotificacaoSelecionado");
+
 			ticket = internoNotificacao.getTicket();
 
 			InternoNotificacaoDAO InternoNotificacaoDAO = new InternoNotificacaoDAO();
@@ -1973,14 +2085,14 @@ public class TicketDepartamentoBean implements Serializable {
 		try {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
-			
+
 			internoNotificacao = (InternoNotificacao) evento.getComponent().getAttributes()
 					.get("internoNotificacaoSelecionado");
 			internoNotificacao.setLido(true);
 
 			InternoNotificacaoDAO internoNotificacaoDAO = new InternoNotificacaoDAO();
 			internoNotificacaoDAO.merge(internoNotificacao);
-			
+
 			internoNotificacoes = internoNotificacaoDAO.pesquisarInternoNaoLido(usuario);
 
 			FacesContext context = FacesContext.getCurrentInstance();
@@ -1998,6 +2110,92 @@ public class TicketDepartamentoBean implements Serializable {
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
+			erro.printStackTrace();
+		}
+	}
+
+	public void exibirMensagem(SelectEvent evento) {
+		try {
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDetalhe').show();");
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Visualizou Mensagem: " + internoNotificacao.getInterno().getTicket().getCodigo());
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
+					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarEvento() {
+		try {
+			evento.setDataEvento(evento.getDataHoraInicial());
+
+			EventoDAO eventoDAO = new EventoDAO();
+			eventoDAO.merge(evento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoEvento').hide();");
+
+			ticket.setEvento(true);
+
+			TicketDAO ticketDAO = new TicketDAO();
+			ticketDAO.merge(ticket);
+
+			evento = new Evento();
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Criou um Evento - Ticket: " + ticket.getCodigo() + " (Por Departamento)");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Aviso", "Evento Gravado com Sucesso!"));
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarLocal() {
+		try {
+			LocalDAO localDAO = new LocalDAO();
+			localDAO.merge(local);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoLocal').hide();");
+
+			locais = localDAO.listar("nome");
+			local = new Local();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarTipoEvento() {
+		try {
+			TipoEventoDAO tipoEventoDAO = new TipoEventoDAO();
+			tipoEventoDAO.merge(tipoEvento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoTipo').hide();");
+
+			tipoEventos = tipoEventoDAO.listar("nome");
+			tipoEvento = new TipoEvento();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();
 		}
 	}

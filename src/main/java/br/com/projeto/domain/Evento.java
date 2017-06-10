@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -17,7 +18,7 @@ public class Evento extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String titulo;
 
-	@Column(nullable = true)
+	@Column(nullable = false)
 	@Temporal(TemporalType.DATE)
 	private Date dataEvento;
 
@@ -30,15 +31,26 @@ public class Evento extends GenericDomain {
 	private Date dataHoraFinal;
 
 	@ManyToOne
-	@JoinColumn(nullable = false)
+	@JoinColumn(nullable = true)
 	private TipoEvento tipoEvento;
+
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private Ticket ticket;
+
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private Usuario usuario;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Local local;
 
-	@Column(length = 500, nullable = true)
+	@Column(length = 10000, nullable = true)
 	private String observacao;
+
+	@Column(nullable = true, columnDefinition = "boolean default False")
+	private Boolean realizado;
 
 	public String getTitulo() {
 		return titulo;
@@ -96,4 +108,38 @@ public class Evento extends GenericDomain {
 		this.dataEvento = dataEvento;
 	}
 
+	public Ticket getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+
+	public Boolean getRealizado() {
+		return realizado;
+	}
+
+	public void setRealizado(Boolean realizado) {
+		this.realizado = realizado;
+	}
+
+	@Transient
+	public String getRealizadoFormatado() {
+		String realizadoFormatado = "Não";
+
+		if (realizado) {
+			realizadoFormatado = "Sim";
+		}
+
+		return realizadoFormatado;
+	}
 }

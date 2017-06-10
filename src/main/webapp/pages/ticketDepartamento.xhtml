@@ -123,7 +123,7 @@
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							actionListener="#{ticketDepartamentoBean.editarTicket}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados :formCadastro:eventoBotao"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -201,7 +201,7 @@
 
 					<p:ajax event="rowDblselect"
 						listener="#{ticketDepartamentoBean.duploTicket}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:eventoBotao :formCadastro:painel3  :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
@@ -475,7 +475,7 @@
 
 				<p:separator />
 
-				<h:panelGrid columns="5">
+				<h:panelGrid columns="6">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{ticketDepartamentoBean.salvar}"
 						update=":formListagem:tabela :formListagem:messages :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
@@ -511,6 +511,17 @@
 						oncomplete="PF('dialogoOcorrencia').show();"
 						actionListener="#{ticketDepartamentoBean.novaOcorrencia}"
 						update=":formListagem:messages :formCadastroOcorrencia:painelOcorrencia">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+
+					<p:commandButton id="eventoBotao" value="Evento"
+						icon="fa fa fw fa-university"
+						disabled="#{ticketDepartamentoBean.ticket.evento}"
+						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						actionListener="#{ticketDepartamentoBean.novoEvento}"
+						update=":formListagem:messages :formCadastroEvento:painel">
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:commandButton>
@@ -1037,7 +1048,7 @@
 
 							<p:ajax event="rowDblselect"
 								listener="#{ticketDepartamentoBean.duploTicket}"
-								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados :formCadastro:eventoBotao" />
 
 							<p:ajax event="rowUnselect"
 								update=":formListagem:messages :formPendente:tabView"
@@ -1203,7 +1214,7 @@
 
 					<p:ajax event="rowDblselect"
 						listener="#{ticketDepartamentoBean.duploTicket}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados :formCadastro:eventoBotao" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formAtendimento:tabela"
@@ -1424,12 +1435,12 @@
 							</p:column>
 
 							<p:column headerText="Data" style="text-align:center"
-								sortBy="#{interacao.dataFormatada}" width="63">
+								sortBy="#{interacao.dataFormatada}" width="70">
 								<h:outputText value="#{interacao.dataFormatada}" />
 							</p:column>
 
 							<p:column headerText="Hora" style="text-align:center"
-								sortBy="#{interacao.hora}" width="50">
+								sortBy="#{interacao.hora}" width="55">
 								<h:outputText value="#{interacao.hora}" />
 							</p:column>
 
@@ -1455,11 +1466,9 @@
 						<p:toolbar id="toolOcorrencia">
 							<f:facet name="left">
 
-								<p:commandButton value="Novo"
-									oncomplete="PF('dialogoNovoInterno').show();"
-									icon="ui-icon-document"
+								<p:commandButton value="Nova Mensagem" icon="ui-icon-document"
 									actionListener="#{ticketDepartamentoBean.novoInterno}"
-									update=":formInterno:painel">
+									update=":formInterno:painel :formListagem:messages">
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
@@ -1555,6 +1564,10 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="internoNotificacao" rows="5" paginatorPosition="bottom">
 
+					<p:ajax event="rowDblselect"
+						listener="#{ticketDepartamentoBean.exibirMensagem}"
+						update=":formExibirMensagem:painel" />
+
 					<p:column headerText="Nº Ticket" width="10"
 						sortBy="#{internoNotificacao.ticket.codigo}"
 						style="text-align:center">
@@ -1612,7 +1625,7 @@
 
 						<p:commandButton icon="fa fa-fw fa-edit" title="Visualizar Ticket"
 							actionListener="#{ticketDepartamentoBean.editarTicketInterno}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:eventoBotao :formCadastro:painelDados"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="internoNotificacaoSelecionado"
@@ -1629,6 +1642,168 @@
 
 			</h:form>
 		</p:dialog>
+
+		<p:dialog header="Mensagem" widgetVar="dialogoDetalhe"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
+			<h:form id="formExibirMensagem">
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+
+					<p:inputTextarea id="observacao" rows="10" cols="60"
+						readonly="true"
+						value="#{ticketDepartamentoBean.internoNotificacao.interno.observacao}" />
+
+				</h:panelGrid>
+
+				<p:separator />
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoDetalhe').hide();" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Evento" widgetVar="dialogoEvento"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroEvento">
+
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="titulo" value="Título: " />
+					<p:inputText id="titulo" maxlength="100" size="37" required="true"
+						requiredMessage="Campo 'Título' Obrigatório"
+						value="#{ticketDepartamentoBean.evento.titulo}" />
+
+					<p:outputLabel for="local" value="Local " />
+					<h:panelGroup>
+						<p:selectOneMenu id="local" filter="true"
+							value="#{ticketDepartamentoBean.evento.local}" required="true"
+							requiredMessage="O campo 'Local' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{ticketDepartamentoBean.locais}"
+								var="local" itemValue="#{local}" itemLabel="#{local.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Local" oncomplete="PF('dialogoLocal').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="tipo" value="Tipo" />
+					<h:panelGroup>
+						<p:selectOneMenu id="tipo" filter="true"
+							value="#{ticketDepartamentoBean.evento.tipoEvento}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{ticketDepartamentoBean.tipoEventos}"
+								var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Tipo" oncomplete="PF('dialogoTipo').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início" />
+					<p:calendar id="dataHoraInicial" size="20" mask="99/99/99 99:99:99"
+						yearRange="1900:2222"
+						value="#{ticketDepartamentoBean.evento.dataHoraInicial}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo 'Data/Hora Inicial' Obrigatório!" />
+
+					<p:outputLabel for="dataHoraFinal" value="Data/Hora Término" />
+					<p:calendar id="dataHoraFinal" size="20" mask="99/99/99 99:99:99"
+						yearRange="1900:2222"
+						value="#{ticketDepartamentoBean.evento.dataHoraFinal}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo 'Data/Hora Final' Obrigatório!" />
+
+					<p:outputLabel for="observacao" value="Observação"
+						style="margin4px" />
+					<p:inputTextarea id="observacao" rows="5" cols="60"
+						counter="display" maxlength="500"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{ticketDepartamentoBean.evento.observacao}" />
+					<br></br>
+					<h:outputText id="display" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketDepartamentoBean.salvarEvento}"
+						update=":formCadastroEvento:painel :formListagem:messages :formCadastro:eventoBotao"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoEvento').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Local" widgetVar="dialogoLocal"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroLocal">
+				<h:panelGrid id="painelLocal" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{ticketDepartamentoBean.local.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketDepartamentoBean.salvarLocal}"
+						update=":formCadastroLocal:painelLocal :formCadastroEvento:local"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoLocal').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Tipo de Evento" widgetVar="dialogoTipo"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroTipo">
+				<h:panelGrid id="painelTipo" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{ticketDepartamentoBean.tipoEvento.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{ticketDepartamentoBean.salvarTipoEvento}"
+						update=":formCadastroTipo:painelTipo :formCadastroEvento:tipo"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoTipo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
 
 	</ui:define>
 </ui:composition>

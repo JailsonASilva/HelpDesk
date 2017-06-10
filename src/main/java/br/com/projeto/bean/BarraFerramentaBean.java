@@ -175,7 +175,7 @@ public class BarraFerramentaBean implements Serializable {
 
 			if (usuario.getAcesso().getMensagem() == true) {
 
-				Faces.redirect("./pages/notificacao.xhtml"); 
+				Faces.redirect("./pages/notificacao.xhtml");
 
 			} else {
 				FacesContext context = FacesContext.getCurrentInstance();
@@ -186,6 +186,25 @@ public class BarraFerramentaBean implements Serializable {
 		} catch (IOException erro) {
 			erro.printStackTrace();
 			Messages.addGlobalError("Não foi possível acessar Mensagens. Erro: " + erro.getMessage());
+		}
+	}
+
+	public void evento() {
+		try {
+
+			if (usuario.getAcesso().getEvento() == true) {
+
+				Faces.redirect("./pages/evento.xhtml");
+
+			} else {
+				FacesContext context = FacesContext.getCurrentInstance();
+
+				context.addMessage(null, new FacesMessage("Aviso!", "Acesso não Permitido"));
+			}
+
+		} catch (IOException erro) {
+			erro.printStackTrace();
+			Messages.addGlobalError("Não foi possível acessar Evento. Erro: " + erro.getMessage());
 		}
 	}
 

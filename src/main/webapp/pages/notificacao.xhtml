@@ -74,6 +74,10 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="internoNotificacao" rows="8" paginatorPosition="bottom">
 
+					<p:ajax event="rowDblselect"
+						listener="#{internoNotificacaoBean.duploClique}"
+						update=":formMensagem:painel" />
+
 					<p:column headerText="Nº Ticket" width="10"
 						sortBy="#{internoNotificacao.ticket.codigo}"
 						style="text-align:center">
@@ -140,6 +144,24 @@
 				<h:outputText id="dialogHeader"
 					value="Aguarde... Estamos Processando sua Informação..." />
 			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Mensagem" widgetVar="dialogoDetalhe" draggable="false"
+			resizable="false" appendTo="@(body)" modal="true" closable="true">
+			<h:form id="formMensagem">
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+
+					<p:inputTextarea id="observacao" rows="10" cols="60"
+						readonly="true"
+						value="#{internoNotificacaoBean.internoNotificacao.interno.observacao}" />
+
+				</h:panelGrid>
+
+				<p:separator />
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoDetalhe').hide();" />
+			</h:form>
 		</p:dialog>
 
 	</ui:define>

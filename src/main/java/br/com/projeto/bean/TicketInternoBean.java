@@ -312,6 +312,7 @@ public class TicketInternoBean implements Serializable {
 		ticket.setPrioridade("Normal");
 		ticket.setEmailDepartamento(false);
 		ticket.setEmailSolicitante(false);
+		ticket.setEvento(false);
 
 		categoria = new Categoria();
 		departamento = new Departamento();

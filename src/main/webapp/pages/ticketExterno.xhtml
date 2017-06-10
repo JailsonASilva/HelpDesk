@@ -8,8 +8,8 @@
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
 	template="/pages/modelo.xhtml">
 
-	<ui:define name="conteudo">	
-   	
+	<ui:define name="conteudo">
+
 		<h:form id="formListagem">
 
 			<p:growl id="messages" showDetail="true" />
@@ -23,7 +23,7 @@
 			</p:dialog>
 
 			<p:dialog header="Novo Ticket" widgetVar="dialogo" visible="true"
-				draggable="false" resizable="false" modal="false" closable="true">
+				draggable="false" resizable="false" modal="false" closable="false">
 				<h:form id="formCadastro">
 					<h:panelGrid id="painel" columns="1" class="ui-noborder">
 
@@ -62,7 +62,8 @@
 
 						<p:outputLabel for="solicitacao" value="Solicitação" />
 						<p:inputTextarea id="solicitacao" rows="4" cols="60"
-							required="true" requiredMessage="Campo 'Solicitação' Obrigatório!"
+							required="true"
+							requiredMessage="Campo 'Solicitação' Obrigatório!"
 							counter="display" maxlength="10000"
 							counterTemplate="{0} caracteres restantes." autoResize="false"
 							value="#{ticketExternoBean.ticket.solicitacao}" />
@@ -77,9 +78,6 @@
 							update=":formListagem:formCadastro:painel :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()" />
-
-						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-							oncomplete="PF('dialogo').hide();" />
 					</h:panelGrid>
 				</h:form>
 			</p:dialog>

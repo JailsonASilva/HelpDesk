@@ -123,7 +123,7 @@
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
 							actionListener="#{acessoAdministradorBean.editarTicket}"
-							update=":formCadastro:painel :formCadastro:painel2 :formMensagem:tabela :formCadastro:painel3 :formCadastro:painelDados"
+							update=":formCadastro:painel :formCadastro:painel2 :formMensagem:tabela :formCadastro:eventoBotao :formCadastro:painel3 :formCadastro:painelDados"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -202,7 +202,7 @@
 
 					<p:ajax event="rowDblselect"
 						listener="#{acessoAdministradorBean.duploTicket}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:eventoBotao :formCadastro:painel3  :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
@@ -259,7 +259,7 @@
 
 					<p:column headerText="Opções" width="60"
 						style="text-align:center;white-space:normal !important;">
-						
+
 						<p:commandButton icon="fa fa-fw fa-user-md" title="Atender Ticket"
 							actionListener="#{acessoAdministradorBean.atenderTicketAtalho}"
 							update="formListagem:tabela :formListagem:messages :formMensagem:tabela :formListagem:tool"
@@ -366,7 +366,8 @@
 		</p:dialog>
 
 		<p:dialog header="Dados do Ticket" widgetVar="dialogo" visible="false"
-			draggable="false" resizable="false" modal="false" closable="true">
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
 			<h:form id="formCadastro">
 				<p:panel id="painelDados" style="border:none;"
 					header="Nº Ticket: #{acessoAdministradorBean.ticket.codigo} Hora: #{acessoAdministradorBean.ticket.hora}" />
@@ -417,7 +418,7 @@
 
 					<p:outputLabel for="prioridade" value="Prioridade" />
 					<p:selectOneMenu id="prioridade" filter="true" required="true"
-						requiredMessage="Campo Obrigatório!"
+						requiredMessage="Campo 'Prioridade' Obrigatório!"
 						converter="omnifaces.SelectItemsConverter"
 						value="#{acessoAdministradorBean.ticket.prioridade}">
 						<f:selectItem noSelectionOption="true"
@@ -459,24 +460,18 @@
 				<h:panelGrid id="painel2" columns="4" class="ui-noborder">
 
 					<p:outputLabel for="assunto" value="Assunto" />
-					<p:inputText id="assunto" maxlength="100" size="57" required="true"
-						style="margin:0 39px 0 39px" requiredMessage="Campo Obrigatório!"
+					<p:inputText id="assunto" maxlength="100" size="83" required="true"
+						style="margin:0 42px 0 42px"
+						requiredMessage="Campo 'Assunto' Obrigatório!"
 						value="#{acessoAdministradorBean.ticket.assunto}" />
-
-					<p:outputLabel for="data" value="Data Abertura" />
-					<p:calendar id="data" mask="99/99/99" required="true"
-						showOn="button" requiredMessage="Campo Obrigatório!"
-						yearRange="1900:2222"
-						value="#{acessoAdministradorBean.ticket.dataAbertura}" size="12"
-						locale="pt_BR" showButtonPanel="true" navigator="true" />
 				</h:panelGrid>
 
 				<h:panelGrid id="painel3" columns="2" class="ui-noborder">
 
 					<p:outputLabel for="solicitacao" value="Solicitação" />
-					<p:inputTextarea id="solicitacao" rows="6" cols="95"
+					<p:inputTextarea id="solicitacao" rows="6" cols="80"
 						style="margin:0 25px 0 25px" required="true"
-						requiredMessage="Campo Obrigatório!" counter="display"
+						requiredMessage="Campo 'Assunto' Obrigatório!" counter="display"
 						maxlength="10000" counterTemplate="{0} caracteres restantes."
 						autoResize="false"
 						value="#{acessoAdministradorBean.ticket.solicitacao}" />
@@ -487,10 +482,10 @@
 
 				<p:separator />
 
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="6">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{acessoAdministradorBean.salvar}"
-						update=":formListagem:tabela :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
+						update=":formListagem:tabela :formListagem:messages :formListagem:tool :formCadastro:painel :formCadastro:painel2 :formCadastro:painel3"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
@@ -499,9 +494,41 @@
 						onsuccess="PF('iconeDeProcessamento').hide()"
 						oncomplete="PF('dialogoListagemOcorrencia').show()"
 						actionListener="#{acessoAdministradorBean.listarOcorrenciaAtender}"
-						update=":formListagemOcorrencia:tabView  :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
+						update=":formListagem:tabela :formListagemOcorrencia:tabView :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
 						<p:confirm header="Confirmação"
 							message="Deseja Atender este Ticket?" icon="ui-icon-alert" />
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+
+					<p:commandButton value="Ocorrências" icon="fa fa fw fa-sitemap"
+						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						oncomplete="PF('dialogoListagemOcorrencia').show()"
+						actionListener="#{acessoAdministradorBean.listarOcorrencia}"
+						update=":formListagemOcorrencia:tabView :formMensagem:tabela :formListagemOcorrencia:tabView:tabelaOcorrencia">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+
+					<p:commandButton value="Lançamento de Ocorrência"
+						icon="fa fa fw fa-sitemap" style="margin:0 3px"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						oncomplete="PF('dialogoOcorrencia').show();"
+						actionListener="#{acessoAdministradorBean.novaOcorrencia}"
+						update=":formListagem:messages :formCadastroOcorrencia:painelOcorrencia">
+						<f:actionListener
+							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+					</p:commandButton>
+
+					<p:commandButton id="eventoBotao" value="Evento"
+						icon="fa fa fw fa-university"
+						disabled="#{acessoAdministradorBean.ticket.evento}"
+						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()"
+						actionListener="#{acessoAdministradorBean.novoEvento}"
+						update=":formListagem:messages :formCadastroEvento:painel">
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:commandButton>
@@ -511,7 +538,6 @@
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>
-
 
 		<p:dialog header="Ocorrências" widgetVar="dialogoListagemOcorrencia"
 			width="1000" height="410" draggable="false" resizable="false"
@@ -1024,7 +1050,7 @@
 
 							<p:ajax event="rowDblselect"
 								listener="#{acessoAdministradorBean.duploTicket}"
-								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+								update=":formCadastro:painel :formCadastro:painel2 :formCadastro:eventoBotao :formCadastro:painel3  :formCadastro:painelDados" />
 
 							<p:ajax event="rowUnselect"
 								update=":formListagem:messages :formPendente:tabView"
@@ -1189,7 +1215,7 @@
 
 					<p:ajax event="rowDblselect"
 						listener="#{acessoAdministradorBean.duploTicket}"
-						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3  :formCadastro:painelDados" />
+						update=":formCadastro:painel :formCadastro:painel2 :formCadastro:eventoBotao :formCadastro:painel3  :formCadastro:painelDados" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formAtendimento:tabela"
@@ -1420,12 +1446,12 @@
 							</p:column>
 
 							<p:column headerText="Data" style="text-align:center"
-								sortBy="#{interacao.dataFormatada}" width="63">
+								sortBy="#{interacao.dataFormatada}" width="70">
 								<h:outputText value="#{interacao.dataFormatada}" />
 							</p:column>
 
 							<p:column headerText="Hora" style="text-align:center"
-								sortBy="#{interacao.hora}" width="50">
+								sortBy="#{interacao.hora}" width="55">
 								<h:outputText value="#{interacao.hora}" />
 							</p:column>
 
@@ -1450,12 +1476,9 @@
 
 						<p:toolbar id="toolOcorrencia">
 							<f:facet name="left">
-
-								<p:commandButton value="Novo"
-									oncomplete="PF('dialogoNovoInterno').show();"
-									icon="ui-icon-document"
-									actionListener="#{acessoAdministradorBean.novoInterno}"
-									update=":formInterno:painel">
+								<p:commandButton value="Nova Mensagem" icon="ui-icon-document"
+									actionListener="#{ticketUsuarioBean.novoInterno}"
+									update=":formInterno:painel :formListagem:messages">
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
@@ -1551,6 +1574,10 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="internoNotificacao" rows="5" paginatorPosition="bottom">
 
+					<p:ajax event="rowDblselect"
+						listener="#{acessoAdministradorBean.exibirMensagem}"
+						update=":formExibirMensagem:painel" />
+
 					<p:column headerText="Nº Ticket" width="10"
 						sortBy="#{internoNotificacao.ticket.codigo}"
 						style="text-align:center">
@@ -1608,7 +1635,7 @@
 
 						<p:commandButton icon="fa fa-fw fa-edit" title="Visualizar Ticket"
 							actionListener="#{acessoAdministradorBean.editarTicketInterno}"
-							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:painel3 :formCadastro:painelDados"
+							update=":formCadastro:painel :formCadastro:painel2 :formCadastro:eventoBotao :formCadastro:painel3 :formCadastro:painelDados"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="internoNotificacaoSelecionado"
@@ -1622,7 +1649,167 @@
 
 				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 					oncomplete="PF('dialogoMensagem').hide();" />
+			</h:form>
+		</p:dialog>
 
+		<p:dialog header="Mensagem" widgetVar="dialogoDetalhe"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
+			<h:form id="formExibirMensagem">
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+
+					<p:inputTextarea id="observacao" rows="10" cols="60"
+						readonly="true"
+						value="#{acessoAdministradorBean.internoNotificacao.interno.observacao}" />
+
+				</h:panelGrid>
+
+				<p:separator />
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoDetalhe').hide();" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Evento" widgetVar="dialogoEvento"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroEvento">
+
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="titulo" value="Título: " />
+					<p:inputText id="titulo" maxlength="100" size="37" required="true"
+						requiredMessage="Campo 'Título' Obrigatório"
+						value="#{acessoAdministradorBean.evento.titulo}" />
+
+					<p:outputLabel for="local" value="Local " />
+					<h:panelGroup>
+						<p:selectOneMenu id="local" filter="true"
+							value="#{acessoAdministradorBean.evento.local}" required="true"
+							requiredMessage="O campo 'Local' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{acessoAdministradorBean.locais}"
+								var="local" itemValue="#{local}" itemLabel="#{local.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Local" oncomplete="PF('dialogoLocal').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="tipo" value="Tipo" />
+					<h:panelGroup>
+						<p:selectOneMenu id="tipo" filter="true"
+							value="#{acessoAdministradorBean.evento.tipoEvento}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{acessoAdministradorBean.tipoEventos}"
+								var="tipo" itemValue="#{tipo}" itemLabel="#{tipo.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Tipo" oncomplete="PF('dialogoTipo').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="dataHoraInicial" value="Data/Hora Início" />
+					<p:calendar id="dataHoraInicial" size="20" mask="99/99/99 99:99:99"
+						yearRange="1900:2222"
+						value="#{acessoAdministradorBean.evento.dataHoraInicial}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo 'Data/Hora Inicial' Obrigatório!" />
+
+					<p:outputLabel for="dataHoraFinal" value="Data/Hora Término" />
+					<p:calendar id="dataHoraFinal" size="20" mask="99/99/99 99:99:99"
+						yearRange="1900:2222"
+						value="#{acessoAdministradorBean.evento.dataHoraFinal}"
+						pattern="dd/MM/yy HH:mm:ss" required="true" eventoe="pt_BR"
+						showButtonPanel="true" navigator="true" showOn="button"
+						requiredMessage="Campo 'Data/Hora Final' Obrigatório!" />
+
+					<p:outputLabel for="observacao" value="Observação"
+						style="margin4px" />
+					<p:inputTextarea id="observacao" rows="5" cols="60"
+						counter="display" maxlength="500"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{acessoAdministradorBean.evento.observacao}" />
+					<br></br>
+					<h:outputText id="display" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{acessoAdministradorBean.salvarEvento}"
+						update=":formCadastroEvento:painel :formListagem:messages :formCadastro:eventoBotao"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoEvento').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Local" widgetVar="dialogoLocal"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroLocal">
+				<h:panelGrid id="painelLocal" columns="2" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{acessoAdministradorBean.local.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{acessoAdministradorBean.salvarLocal}"
+						update=":formCadastroLocal:painelLocal :formCadastroEvento:local"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoLocal').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Tipo de Evento" widgetVar="dialogoTipo"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroTipo">
+				<h:panelGrid id="painelTipo" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{acessoAdministradorBean.tipoEvento.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{acessoAdministradorBean.salvarTipoEvento}"
+						update=":formCadastroTipo:painelTipo :formCadastroEvento:tipo"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoTipo').hide();" />
+				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 
