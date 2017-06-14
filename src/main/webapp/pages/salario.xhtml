@@ -10,15 +10,15 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de Departamentos">
+			<p:panel header="Cadastro de Salários">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{departamentoBean.busca}" />
+					value="#{salarioBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="fa fa fw fa-search"
-					actionListener="#{departamentoBean.pesquisar}"
+					actionListener="#{salarioBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -30,14 +30,14 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{departamentoBean.novo}"
+							icon="ui-icon-document" actionListener="#{salarioBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
-							disabled="#{departamentoBean.departamento == null}"
+							disabled="#{salarioBean.salario == null}"
 							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
 							oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -49,15 +49,14 @@
 						</span>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{departamentoBean.excluir}"
-							disabled="#{departamentoBean.departamento == null}"
+							actionListener="#{salarioBean.excluir}"
+							disabled="#{salarioBean.salario == null}"
 							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
+							<f:attribute name="salarioSelecionado" value="#{salario}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -69,20 +68,17 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="xls" target="tabela" fileName="salario" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="pdf" target="tabela" fileName="salario" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="xml" target="tabela" fileName="salario" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -96,52 +92,39 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{departamentoBean.departamento}"
+					selectionMode="single" selection="#{salarioBean.salario}"
 					draggableColumns="true" resizableColumns="true"
-					rowKey="#{departamento.codigo}" paginator="true"
+					rowKey="#{salario.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{departamentoBean.departamentos}"
+					value="#{salarioBean.salarios}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="departamento" rows="10" paginatorPosition="bottom">
+					var="salario" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect" listener="#{salarioBean.duploClique}"
+						update="formCadastro:painel" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{departamentoBean.onRowUnselect}" />
+						listener="#{salarioBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{departamentoBean.onRowSelect}" />
+						listener="#{salarioBean.onRowSelect}" />
 
-					<p:column headerText="Nome" sortBy="#{departamento.nome}">
-						<h:outputText value="#{departamento.nome}" />
+					<p:column headerText="Nome" sortBy="#{salario.nome}" width="200">
+						<h:outputText value="#{salario.nome}" />
 					</p:column>
 
-					<p:column headerText="Atendimento"
-						sortBy="#{departamento.atendimentoFormatado}" width="120"
+					<p:column headerText="Classe" sortBy="#{salario.classe}" width="90"
 						style="text-align:center">
-						<h:outputText value="#{departamento.atendimentoFormatado}" />
+						<h:outputText value="#{salario.classe}" />
 					</p:column>
 
-					<p:column headerText="Opções" width="75"
-						style="text-align:center;white-space:normal !important;">
-
-						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{departamentoBean.editar}"
-							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
-							<f:attribute name="registroSelecionado" value="#{departamento}" />
-						</p:commandButton>
-
-						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
-							actionListener="#{departamentoBean.excluir}"
-							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()">
-							<p:confirm header="Confirmação"
-								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="registroSelecionado" value="#{departamento}" />
-						</p:commandButton>
+					<p:column headerText="Salário" width="120" style="text-align:right"
+						sortBy="#{salario.salario}">
+						<h:outputText value="#{salario.salario}">
+							<f:convertNumber currencyCode="BRL" type="currency" />
+						</h:outputText>
 					</p:column>
 				</p:dataTable>
 
@@ -163,22 +146,63 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Departamento" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Salário" widgetVar="dialogo"
 			appendTo="@(body)" modal="true" draggable="false" resizable="false"
 			closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
 					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{departamentoBean.departamento.nome}" />
+					<p:inputText id="nome" maxlength="100" size="50" required="true"
+						requiredMessage="Campo 'Nome' Obrigatório"
+						value="#{salarioBean.salario.nome}" />
 
-					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
-					<p:selectBooleanCheckbox id="atendimento"
-						value="#{departamentoBean.departamento.atendimento}"
-						required="true"
-						requiredMessage="O campo 'Atendimento' é obrigatório" />
+					<p:outputLabel for="classe" value="Classe" />
+					<p:selectOneMenu id="classe" filter="true" required="true"
+						requiredMessage="Campo 'Classe' Obrigatório!"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{salarioBean.salario.classe}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione a Classe" />
+						<f:selectItem itemValue="Única" itemLabel="Única" />
+						<f:selectItem itemValue="1" itemLabel="1" />
+						<f:selectItem itemValue="2" itemLabel="2" />
+						<f:selectItem itemValue="3" itemLabel="3" />
+						<f:selectItem itemValue="4" itemLabel="4" />
+						<f:selectItem itemValue="5" itemLabel="5" />
+						<f:selectItem itemValue="6" itemLabel="6" />
+						<f:selectItem itemValue="7" itemLabel="7" />
+						<f:selectItem itemValue="8" itemLabel="8" />
+						<f:selectItem itemValue="9" itemLabel="9" />
+						<f:selectItem itemValue="10" itemLabel="10" />
+						<f:selectItem itemValue="11" itemLabel="11" />
+						<f:selectItem itemValue="12" itemLabel="12" />
+						<f:selectItem itemValue="13" itemLabel="13" />
+						<f:selectItem itemValue="14" itemLabel="14" />
+						<f:selectItem itemValue="15" itemLabel="15" />
+						<f:selectItem itemValue="16" itemLabel="16" />
+						<f:selectItem itemValue="17" itemLabel="17" />
+						<f:selectItem itemValue="18" itemLabel="18" />
+						<f:selectItem itemValue="19" itemLabel="19" />
+						<f:selectItem itemValue="20" itemLabel="20" />
+						<f:selectItem itemValue="21" itemLabel="21" />
+						<f:selectItem itemValue="22" itemLabel="22" />
+						<f:selectItem itemValue="23" itemLabel="23" />
+						<f:selectItem itemValue="24" itemLabel="24" />
+						<f:selectItem itemValue="25" itemLabel="25" />
+						<f:selectItem itemValue="26" itemLabel="26" />
+						<f:selectItem itemValue="27" itemLabel="27" />
+						<f:selectItem itemValue="28" itemLabel="28" />
+						<f:selectItem itemValue="29" itemLabel="29" />
+						<f:selectItem itemValue="30" itemLabel="30" />
+						<f:selectItems />
+					</p:selectOneMenu>
 
+					<p:outputLabel value="Salário" for="salario" />
+					<p:inputNumber id="salario" symbol="R$ " decimalSeparator=","
+						thousandSeparator="." value="#{salarioBean.salario.salario}"
+						required="true" requiredMessage="O Campo 'Salário' é Obrigatório">
+					</p:inputNumber>
 				</h:panelGrid>
 
 				<br></br>
@@ -186,7 +210,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{departamentoBean.salvar}"
+						actionListener="#{salarioBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />

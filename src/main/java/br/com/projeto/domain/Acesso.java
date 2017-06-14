@@ -98,6 +98,45 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean mensagem;
 
+	@Column(nullable = true)
+	private Boolean sistemaMenu;
+
+	@Column(nullable = true)
+	private Boolean ticketMenu;
+
+	@Column(nullable = true)
+	private Boolean eventoMenu;
+
+	@Column(nullable = true)
+	private Boolean equipamentoMenu;
+
+	@Column(nullable = true)
+	private Boolean baseConhecimentoMenu;
+
+	@Column(nullable = true)
+	private Boolean rhMenu;
+
+	@Column(nullable = true)
+	private Boolean rh;
+
+	@Column(nullable = true)
+	private Boolean portalGestor;
+
+	@Column(nullable = true)
+	private Boolean portalColaborador;
+
+	@Column(nullable = true)
+	private Boolean cargo;
+
+	@Column(nullable = true)
+	private Boolean salarios;
+
+	@Column(nullable = true)
+	private Boolean unidade;
+
+	@Column(nullable = true)
+	private Boolean colaborador;
+
 	public String getNome() {
 		return nome;
 	}
@@ -336,6 +375,110 @@ public class Acesso extends GenericDomain {
 
 	public void setMensagem(Boolean mensagem) {
 		this.mensagem = mensagem;
+	}
+
+	public Boolean getSistemaMenu() {
+		return sistemaMenu;
+	}
+
+	public void setSistemaMenu(Boolean sistemaMenu) {
+		this.sistemaMenu = sistemaMenu;
+	}
+
+	public Boolean getTicketMenu() {
+		return ticketMenu;
+	}
+
+	public void setTicketMenu(Boolean ticketMenu) {
+		this.ticketMenu = ticketMenu;
+	}
+
+	public Boolean getEventoMenu() {
+		return eventoMenu;
+	}
+
+	public void setEventoMenu(Boolean eventoMenu) {
+		this.eventoMenu = eventoMenu;
+	}
+
+	public Boolean getEquipamentoMenu() {
+		return equipamentoMenu;
+	}
+
+	public void setEquipamentoMenu(Boolean equipamentoMenu) {
+		this.equipamentoMenu = equipamentoMenu;
+	}
+
+	public Boolean getBaseConhecimentoMenu() {
+		return baseConhecimentoMenu;
+	}
+
+	public void setBaseConhecimentoMenu(Boolean baseConhecimentoMenu) {
+		this.baseConhecimentoMenu = baseConhecimentoMenu;
+	}
+
+	public Boolean getRhMenu() {
+		return rhMenu;
+	}
+
+	public void setRhMenu(Boolean rhMenu) {
+		this.rhMenu = rhMenu;
+	}
+
+	public Boolean getRh() {
+		return rh;
+	}
+
+	public void setRh(Boolean rh) {
+		this.rh = rh;
+	}
+
+	public Boolean getPortalGestor() {
+		return portalGestor;
+	}
+
+	public void setPortalGestor(Boolean portalGestor) {
+		this.portalGestor = portalGestor;
+	}
+
+	public Boolean getPortalColaborador() {
+		return portalColaborador;
+	}
+
+	public void setPortalColaborador(Boolean portalColaborador) {
+		this.portalColaborador = portalColaborador;
+	}
+
+	public Boolean getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(Boolean cargo) {
+		this.cargo = cargo;
+	}
+
+	public Boolean getSalarios() {
+		return salarios;
+	}
+
+	public void setSalarios(Boolean salarios) {
+		this.salarios = salarios;
+	}
+
+	public Boolean getUnidade() {
+		return unidade;
+	}
+
+	public void setUnidade(Boolean unidade) {
+		this.unidade = unidade;
+	}
+
+	public Boolean getColaborador() {
+		return colaborador;
+	}
+
+	public void setColaborador(Boolean colaborador) {
+		this.colaborador = colaborador;
 	}
 
 }

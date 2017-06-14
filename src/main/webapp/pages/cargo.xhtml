@@ -10,15 +10,15 @@
 
 	<ui:define name="conteudo">
 		<h:form id="formListagem">
-			<p:panel header="Cadastro de Departamentos">
+			<p:panel header="Cadastro de Cargos">
 				<br></br>
 				<p:outputLabel value="Digite sua Pesquisa: " />
 				<p:inputText id="textoPesquisa" maxlength="65" size="65"
-					value="#{departamentoBean.busca}" />
+					value="#{cargoBean.busca}" />
 
 				<p:commandButton id="bitPesquisar" style="margin:10px"
 					value="Pesquisar" icon="fa fa fw fa-search"
-					actionListener="#{departamentoBean.pesquisar}"
+					actionListener="#{cargoBean.pesquisar}"
 					update="formListagem:tabela :formListagem:tool :formListagem:messages"
 					onstart="PF('iconeDeProcessamento').show()"
 					onsuccess="PF('iconeDeProcessamento').hide()" />
@@ -30,14 +30,14 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{departamentoBean.novo}"
+							icon="ui-icon-document" actionListener="#{cargoBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
-							disabled="#{departamentoBean.departamento == null}"
+							disabled="#{cargoBean.cargo == null}"
 							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
 							oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -49,15 +49,14 @@
 						</span>
 
 						<p:commandButton title="Excluir" icon="ui-icon-trash"
-							actionListener="#{departamentoBean.excluir}"
-							disabled="#{departamentoBean.departamento == null}"
+							actionListener="#{cargoBean.excluir}"
+							disabled="#{cargoBean.cargo == null}"
 							update=":formListagem:tabela :formListagem:tool"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
+							<f:attribute name="cargoSelecionado" value="#{cargo}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -69,20 +68,17 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="xls" target="tabela" fileName="cargo" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="pdf" target="tabela" fileName="cargo" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela"
-									fileName="departamento" />
+								<p:dataExporter type="xml" target="tabela" fileName="cargo" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -96,52 +92,27 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{departamentoBean.departamento}"
+					selectionMode="single" selection="#{cargoBean.cargo}"
 					draggableColumns="true" resizableColumns="true"
-					rowKey="#{departamento.codigo}" paginator="true"
+					rowKey="#{cargo.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{departamentoBean.departamentos}"
+					value="#{cargoBean.cargos}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="departamento" rows="10" paginatorPosition="bottom">
+					var="cargo" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect" listener="#{cargoBean.duploClique}"
+						update="formCadastro:painel" />
 
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{departamentoBean.onRowUnselect}" />
+						listener="#{cargoBean.onRowUnselect}" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{departamentoBean.onRowSelect}" />
+						listener="#{cargoBean.onRowSelect}" />
 
-					<p:column headerText="Nome" sortBy="#{departamento.nome}">
-						<h:outputText value="#{departamento.nome}" />
-					</p:column>
-
-					<p:column headerText="Atendimento"
-						sortBy="#{departamento.atendimentoFormatado}" width="120"
-						style="text-align:center">
-						<h:outputText value="#{departamento.atendimentoFormatado}" />
-					</p:column>
-
-					<p:column headerText="Opções" width="75"
-						style="text-align:center;white-space:normal !important;">
-
-						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{departamentoBean.editar}"
-							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
-							<f:attribute name="registroSelecionado" value="#{departamento}" />
-						</p:commandButton>
-
-						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
-							actionListener="#{departamentoBean.excluir}"
-							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()">
-							<p:confirm header="Confirmação"
-								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="registroSelecionado" value="#{departamento}" />
-						</p:commandButton>
+					<p:column headerText="Nome" sortBy="#{cargo.nome}">
+						<h:outputText value="#{cargo.nome}" />
 					</p:column>
 				</p:dataTable>
 
@@ -163,22 +134,15 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Departamento" widgetVar="dialogo"
+		<p:dialog header="Cadastro de Cargo" widgetVar="dialogo"
 			appendTo="@(body)" modal="true" draggable="false" resizable="false"
 			closable="true">
 			<h:form id="formCadastro">
-				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
-						value="#{departamentoBean.departamento.nome}" />
-
-					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
-					<p:selectBooleanCheckbox id="atendimento"
-						value="#{departamentoBean.departamento.atendimento}"
-						required="true"
-						requiredMessage="O campo 'Atendimento' é obrigatório" />
-
+						value="#{cargoBean.cargo.nome}" />
 				</h:panelGrid>
 
 				<br></br>
@@ -186,7 +150,7 @@
 
 				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{departamentoBean.salvar}"
+						actionListener="#{cargoBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />

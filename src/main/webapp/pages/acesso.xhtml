@@ -31,14 +31,14 @@
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
 							icon="ui-icon-document" actionListener="#{acessoBean.novo}"
-							update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento">
+							update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelRh :formCadastro:tabView:painelMenu :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
 							disabled="#{acessoBean.acesso == null}"
-							update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento"
+							update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelRh :formCadastro:tabView:painelMenu :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -106,7 +106,7 @@
 						listener="#{acessoBean.onRowUnselect}" />
 
 					<p:ajax event="rowDblselect" listener="#{acessoBean.duploClique}"
-						update=":formCadastro:painel :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento" />
+						update=":formCadastro:painel :formCadastro:tabView:painelMenu :formCadastro:tabView:painelRh :formCadastro:tabView:painelSistema :formCadastro:tabView:painelEquipamento :formCadastro:tabView:painelTicket :formCadastro:tabView:painelFaq :formCadastro:tabView:painelEvento" />
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
@@ -136,7 +136,8 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Acesso" widgetVar="dialogo"
-			draggable="false" resizable="false" closable="true">
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />
@@ -149,6 +150,32 @@
 				<br></br>
 
 				<p:tabView id="tabView">
+					<p:tab title="Menu">
+						<h:panelGrid id="painelMenu" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Sistema" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.sistemaMenu}" />
+
+							<p:outputLabel value="Ticket" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.ticketMenu}" />
+
+							<p:outputLabel value="Equipamento" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.equipamentoMenu}" />
+
+							<p:outputLabel value="RH" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.rhMenu}" />
+
+							<p:outputLabel value="Eventos" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.eventoMenu}" />
+
+							<p:outputLabel value="Base de Conhecimento" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.baseConhecimentoMenu}" />
+
+						</h:panelGrid>
+					</p:tab>
+
 					<p:tab title="Sistema">
 						<h:panelGrid id="painelSistema" columns="2" class="ui-noborder">
 
@@ -169,7 +196,7 @@
 					</p:tab>
 
 					<p:tab title="Equipamento">
-						<h:panelGrid id="painelEquipamento" columns="2"
+						<h:panelGrid id="painelEquipamento" columns="4"
 							class="ui-noborder">
 
 							<p:outputLabel value="Equipamento" />
@@ -195,6 +222,24 @@
 							<p:outputLabel value="Próxima Manutenções" />
 							<p:selectBooleanCheckbox
 								value="#{acessoBean.acesso.proximaManutencao}" />
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="RH">
+						<h:panelGrid id="painelRh" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Colaborador" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.colaborador}" />
+
+							<p:outputLabel value="Unidade" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.unidade}" />
+
+							<p:outputLabel value="Cargos" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.cargo}" />
+
+							<p:outputLabel value="Salários" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.salarios}" />
+
 						</h:panelGrid>
 					</p:tab>
 

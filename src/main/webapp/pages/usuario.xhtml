@@ -99,7 +99,7 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="usuario" rows="10" paginatorPosition="bottom">
 
-					<p:ajax event="rowDblselect" listener="#{usuarioBean.duploClique}" 
+					<p:ajax event="rowDblselect" listener="#{usuarioBean.duploClique}"
 						update="formCadastro:painel" />
 
 					<p:ajax event="rowUnselect"
@@ -184,7 +184,8 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Usuário" widgetVar="dialogo"
-			draggable="false" resizable="false" closable="true">
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome " />
@@ -248,7 +249,7 @@
 				<br></br>
 				<p:separator />
 
-				<h:panelGrid columns="3">
+				<h:panelGrid columns="2">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
 						actionListener="#{usuarioBean.salvar}"
 						update=":formCadastro:painel :formListagem:tabela :formListagem:tool"
@@ -261,11 +262,12 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Departamento"
-			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
-			closable="true">
+		<p:dialog header="Cadastro de Departamento" appendTo="@(body)"
+			modal="true" widgetVar="dialogoDepartamento" draggable="false"
+			resizable="false" closable="true">
 			<h:form id="formCadastroDepartamento">
 				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
+				
 					<p:outputLabel for="nome" value="Nome " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
@@ -295,7 +297,7 @@
 		</p:dialog>
 
 		<p:dialog header="Senha" widgetVar="dialogoSenha" draggable="false"
-			resizable="false" closable="true">
+			appendTo="@(body)" modal="true" resizable="false" closable="true">
 			<h:form id="formSenha">
 				<h:panelGrid id="painelSenha" columns="3" class="ui-noborder">
 					<p:outputLabel for="senha" value="Senha:" />

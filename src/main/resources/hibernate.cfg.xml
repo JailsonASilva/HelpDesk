@@ -67,6 +67,10 @@
 		<mapping class="br.com.projeto.domain.Auditoria" />
 		<mapping class="br.com.projeto.domain.Interno" />
 		<mapping class="br.com.projeto.domain.InternoNotificacao" />
+		<mapping class="br.com.projeto.domain.Cargo" />
+		<mapping class="br.com.projeto.domain.Unidade" />
+		<mapping class="br.com.projeto.domain.Salario" />
+		<mapping class="br.com.projeto.domain.Colaborador" />
 
 	</session-factory>
 

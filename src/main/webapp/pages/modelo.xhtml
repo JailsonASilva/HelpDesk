@@ -22,7 +22,8 @@
 				<h:form id="formPrincipal">
 					<p:growl id="messages" showDetail="true" />
 					<p:menubar style="border:none;">
-						<p:submenu label="Sistemas" icon="fa fa fw fa-user">
+						<p:submenu label="Sistemas" icon="fa fa fw fa-user"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.sistemaMenu}">
 							<p:menuitem value="Departamentos" url="/pages/departamento.xhtml"
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.departamento}" />
 
@@ -38,7 +39,8 @@
 								rendered="#{autenticacaoBean.usuarioLogado.acesso.auditoria}" />
 						</p:submenu>
 
-						<p:submenu label="Ticket" icon="fa fa fw fa-envelope">
+						<p:submenu label="Ticket" icon="fa fa fw fa-envelope"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.ticketMenu}">
 
 							<p:submenu label="Cadastros"
 								icon="fa fa fw fa-angle-double-right">
@@ -98,7 +100,8 @@
 						</p:submenu>
 
 
-						<p:submenu label="Equipamento" icon="fa fa fw fa-wrench">
+						<p:submenu label="Equipamento" icon="fa fa fw fa-wrench"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.equipamentoMenu}">
 
 							<p:submenu label="Cadastros"
 								icon="fa fa fw fa-angle-double-right">
@@ -133,11 +136,34 @@
 									url="/pages/proximaManutencao.xhtml"
 									rendered="#{autenticacaoBean.usuarioLogado.acesso.proximaManutencao}" />
 							</p:submenu>
-
-
 						</p:submenu>
 
-						<p:submenu label="Eventos" icon="fa fa fw fa-calendar">
+						<p:submenu label="RH" icon="fa fa fw fa-group"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.rhMenu}">
+							<p:submenu label="Portal RH"
+								icon="fa fa fw fa-angle-double-right">
+
+								<p:submenu label="Cadastros"
+									icon="fa fa fw fa-angle-double-right">
+
+									<p:menuitem value="Colaborador" url="/pages/colaborador.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.colaborador}" />
+
+									<p:menuitem value="Unidade" url="/pages/unidade.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.unidade}" />
+
+									<p:menuitem value="Cargos" url="/pages/cargo.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.cargo}" />
+
+									<p:menuitem value="Salários" url="/pages/salario.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.salarios}" />
+								</p:submenu>
+
+							</p:submenu>
+						</p:submenu>
+
+						<p:submenu label="Eventos" icon="fa fa fw fa-calendar"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.eventoMenu}">
 							<p:submenu label="Cadastros"
 								icon="fa fa fw fa-angle-double-right">
 
@@ -159,7 +185,8 @@
 
 						</p:submenu>
 
-						<p:submenu label="Base de Conhecimento" icon="fa fa fw fa-list-ol">
+						<p:submenu label="Base de Conhecimento" icon="fa fa fw fa-list-ol"
+							rendered="#{autenticacaoBean.usuarioLogado.acesso.baseConhecimentoMenu}">
 							<p:submenu label="Cadastros"
 								icon="fa fa fw fa-angle-double-right">
 
