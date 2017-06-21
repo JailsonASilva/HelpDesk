@@ -35,11 +35,27 @@ public class Colaborador extends GenericDomain {
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
+	private Profissao profissao;
+
+	@ManyToOne
+	@JoinColumn(nullable = false)
 	private Salario salario;
 
 	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Departamento departamento;
+
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Situacao situacao;
+
+	@ManyToOne
+	@JoinColumn(nullable = false)
+	private Horario horario;
+
+	@ManyToOne
+	@JoinColumn(nullable = true)
+	private Estabilidade estabilidade;
 
 	@Column(length = 80, nullable = true)
 	private String localNascimento;
@@ -59,11 +75,8 @@ public class Colaborador extends GenericDomain {
 	@Column(length = 50, nullable = true)
 	private String escolaridade;
 
-	@Column(length = 80, nullable = true)
-	private String profissao;
-
 	@Column(length = 50, nullable = true)
-	private String numeroRegistro;
+	private Long numeroRegistro;
 
 	@Column(length = 25, nullable = false)
 	private String telefone_1;
@@ -119,7 +132,10 @@ public class Colaborador extends GenericDomain {
 	private String conta;
 
 	@Column(length = 20, nullable = true)
-	private String tipo;
+	private String tipoConta;
+
+	@Column(length = 20, nullable = true)
+	private String operacaoConta;
 
 	@Column(length = 100, nullable = false)
 	private String endereco;
@@ -142,70 +158,12 @@ public class Colaborador extends GenericDomain {
 	@Column(length = 15, nullable = true)
 	private String cep;
 
-	@Column(length = 30, nullable = false)
-	private String situacao;
-
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
 	private Date dataAdmissao;
 
 	@Column(length = 20, nullable = false)
 	private String tipoSalario;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date dataUltimoAso;
-
-	@Column(length = 30, nullable = true)
-	private String AsoTipo;
-
-	@Column(length = 30, nullable = true)
-	private String estabilidade;
-
-	@Column(length = 30, nullable = true)
-	private String horarioTrabalho;
-
-	@Temporal(TemporalType.TIME)
-	@Column(nullable = false)
-	private Date entrada;
-
-	@Temporal(TemporalType.TIME)
-	@Column(nullable = false)
-	private Date saida;
-
-	@Temporal(TemporalType.TIME)
-	@Column(nullable = true)
-	private Date intervalo;
-
-	@Temporal(TemporalType.TIME)
-	@Column(nullable = true)
-	private Date retorno;
-
-	@Column(length = 20, nullable = false)
-	private String periodo;
-
-	@Column(length = 20, nullable = false)
-	private String ultimaFerias;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date dataInicio;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date dataFim;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date gozoDe;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date gozoAte;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date dataLimite;
 
 	@Column(length = 3, nullable = true)
 	private String adicionalNoturno;
@@ -242,23 +200,6 @@ public class Colaborador extends GenericDomain {
 
 	@Column(length = 3, nullable = true)
 	private String descontoBolsaEstudo;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date vencimentoContrato45Dias;
-
-	@Temporal(TemporalType.DATE)
-	@Column(nullable = true)
-	private Date vencimentoContrato90Dias;
-
-	@Column(length = 50, nullable = false)
-	private String classeAtual;
-
-	@Column(nullable = true)
-	private Long haSemanal;
-
-	@Column(nullable = true, precision = 6, scale = 2)
-	private BigDecimal baseSemanal;
 
 	public String getNome() {
 		return nome;
@@ -324,19 +265,19 @@ public class Colaborador extends GenericDomain {
 		this.escolaridade = escolaridade;
 	}
 
-	public String getProfissao() {
+	public Profissao getProfissao() {
 		return profissao;
 	}
 
-	public void setProfissao(String profissao) {
+	public void setProfissao(Profissao profissao) {
 		this.profissao = profissao;
 	}
 
-	public String getNumeroRegistro() {
+	public Long getNumeroRegistro() {
 		return numeroRegistro;
 	}
 
-	public void setNumeroRegistro(String numeroRegistro) {
+	public void setNumeroRegistro(Long numeroRegistro) {
 		this.numeroRegistro = numeroRegistro;
 	}
 
@@ -476,12 +417,12 @@ public class Colaborador extends GenericDomain {
 		this.conta = conta;
 	}
 
-	public String getTipo() {
-		return tipo;
+	public String getTipoConta() {
+		return tipoConta;
 	}
 
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
+	public void setTipoConta(String tipoConta) {
+		this.tipoConta = tipoConta;
 	}
 
 	public String getEndereco() {
@@ -540,11 +481,11 @@ public class Colaborador extends GenericDomain {
 		this.cep = cep;
 	}
 
-	public String getSituacao() {
+	public Situacao getSituacao() {
 		return situacao;
 	}
 
-	public void setSituacao(String situacao) {
+	public void setSituacao(Situacao situacao) {
 		this.situacao = situacao;
 	}
 
@@ -564,124 +505,12 @@ public class Colaborador extends GenericDomain {
 		this.tipoSalario = tipoSalario;
 	}
 
-	public Date getDataUltimoAso() {
-		return dataUltimoAso;
+	public Horario getHorario() {
+		return horario;
 	}
 
-	public void setDataUltimoAso(Date dataUltimoAso) {
-		this.dataUltimoAso = dataUltimoAso;
-	}
-
-	public String getAsoTipo() {
-		return AsoTipo;
-	}
-
-	public void setAsoTipo(String asoTipo) {
-		AsoTipo = asoTipo;
-	}
-
-	public String getEstabilidade() {
-		return estabilidade;
-	}
-
-	public void setEstabilidade(String estabilidade) {
-		this.estabilidade = estabilidade;
-	}
-
-	public String getHorarioTrabalho() {
-		return horarioTrabalho;
-	}
-
-	public void setHorarioTrabalho(String horarioTrabalho) {
-		this.horarioTrabalho = horarioTrabalho;
-	}
-
-	public Date getEntrada() {
-		return entrada;
-	}
-
-	public void setEntrada(Date entrada) {
-		this.entrada = entrada;
-	}
-
-	public Date getSaida() {
-		return saida;
-	}
-
-	public void setSaida(Date saida) {
-		this.saida = saida;
-	}
-
-	public Date getIntervalo() {
-		return intervalo;
-	}
-
-	public void setIntervalo(Date intervalo) {
-		this.intervalo = intervalo;
-	}
-
-	public Date getRetorno() {
-		return retorno;
-	}
-
-	public void setRetorno(Date retorno) {
-		this.retorno = retorno;
-	}
-
-	public String getPeriodo() {
-		return periodo;
-	}
-
-	public void setPeriodo(String periodo) {
-		this.periodo = periodo;
-	}
-
-	public String getUltimaFerias() {
-		return ultimaFerias;
-	}
-
-	public void setUltimaFerias(String ultimaFerias) {
-		this.ultimaFerias = ultimaFerias;
-	}
-
-	public Date getDataInicio() {
-		return dataInicio;
-	}
-
-	public void setDataInicio(Date dataInicio) {
-		this.dataInicio = dataInicio;
-	}
-
-	public Date getDataFim() {
-		return dataFim;
-	}
-
-	public void setDataFim(Date dataFim) {
-		this.dataFim = dataFim;
-	}
-
-	public Date getGozoDe() {
-		return gozoDe;
-	}
-
-	public void setGozoDe(Date gozoDe) {
-		this.gozoDe = gozoDe;
-	}
-
-	public Date getGozoAte() {
-		return gozoAte;
-	}
-
-	public void setGozoAte(Date gozoAte) {
-		this.gozoAte = gozoAte;
-	}
-
-	public Date getDataLimite() {
-		return dataLimite;
-	}
-
-	public void setDataLimite(Date dataLimite) {
-		this.dataLimite = dataLimite;
+	public void setHorario(Horario horario) {
+		this.horario = horario;
 	}
 
 	public String getAdicionalNoturno() {
@@ -780,46 +609,6 @@ public class Colaborador extends GenericDomain {
 		this.descontoBolsaEstudo = descontoBolsaEstudo;
 	}
 
-	public Date getVencimentoContrato45Dias() {
-		return vencimentoContrato45Dias;
-	}
-
-	public void setVencimentoContrato45Dias(Date vencimentoContrato45Dias) {
-		this.vencimentoContrato45Dias = vencimentoContrato45Dias;
-	}
-
-	public Date getVencimentoContrato90Dias() {
-		return vencimentoContrato90Dias;
-	}
-
-	public void setVencimentoContrato90Dias(Date vencimentoContrato90Dias) {
-		this.vencimentoContrato90Dias = vencimentoContrato90Dias;
-	}
-
-	public String getClasseAtual() {
-		return classeAtual;
-	}
-
-	public void setClasseAtual(String classeAtual) {
-		this.classeAtual = classeAtual;
-	}
-
-	public Long getHaSemanal() {
-		return haSemanal;
-	}
-
-	public void setHaSemanal(Long haSemanal) {
-		this.haSemanal = haSemanal;
-	}
-
-	public BigDecimal getBaseSemanal() {
-		return baseSemanal;
-	}
-
-	public void setBaseSemanal(BigDecimal baseSemanal) {
-		this.baseSemanal = baseSemanal;
-	}
-
 	public Unidade getUnidade() {
 		return unidade;
 	}
@@ -852,10 +641,27 @@ public class Colaborador extends GenericDomain {
 		this.departamento = departamento;
 	}
 
+	public Estabilidade getEstabilidade() {
+		return estabilidade;
+	}
+
+	public void setEstabilidade(Estabilidade estabilidade) {
+		this.estabilidade = estabilidade;
+	}
+
 	@Transient
 	public String getDataNascimentoFormatada() {
 		String dataNascimentoFormatada = new SimpleDateFormat("dd/MM/yyyy").format(dataNascimento);
 
 		return dataNascimentoFormatada;
 	}
+
+	public String getOperacaoConta() {
+		return operacaoConta;
+	}
+
+	public void setOperacaoConta(String operacaoConta) {
+		this.operacaoConta = operacaoConta;
+	}
+
 }

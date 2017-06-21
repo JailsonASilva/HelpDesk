@@ -14,15 +14,15 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
-import br.com.projeto.dao.CargoDAO;
-import br.com.projeto.domain.Cargo;
+import br.com.projeto.dao.EstabilidadeDAO;
+import br.com.projeto.domain.Estabilidade;
 
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class CargoBean implements Serializable {
-	private Cargo cargo;
-	private List<Cargo> cargos;
+public class EstabilidadeBean implements Serializable {
+	private Estabilidade estabilidade;
+	private List<Estabilidade> estabilidades;
 
 	private FacesMessage message;
 	private String busca;
@@ -43,30 +43,30 @@ public class CargoBean implements Serializable {
 		this.busca = busca;
 	}
 
-	public List<Cargo> getCargos() {
-		return cargos;
+	public List<Estabilidade> getEstabilidades() {
+		return estabilidades;
 	}
 
-	public void setCargos(List<Cargo> cargos) {
-		this.cargos = cargos;
+	public void setEstabilidades(List<Estabilidade> estabilidades) {
+		this.estabilidades = estabilidades;
 	}
 
-	public Cargo getCargo() {
-		return cargo;
+	public Estabilidade getEstabilidade() {
+		return estabilidade;
 	}
 
-	public void setCargo(Cargo cargo) {
-		this.cargo = cargo;
+	public void setEstabilidade(Estabilidade estabilidade) {
+		this.estabilidade = estabilidade;
 	}
 
 	public void pesquisar() {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargos = cargoDAO.pesquisar(busca);
+			EstabilidadeDAO estabilidadeDAO = new EstabilidadeDAO();
+			estabilidades = estabilidadeDAO.pesquisar(busca);
 
-			cargo = null;
+			estabilidade = null;
 
-			if (cargos.isEmpty() == true) {
+			if (estabilidades.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -86,23 +86,23 @@ public class CargoBean implements Serializable {
 	}
 
 	public void novo() {
-		cargo = new Cargo();
+		estabilidade = new Estabilidade();
 	}
 
 	public void salvar() {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargoDAO.merge(cargo);
+			EstabilidadeDAO estabilidadeDAO = new EstabilidadeDAO();
+			estabilidadeDAO.merge(estabilidade);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
-			cargos = cargoDAO.listar("nome");
-			
+			estabilidades = estabilidadeDAO.listar("nome");
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
 
-			cargo = null;
+			estabilidade = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -115,17 +115,17 @@ public class CargoBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargoDAO.excluir(cargo);
+			EstabilidadeDAO estabilidadeDAO = new EstabilidadeDAO();
+			estabilidadeDAO.excluir(estabilidade);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + cargo.getNome());
+					"Registro: " + estabilidade.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			cargos = cargoDAO.listar("nome");
+			estabilidades = estabilidadeDAO.listar("nome");
 
-			cargo = null;
+			estabilidade = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
@@ -141,7 +141,7 @@ public class CargoBean implements Serializable {
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
-		cargo = null;
+		estabilidade = null;
 	}
 
 	public void duploClique(SelectEvent evento) {

@@ -260,7 +260,7 @@ public class TicketInternoBean implements Serializable {
 
 			CategoriaDAO categoriaDAO = new CategoriaDAO();
 			categorias = categoriaDAO.listar("nome");
-			
+
 			AcessoDAO acessoDAO = new AcessoDAO();
 			acessos = acessoDAO.listar("nome");
 
@@ -334,7 +334,6 @@ public class TicketInternoBean implements Serializable {
 
 			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
 			auditoriaDAO.auditar("Abriu Ticket Interno");
-		
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -448,4 +447,86 @@ public class TicketInternoBean implements Serializable {
 		}
 
 	}
+
+	public void salvarCategoria() {
+		try {
+			CategoriaDAO categoriaDAO = new CategoriaDAO();
+			categoriaDAO.merge(categoria);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoCategoria').hide();");
+
+			categoria = new Categoria();
+
+			categorias = categoriaDAO.listar("nome");
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Cadastro uma Nova Categoria (Por Departamento)");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarDepartamento() {
+		try {
+			DepartamentoDAO departamentoDAO = new DepartamentoDAO();
+			departamentoDAO.merge(departamento);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDepartamento').hide();");
+
+			departamento = new Departamento();
+
+			departamentos = departamentoDAO.listar("nome");
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Cadastro um Novo Departamento (Por Departamento)");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarUsuario() {
+		try {
+			UsuarioDAO usuarioDAO = new UsuarioDAO();
+			usuarioDAO.merge(usuario);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoUsuario').hide();");
+
+			usuarios = usuarioDAO.listar("nome");
+
+			if (usuario.getCodigo() == null) {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Cadastro um Novo Usuário: " + usuario.getNome());
+
+			} else {
+
+				AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+				auditoriaDAO.auditar("Alterou um Usuário: " + usuario.getNome());
+			}
+
+			usuario = new Usuario();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
 }

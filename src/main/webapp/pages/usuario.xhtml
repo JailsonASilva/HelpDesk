@@ -267,7 +267,7 @@
 			resizable="false" closable="true">
 			<h:form id="formCadastroDepartamento">
 				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
-				
+
 					<p:outputLabel for="nome" value="Nome " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
@@ -422,99 +422,6 @@
 			</h:form>
 		</p:dialog>
 
-		<p:dialog header="Pesquisa de Departamento" width="800" height="600"
-			widgetVar="dialogoPesqDepartamento" draggable="false"
-			resizable="false" closable="true">
-			<h:form id="formPesqDepartamento">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45"
-						value="#{usuarioBean.buscaDepartamento}"
-						placeholder="Informe o Nome do Departamento" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{usuarioBean.pesquisarDepartamento}"
-						update="tabelaDepartamento" />
-				</div>
-
-				<p:dataTable id="tabelaDepartamento"
-					selection="#{usuarioBean.departamento}" selectionMode="single"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{departamento.codigo}"
-					value="#{usuarioBean.departamentos}" var="departamento"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{usuarioBean.duploCliqueDepartamento}"
-						update=":formCadastro:departamento" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{departamento.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{usuarioBean.selecionarDepartamento}"
-							update=":formCadastro:departamento">
-							<f:attribute name="departamentoSelecionado"
-								value="#{departamento}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Pesquisa de Acesso" width="800" height="600"
-			widgetVar="dialogoPesqAcesso" draggable="false" resizable="false"
-			closable="true">
-			<h:form id="formPesqAcesso">
-
-				<div style="margin-top: 5px; margin-bottom: 20px">
-					<p:inputText id="nome" size="45" value="#{usuarioBean.buscaAcesso}"
-						placeholder="Informe o Nome do Acesso" />
-
-					<p:spacer width="10px" />
-
-					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()"
-						action="#{usuarioBean.pesquisarAcesso}" update="tabelaAcesso" />
-				</div>
-
-				<p:dataTable id="tabelaAcesso" value="#{usuarioBean.acessos}"
-					selection="#{usuarioBean.acesso}" selectionMode="single"
-					draggableColumns="true" resizableColumns="true"
-					rowKey="#{acesso.codigo}" var="acesso"
-					emptyMessage="Nenhum Registro Encontrado." rows="10"
-					paginator="true" paginatorAlwaysVisible="false"
-					paginatorPosition="bottom">
-
-					<p:ajax event="rowDblselect"
-						listener="#{usuarioBean.duploCliqueAcesso}"
-						update=":formCadastro:acesso" />
-
-					<p:column headerText="Nome">
-						<h:outputText value="#{acesso.nome}" />
-					</p:column>
-
-					<p:column style="width: 30px; text-align: center">
-						<p:commandButton icon="ui-icon-check" title="Selecionar"
-							actionListener="#{usuarioBean.selecionarAcesso}"
-							update=":formCadastro:acesso">
-							<f:attribute name="acessoSelecionado" value="#{acesso}" />
-						</p:commandButton>
-					</p:column>
-
-				</p:dataTable>
-			</h:form>
-		</p:dialog>
 
 	</ui:define>
 </ui:composition>

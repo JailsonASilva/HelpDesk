@@ -14,15 +14,16 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 
-import br.com.projeto.dao.CargoDAO;
-import br.com.projeto.domain.Cargo;
+import br.com.projeto.dao.AuditoriaDAO;
+import br.com.projeto.dao.HorarioDAO;
+import br.com.projeto.domain.Horario;
 
 @SuppressWarnings("serial")
 @ManagedBean
 @ViewScoped
-public class CargoBean implements Serializable {
-	private Cargo cargo;
-	private List<Cargo> cargos;
+public class HorarioBean implements Serializable {
+	private Horario horario;
+	private List<Horario> horarios;
 
 	private FacesMessage message;
 	private String busca;
@@ -43,30 +44,30 @@ public class CargoBean implements Serializable {
 		this.busca = busca;
 	}
 
-	public List<Cargo> getCargos() {
-		return cargos;
+	public List<Horario> getHorarios() {
+		return horarios;
 	}
 
-	public void setCargos(List<Cargo> cargos) {
-		this.cargos = cargos;
+	public void setHorarios(List<Horario> horarios) {
+		this.horarios = horarios;
 	}
 
-	public Cargo getCargo() {
-		return cargo;
+	public Horario getHorario() {
+		return horario;
 	}
 
-	public void setCargo(Cargo cargo) {
-		this.cargo = cargo;
+	public void setHorario(Horario horario) {
+		this.horario = horario;
 	}
 
 	public void pesquisar() {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargos = cargoDAO.pesquisar(busca);
+			HorarioDAO horarioDAO = new HorarioDAO();
+			horarios = horarioDAO.pesquisar(busca);
 
-			cargo = null;
+			horario = null;
 
-			if (cargos.isEmpty() == true) {
+			if (horarios.isEmpty() == true) {
 				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
@@ -86,23 +87,23 @@ public class CargoBean implements Serializable {
 	}
 
 	public void novo() {
-		cargo = new Cargo();
+		horario = new Horario();
 	}
 
 	public void salvar() {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargoDAO.merge(cargo);
+			HorarioDAO horarioDAO = new HorarioDAO();
+			horarioDAO.merge(horario);
 
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
-			cargos = cargoDAO.listar("nome");
-			
+			horarios = horarioDAO.listar("nome");
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
 
-			cargo = null;
+			horario = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
@@ -115,17 +116,17 @@ public class CargoBean implements Serializable {
 
 	public void excluir(ActionEvent evento) {
 		try {
-			CargoDAO cargoDAO = new CargoDAO();
-			cargoDAO.excluir(cargo);
+			HorarioDAO horarioDAO = new HorarioDAO();
+			horarioDAO.excluir(horario);
 
 			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + cargo.getNome());
+					"Registro: " + horario.getNome());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 
-			cargos = cargoDAO.listar("nome");
+			horarios = horarioDAO.listar("nome");
 
-			cargo = null;
+			horario = null;
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
@@ -141,7 +142,7 @@ public class CargoBean implements Serializable {
 	}
 
 	public void onRowUnselect(UnselectEvent event) {
-		cargo = null;
+		horario = null;
 	}
 
 	public void duploClique(SelectEvent evento) {
@@ -151,6 +152,47 @@ public class CargoBean implements Serializable {
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
 					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void editar(ActionEvent evento) {
+		try {
+			horario = (Horario) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirAtalho(ActionEvent evento) {
+		try {
+			horario = (Horario) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			HorarioDAO horarioDAO = new HorarioDAO();
+			horarioDAO.excluir(horario);
+
+			AuditoriaDAO auditoriaDAO = new AuditoriaDAO();
+			auditoriaDAO.auditar("Excluiu um Usuário: " + horario.getNome());
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Registro: " + horario.getNome());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			horarios = horarioDAO.listar("nome");
+
+			horario = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();

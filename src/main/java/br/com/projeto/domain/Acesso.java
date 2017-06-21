@@ -137,6 +137,18 @@ public class Acesso extends GenericDomain {
 	@Column(nullable = true)
 	private Boolean colaborador;
 
+	@Column(nullable = true)
+	private Boolean profissao;
+
+	@Column(nullable = true)
+	private Boolean situacao;
+
+	@Column(nullable = true)
+	private Boolean horario;
+
+	@Column(nullable = true)
+	private Boolean estabilidade;
+
 	public String getNome() {
 		return nome;
 	}
@@ -479,6 +491,38 @@ public class Acesso extends GenericDomain {
 
 	public void setColaborador(Boolean colaborador) {
 		this.colaborador = colaborador;
+	}
+
+	public Boolean getProfissao() {
+		return profissao;
+	}
+
+	public void setProfissao(Boolean profissao) {
+		this.profissao = profissao;
+	}
+
+	public Boolean getSituacao() {
+		return situacao;
+	}
+
+	public void setSituacao(Boolean situacao) {
+		this.situacao = situacao;
+	}
+
+	public Boolean getHorario() {
+		return horario;
+	}
+
+	public void setHorario(Boolean horario) {
+		this.horario = horario;
+	}
+
+	public Boolean getEstabilidade() {
+		return estabilidade;
+	}
+
+	public void setEstabilidade(Boolean estabilidade) {
+		this.estabilidade = estabilidade;
 	}
 
 }

@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cadastro de Horários">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{horarioBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{horarioBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document" actionListener="#{horarioBean.novo}"
+							update=":formCadastro:painel :formCadastro:tabView:painelNormal :formCadastro:tabView:painelIntra">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{horarioBean.horario == null}"
+							update=":formCadastro:painel :formCadastro:tabView:painelNormal :formCadastro:tabView:painelNormal"
+							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{horarioBean.excluir}"
+							disabled="#{horarioBean.horario == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="horarioSelecionado" value="#{horario}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="horario" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="horario" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="horario" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{horarioBean.horario}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{horario.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{horarioBean.horarios}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="horario" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect" listener="#{horarioBean.duploClique}"
+						update="formCadastro:painel :formCadastro:tabView:painelNormal :formCadastro:tabView:painelNormal" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{horarioBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{horarioBean.onRowSelect}" />
+
+					<p:column headerText="Nome" sortBy="#{horario.nome}">
+						<h:outputText value="#{horario.nome}" />
+					</p:column>
+					
+					<p:column headerText="Opções" width="75"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{horarioBean.editar}" 
+							update=":formCadastro:painel :formCadastro:tabView:painelNormal :formCadastro:tabView:painelNormal" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{horario}" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{horarioBean.excluirAtalho}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{horario}" /> 
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Horário" widgetVar="dialogo" width="800"
+			height="500" appendTo="@(body)" modal="true" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="4" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome" />
+					<p:inputText id="nome" maxlength="100" size="35" required="true"
+						requiredMessage="Campo 'Nome' Obrigatório"
+						value="#{horarioBean.horario.nome}" />
+
+					<p:outputLabel for="tipoHorario" value="Tipo" />
+					<p:selectOneMenu id="tipoHorario" filter="true"
+						value="#{horarioBean.horario.tipoHorario}" required="true"
+						requiredMessage="O campo 'Tipo Horário' é obrigatório"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Não Selecionado" />
+						<f:selectItem itemValue="Horário Normal"
+							itemLabel="Horário Normal" />
+						<f:selectItem itemValue="Horário Flexível"
+							itemLabel="Horário Flexível" />
+						<f:selectItem itemValue="Horária Livre" itemLabel="Horária Livre" />
+						<f:selectItem itemValue="Intra Jornada" itemLabel="Intra Jornada" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="horaDiaria" value="Horas Diárias" />
+					<p:inputMask id="horaDiaria" required="true"
+						style="text-align: center;"
+						requiredMessage="Campo 'Horas Diárias' Obrigatório"
+						value="#{horarioBean.horario.horaDiaria}" size="5" mask="99:99" />
+
+					<p:outputLabel for="horaSabado" value="Horas Sábado" />
+					<p:inputMask id="horaSabado" required="true"
+						style="text-align: center;"
+						requiredMessage="Campo 'Horário Sábado' Obrigatório"
+						value="#{horarioBean.horario.horaSabado}" size="5" mask="99:99" />
+
+				</h:panelGrid>
+
+				<br></br>
+
+				<p:tabView id="tabView" style="border:none;">
+					<p:tab title="Horário Normal">
+
+						<h:panelGrid id="painelNormal" columns="5" class="ui-noborder">
+
+							<p:outputLabel value="  " />
+							<p:outputLabel value="Entrada" />
+							<p:outputLabel value="Saída" />
+							<p:outputLabel value="Entrada" />
+							<p:outputLabel value="Saída" />
+
+
+							<p:outputLabel value="Segunda-Feira" />
+							<p:inputMask value="#{horarioBean.horario.segEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.segSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.segEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.segSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Terça-Feira" />
+							<p:inputMask value="#{horarioBean.horario.terEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.terSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.terEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.terSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Quarta-Feira" />
+							<p:inputMask value="#{horarioBean.horario.quaEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.quaSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.quaEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.quaSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Quinta-Feira" />
+							<p:inputMask value="#{horarioBean.horario.quiEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.quiSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.quiEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.quiSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Sexta-Feira" />
+							<p:inputMask value="#{horarioBean.horario.sexEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.sexSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.sexEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.sexSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Sábado" />
+							<p:inputMask value="#{horarioBean.horario.sabEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.sabSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.sabEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.sabSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Domingo" />
+							<p:inputMask value="#{horarioBean.horario.domEntrada}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.domSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.domEntradaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{horarioBean.horario.domSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Intra Jornada">
+
+						<h:panelGrid id="painelIntra" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Entrada" />
+							<p:inputMask value="#{horarioBean.horario.horarioEntradaIj}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:outputLabel value="Saída" />
+							<p:inputMask value="#{horarioBean.horario.horarioSaidaIj}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+
+
+				<div class="footerColaborador">
+					<p:separator />
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{horarioBean.salvar}"
+							update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogo').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

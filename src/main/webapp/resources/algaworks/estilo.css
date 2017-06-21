@@ -27,6 +27,12 @@ footer {
 	margin-bottom: 10px
 }
 
+.footerColaborador {
+	position: absolute;
+	bottom: 0;
+	width: 785px;
+}
+
 h1 {
 	font-size: 24px;
 	font-weight: 500;
@@ -72,5 +78,5 @@ h1 {
 }
 
 .novoTicketInterno {
-    background-image: url(/imagens/novo.png)
+	background-image: url(/imagens/novo.png)
 }

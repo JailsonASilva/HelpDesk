@@ -275,7 +275,7 @@
 						value="#{meusTicketsBean.ticket.solicitacao}" />
 
 					<br></br>
-					<h:outputText id="display"/>
+					<h:outputText id="display" />
 				</h:panelGrid>
 
 
@@ -312,34 +312,6 @@
 									icon="ui-icon-document"
 									actionListener="#{meusTicketsBean.novaOcorrencia}"
 									update=":formCadastroOcorrencia:painelOcorrencia">
-									<f:actionListener
-										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-								</p:commandButton>
-
-								<p:commandButton value="Suspender"
-									disabled="#{meusTicketsBean.ticket == null}"
-									actionListener="#{meusTicketsBean.suspenderTicket}"
-									style="margin:0 3px"
-									update="formListagem:tabela :formListagem:messages"
-									onstart="PF('iconeDeProcessamento').show()"
-									onsuccess="PF('iconeDeProcessamento').hide()"
-									icon="fa fa-fw fa-ban">
-									<p:confirm header="Confirmação"
-										message="Deseja Suspender este Ticket?" icon="ui-icon-alert" />
-									<f:actionListener
-										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
-								</p:commandButton>
-
-								<p:commandButton value="Concluir"
-									disabled="#{meusTicketsBean.ticket == null}"
-									actionListener="#{meusTicketsBean.concluirTicket}"
-									style="margin:0 3px"
-									update="formListagem:tabela :formListagem:messages"
-									onstart="PF('iconeDeProcessamento').show()"
-									onsuccess="PF('iconeDeProcessamento').hide()"
-									icon="fa fa-fw fa-check-circle">
-									<p:confirm header="Confirmação"
-										message="Deseja Concluir este Ticket?" icon="ui-icon-alert" />
 									<f:actionListener
 										type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 								</p:commandButton>
@@ -477,12 +449,6 @@
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />
 
-					<p:commandButton value="Salvar e Enviar E-mail" icon="ui-icon-disk"
-						actionListener="#{meusTicketsBean.salvarOcorrenciaEmail}"
-						update=":formListagemOcorrencia:tabView :formListagemOcorrencia:tabView:tabelaOcorrencia :formListagem:tabela :formListagem:tool"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()" />
-
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoOcorrencia').hide();" />
 				</h:panelGrid>
@@ -533,146 +499,6 @@
 					</p:column>
 
 				</p:dataTable>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Cadastro de Categoria" widgetVar="dialogoCategoria"
-			draggable="false" resizable="false" appendTo="@(body)" modal="true"
-			closable="true">
-			<h:form id="formCadastroCategoria">
-				<h:panelGrid id="painelCategoria" columns="3" class="ui-noborder">
-					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{meusTicketsBean.categoria.nome}" />
-					<p:message for="nome" display="Nome" />
-				</h:panelGrid>
-
-				<br></br>
-				<p:separator />
-
-				<h:panelGrid columns="2">
-					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{meusTicketsBean.salvarCategoria}"
-						update=":formCadastroCategoria:painelCategoria"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()" />
-
-					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogoCategoria').hide();" />
-				</h:panelGrid>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Cadastro de Departamento"
-			widgetVar="dialogoDepartamento" draggable="false" resizable="false"
-			appendTo="@(body)" modal="true" closable="true">
-			<h:form id="formCadastroDepartamento">
-				<h:panelGrid id="painelDepartamento" columns="2" class="ui-noborder">
-					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="60" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{meusTicketsBean.departamento.nome}" />
-
-					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
-					<p:selectBooleanCheckbox id="atendimento"
-						value="#{meusTicketsBean.departamento.atendimento}"
-						required="true"
-						requiredMessage="O campo 'Atendimento' é obrigatório" />
-				</h:panelGrid>
-
-				<br></br>
-				<p:separator />
-
-				<h:panelGrid columns="2">
-					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{meusTicketsBean.salvarDepartamento}"
-						update=":formCadastroDepartamento:painelDepartamento :formCadastro:departamento"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()" />
-
-					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogoDepartamento').hide();" />
-				</h:panelGrid>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Cadastro de Solicitante" widgetVar="dialogoCliente"
-			draggable="false" resizable="false" appendTo="@(body)" modal="true"
-			closable="true">
-			<h:form id="formCadastroCliente">
-				<h:panelGrid id="painelCliente" columns="2" class="ui-noborder">
-
-					<p:outputLabel for="nome" value="Nome: " />
-					<p:inputText id="nome" maxlength="100" size="40" required="true"
-						requiredMessage="Campo Obrigatório"
-						value="#{meusTicketsBean.cliente.nome}" />
-
-
-					<p:outputLabel for="departamento" value="Departamento " />
-					<h:panelGroup>
-						<p:selectOneMenu id="departamento" filter="true"
-							value="#{meusTicketsBean.cliente.departamento}" required="true"
-							requiredMessage="O campo 'Departamento' é obrigatório"
-							converter="omnifaces.SelectItemsConverter">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{meusTicketsBean.departamentosCliente}"
-								var="departamento" itemValue="#{departamento}"
-								itemLabel="#{departamento.nome}" />
-						</p:selectOneMenu>
-
-					</h:panelGroup>
-				</h:panelGrid>
-
-				<br></br>
-				<p:separator />
-
-				<h:panelGrid columns="2">
-					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{meusTicketsBean.salvarCliente}"
-						update=":formCadastroCliente:painelCliente"
-						onstart="PF('iconeDeProcessamento').show()"
-						onsuccess="PF('iconeDeProcessamento').hide()" />
-
-					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-						oncomplete="PF('dialogoCliente').hide();" />
-				</h:panelGrid>
-			</h:form>
-		</p:dialog>
-
-		<p:dialog header="Encaminhar Ticket" widgetVar="dialogoEncaminhar"
-			draggable="false" resizable="false" appendTo="@(body)" modal="true"
-			closable="true">
-			<h:form id="formEncaminhar">
-
-				<h:panelGrid id="painelUsuario" columns="2" class="ui-noborder">
-					<p:outputLabel for="usuario" value="Para: " />
-					<h:panelGroup>
-						<p:selectOneMenu id="usuario" filter="true"
-							value="#{meusTicketsBean.ticket.usuarioAtendimento}"
-							required="true" requiredMessage="O campo 'Usuario' é obrigatório"
-							converter="omnifaces.SelectItemsConverter">
-							<f:selectItem noSelectionOption="true"
-								itemLabel="Nenhum Registro Selecionado" />
-							<f:selectItems value="#{meusTicketsBean.usuarios}" var="usuario"
-								itemValue="#{usuario}" itemLabel="#{usuario.nome}" />
-						</p:selectOneMenu>
-					</h:panelGroup>
-				</h:panelGrid>
-
-				<h:panelGrid columns="2" class="ui-noborder">
-					<h:panelGrid columns="2">
-						<p:commandButton value="Encaminhar" icon="ui-icon-disk"
-							actionListener="#{meusTicketsBean.encaminharTicket}"
-							update="formListagem:tabela :formEncaminhar:usuario :formListagem:messages"
-							onstart="PF('iconeDeProcessamento').show()"
-							onsuccess="PF('iconeDeProcessamento').hide()" />
-
-						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-							oncomplete="PF('dialogoEncaminhar').hide();" />
-					</h:panelGrid>
-				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 

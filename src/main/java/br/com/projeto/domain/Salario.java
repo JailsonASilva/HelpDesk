@@ -1,10 +1,12 @@
 package br.com.projeto.domain;
 
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @SuppressWarnings("serial")
 @Entity
@@ -44,4 +46,12 @@ public class Salario extends GenericDomain {
 		this.classe = classe;
 	}
 
+	@Transient
+	public String getSalarioFormatado() {
+
+		String salarioFormatado = NumberFormat.getCurrencyInstance().format(salario);
+
+		return salarioFormatado;
+
+	}
 }

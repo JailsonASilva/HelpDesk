@@ -38,8 +38,8 @@
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
 							disabled="#{colaboradorBean.colaborador == null}"
-							update=":formCadastro" icon="fa fa-fw fa-edit"
-							oncomplete="PF('dialogo').show();">
+							update=":formCadastro:tabView:painelDadosPessoais :formCadastro:tabView:painelAdicionais :formCadastro:tabView:painelContrato :formCadastro:tabView:painelEndereco :formCadastro:tabView:painelBancario :formCadastro:tabView:painelDocumentacao"
+							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 						</p:commandButton>
@@ -98,14 +98,14 @@
 					selectionMode="single" selection="#{colaboradorBean.colaborador}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{colaborador.codigo}" paginator="true"
-					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					rowsPerPageTemplate="5,8,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
 					value="#{colaboradorBean.colaboradores}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					var="colaborador" rows="10" paginatorPosition="bottom">
+					var="colaborador" rows="8" paginatorPosition="bottom">
 
 					<p:ajax event="rowDblselect"
 						listener="#{colaboradorBean.duploClique}"
-						update=":formCadastro:tabView:painelDadosPessoais">
+						update=":formCadastro:tabView:painelDadosPessoais :formCadastro:tabView:painelAdicionais :formCadastro:tabView:painelContrato :formCadastro:tabView:painelBancario :formCadastro:tabView:painelEndereco :formCadastro:tabView:painelDocumentacao">
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
 					</p:ajax>
@@ -145,7 +145,8 @@
 						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{colaboradorBean.editar}" update=":formCadastro"
+							actionListener="#{colaboradorBean.editar}"
+							update=":formCadastro:tabView:painelDadosPessoais :formCadastro:tabView:painelEndereco"
 							oncomplete="PF('dialogo').show();">
 							<f:attribute name="registroSelecionado" value="#{colaborador}" />
 							<f:actionListener
@@ -184,149 +185,1048 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Colaborador" widgetVar="dialogo"
-			width="810" height="510" appendTo="@(body)" modal="true"
+			width="810" height="520" appendTo="@(body)" modal="true"
 			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 
-				<p:layout style="min-width:780px;min-height:500px;">
+				<p:tabView id="tabView" style="border:none;">
+					<p:tab title="Dados Pessoais">
 
-					<p:layoutUnit position="center" style="border:none;">
-						<p:tabView id="tabView" style="border:none;">
-							<p:tab title="Dados Pessoais">
+						<h:panelGrid id="painelDadosPessoais" columns="2"
+							class="ui-noborder">
 
-								<h:panelGrid id="painelDadosPessoais" columns="2"
-									class="ui-noborder">
+							<p:outputLabel for="nome" value="Nome" />
+							<p:inputText id="nome" maxlength="100" size="50" required="true"
+								requiredMessage="Campo 'Nome' Obrigatório"
+								value="#{colaboradorBean.colaborador.nome}" />
 
-									<p:outputLabel for="nome" value="Nome" />
-									<p:inputText id="nome" maxlength="100" size="40"
-										required="true" requiredMessage="Campo 'Nome' Obrigatório"
-										value="#{colaboradorBean.colaborador.nome}" />
+							<p:outputLabel for="dataNascimento" value="Data Nasc" />
+							<p:calendar id="dataNascimento" mask="99/99/99" required="true"
+								showOn="button"
+								requiredMessage="Campo 'Data Nascimento' Obrigatório!"
+								yearRange="1900:2222"
+								value="#{colaboradorBean.colaborador.dataNascimento}" size="8"
+								locale="pt_BR" showButtonPanel="true" navigator="true" />
 
-									<p:outputLabel for="dataNascimento" value="Data Nasc" />
-									<p:calendar id="dataNascimento" mask="99/99/99" required="true"
-										showOn="button"
-										requiredMessage="Campo 'Data Nascimento' Obrigatório!"
-										yearRange="1900:2222"
-										value="#{colaboradorBean.colaborador.dataNascimento}" size="8"
-										locale="pt_BR" showButtonPanel="true" navigator="true" />
+							<p:outputLabel for="localNascimento" value="Local Nascimento" />
+							<p:inputText id="localNascimento" maxlength="80" size="23"
+								value="#{colaboradorBean.colaborador.localNascimento}" />
 
-									<p:outputLabel for="localNascimento" value="Local Nascimento" />
-									<p:inputText id="localNascimento" maxlength="80" size="23"
-										value="#{colaboradorBean.colaborador.localNascimento}" />
+							<p:outputLabel for="estadoCivil" value="Estado Civil" />
+							<p:selectOneMenu id="estadoCivil" filter="true"
+								value="#{colaboradorBean.colaborador.estadoCivil}"
+								required="true"
+								requiredMessage="O campo 'Estado Civil' é obrigatório"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="SOLTEIRO(A)" itemLabel="Solteiro(a)" />
+								<f:selectItem itemValue="CASADO(A)" itemLabel="Casado(a)" />
+								<f:selectItem itemValue="VIÚVO(a)" itemLabel="Viúvo(a)" />
+								<f:selectItem itemValue="DOVORCIADO(A)"
+									itemLabel="Divorciado(a)" />
+								<f:selectItem itemValue="UNIÃO ESTÁVEL"
+									itemLabel="União Estável" />
+								<f:selectItem itemValue="OUTROS" itemLabel="Outros" />
+							</p:selectOneMenu>
 
-									<p:outputLabel for="estadoCivil" value="Estado Civil" />
-									<p:selectOneMenu id="estadoCivil" filter="true"
-										value="#{colaboradorBean.colaborador.estadoCivil}"
-										required="true"
-										requiredMessage="O campo 'Estado Civil' é obrigatório"
-										converter="omnifaces.SelectItemsConverter">
-										<f:selectItem noSelectionOption="true"
-											itemLabel="Não Selecionado" />
-										<f:selectItem itemValue="SOLTEIRO(A)" itemLabel="Solteiro(a)" />
-										<f:selectItem itemValue="CASADO(A)" itemLabel="Casado(a)" />
-										<f:selectItem itemValue="VIÚVO(a)" itemLabel="Viúvo(a)" />
-										<f:selectItem itemValue="DOVORCIADO(A)"
-											itemLabel="Divorciado(a)" />
-										<f:selectItem itemValue="UNIÃO ESTÁVEL"
-											itemLabel="União Estável" />
-										<f:selectItem itemValue="OUTROS" itemLabel="Outros" />
-									</p:selectOneMenu>
+							<p:outputLabel for="sexo" value="Sexo" />
+							<p:selectOneMenu id="sexo" filter="true"
+								value="#{colaboradorBean.colaborador.sexo}" required="true"
+								requiredMessage="O campo 'Sexo' é obrigatório"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="M" itemLabel="Masculino" />
+								<f:selectItem itemValue="F" itemLabel="Feminino" />
+							</p:selectOneMenu>
 
-									<p:outputLabel for="sexo" value="Sexo" />
-									<p:selectOneMenu id="sexo" filter="true"
-										value="#{colaboradorBean.colaborador.sexo}" required="true"
-										requiredMessage="O campo 'Sexo' é obrigatório"
-										converter="omnifaces.SelectItemsConverter">
-										<f:selectItem noSelectionOption="true"
-											itemLabel="Não Selecionado" />
-										<f:selectItem itemValue="M" itemLabel="Masculino" />
-										<f:selectItem itemValue="F" itemLabel="Feminino" />
-									</p:selectOneMenu>
+							<p:outputLabel for="pai" value="Pai" />
+							<p:inputText id="pai" maxlength="100" size="50"
+								value="#{colaboradorBean.colaborador.pai}" />
 
-									<p:outputLabel for="pai" value="Pai" />
-									<p:inputText id="pai" maxlength="100" size="40"
-										value="#{colaboradorBean.colaborador.pai}" />
+							<p:outputLabel for="mae" value="Mãe" />
+							<p:inputText id="mae" maxlength="100" size="50" required="true"
+								requiredMessage="Campo 'Mãe' Obrigatório"
+								value="#{colaboradorBean.colaborador.mae}" />
 
-									<p:outputLabel for="mae" value="Nome" />
-									<p:inputText id="mae" maxlength="100" size="40" required="true"
-										requiredMessage="Campo 'Mãe' Obrigatório"
-										value="#{colaboradorBean.colaborador.mae}" />
+							<p:outputLabel for="escolaridade" value="Escolaridade" />
+							<p:selectOneMenu id="escolaridade" filter="true"
+								value="#{colaboradorBean.colaborador.escolaridade}"
+								required="true"
+								requiredMessage="O campo 'Escolaridade' é obrigatório"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="Não Alfabetizado"
+									itemLabel="Não Alfabetizado" />
+								<f:selectItem itemValue="Ensino Fundamental Incompleto"
+									itemLabel="Ensino Fundamental Incompleto" />
+								<f:selectItem itemValue="Ensino Fundamental Completo"
+									itemLabel="Ensino Fundamental Completo" />
+								<f:selectItem itemValue="Ensino Médio Incompleto"
+									itemLabel="Ensino Médio Incompleto" />
+								<f:selectItem itemValue="Ensino Médio Completo"
+									itemLabel="Ensino Médio Completo" />
+								<f:selectItem itemValue="Superior Incompleto"
+									itemLabel="Superior Incompleto" />
+								<f:selectItem itemValue="Superior Completo"
+									itemLabel="Superior Completo" />
+								<f:selectItem itemValue="Pós-Gradução Incompleto"
+									itemLabel="Pós-Gradução Incompleto" />
+								<f:selectItem itemValue="Pós-Gradução Completo"
+									itemLabel="Pós-Gradução Completo" />
+								<f:selectItem itemValue="Mestrado Incompleto"
+									itemLabel="Mestrado Incompleto" />
+								<f:selectItem itemValue="Mestrado Completo"
+									itemLabel="Mestrado Completo" />
+								<f:selectItem itemValue="Doutorado Incompleto"
+									itemLabel="Doutorado Incompleto" />
+								<f:selectItem itemValue="Doutorado Completo"
+									itemLabel="Doutorado Completo" />
+							</p:selectOneMenu>
 
-									<p:outputLabel for="escolaridade" value="Escolaridade" />
-									<p:selectOneMenu id="escolaridade" filter="true"
-										value="#{colaboradorBean.colaborador.escolaridade}"
-										required="true"
-										requiredMessage="O campo 'Escolaridade' é obrigatório"
-										converter="omnifaces.SelectItemsConverter">
-										<f:selectItem noSelectionOption="true"
-											itemLabel="Não Selecionado" />
-										<f:selectItem itemValue="Não Alfabetizado"
-											itemLabel="Não Alfabetizado" />
-										<f:selectItem itemValue="Ensino Fundamental Incompleto"
-											itemLabel="Ensino Fundamental Incompleto" />
-										<f:selectItem itemValue="Ensino Fundamental Completo"
-											itemLabel="Ensino Fundamental Completo" />
-										<f:selectItem itemValue="Ensino Médio Incompleto"
-											itemLabel="Ensino Médio Incompleto" />
-										<f:selectItem itemValue="Ensino Médio Completo"
-											itemLabel="Ensino Médio Completo" />
-										<f:selectItem itemValue="Superior Incompleto"
-											itemLabel="Superior Incompleto" />
-										<f:selectItem itemValue="Superior Completo"
-											itemLabel="Superior Completo" />
-										<f:selectItem itemValue="Pós-Gradução Incompleto"
-											itemLabel="Pós-Gradução Incompleto" />
-										<f:selectItem itemValue="Pós-Gradução Completo"
-											itemLabel="Pós-Gradução Completo" />
-										<f:selectItem itemValue="Mestrado Incompleto"
-											itemLabel="Mestrado Incompleto" />
-										<f:selectItem itemValue="Mestrado Completo"
-											itemLabel="Mestrado Completo" />
-										<f:selectItem itemValue="Doutorado Incompleto"
-											itemLabel="Doutorado Incompleto" />
-										<f:selectItem itemValue="Doutorado Completo"
-											itemLabel="Doutorado Completo" />
-									</p:selectOneMenu>
+							<p:outputLabel for="profissao" value="Profissão " />
+							<h:panelGroup>
+								<p:selectOneMenu id="profissao" filter="true"
+									value="#{colaboradorBean.colaborador.profissao}"
+									required="true"
+									requiredMessage="O campo 'Profissão' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.profissoes}"
+										var="profissao" itemValue="#{profissao}"
+										itemLabel="#{profissao.nome}" />
+								</p:selectOneMenu>
 
-									<p:outputLabel for="profissao" value="Profissão" />
-									<p:inputText id="profissao" maxlength="80" size="23"
-										value="#{colaboradorBean.colaborador.profissao}" />
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Profissao" update="formCadastroProfissao:painel"
+									oncomplete="PF('dialogoProfissao').show();" />
+							</h:panelGroup>
 
+							<p:outputLabel for="numeroRegistro" value="Nº Registro" />
+							<p:inputText id="numeroRegistro" maxlength="50" size="20"
+								value="#{colaboradorBean.colaborador.numeroRegistro}"
+								required="true"
+								requiredMessage="O campo 'Nº Registro' é obrigatório"
+								converterMessage="Informe um valor válido para o campo 'Nº Registro'"
+								validatorMessage="Informe um valor entre 1 e 999999 para o campo 'Nº Registro'">
+								<f:validateLongRange minimum="1" maximum="999999" />
+							</p:inputText>
 
-								</h:panelGrid>
-							</p:tab>
-
-							<p:tab title="Endereço/Contato">
-
-							</p:tab>
-
-						</p:tabView>
-
-
-
-					</p:layoutUnit>
-
-					<p:layoutUnit position="south" resizable="true" size="58"
-						style="border:none;" minSize="40" maxSize="200">
-
-						<p:separator />
-
-						<h:panelGrid columns="2">
-							<p:commandButton value="Salvar" icon="ui-icon-disk"
-								actionListener="#{colaboradorBean.salvar}"
-								update=":formCadastro :formListagem:tabela :formListagem:tool"
-								onstart="PF('iconeDeProcessamento').show()"
-								onsuccess="PF('iconeDeProcessamento').hide()" />
-
-							<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
-								oncomplete="PF('dialogo').hide();" />
 						</h:panelGrid>
+					</p:tab>
 
-					</p:layoutUnit>
-				</p:layout>
+					<p:tab title="Endereço/Contato">
+						<h:panelGrid id="painelEndereco" columns="2" class="ui-noborder">
 
+							<p:outputLabel for="endereco" value="Endereço" />
+							<p:inputText id="endereco" maxlength="100" size="55"
+								required="true" requiredMessage="Campo 'Endereço' Obrigatório"
+								value="#{colaboradorBean.colaborador.endereco}" />
+
+							<p:outputLabel for="numero" value="Número" />
+							<p:inputText id="numero" maxlength="10" size="10" required="true"
+								requiredMessage="Campo 'Número' Obrigatório"
+								value="#{colaboradorBean.colaborador.numero}" />
+
+							<p:outputLabel for="complemento" value="Complemento" />
+							<p:inputText id="complemento" maxlength="100" size="40"
+								value="#{colaboradorBean.colaborador.complemento}" />
+
+							<p:outputLabel for="bairro" value="Bairro" />
+							<p:inputText id="bairro" maxlength="80" size="30" required="true"
+								requiredMessage="Campo 'Bairro' Obrigatório"
+								value="#{colaboradorBean.colaborador.bairro}" />
+
+							<p:outputLabel for="cidade" value="Cidade" />
+							<p:inputText id="cidade" maxlength="80" size="30" required="true"
+								requiredMessage="Campo 'Cidade' Obrigatório"
+								value="#{colaboradorBean.colaborador.cidade}" />
+
+							<p:outputLabel for="estado" value="UF" />
+							<p:selectOneMenu id="estado" filter="true" required="true"
+								requiredMessage="Campo 'UF' Obrigatório"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{colaboradorBean.colaborador.uf}">
+								<f:selectItem noSelectionOption="true" itemLabel=" " />
+								<f:selectItem itemValue="AC" itemLabel="AC" />
+								<f:selectItem itemValue="AL" itemLabel="AL" />
+								<f:selectItem itemValue="AP" itemLabel="AP" />
+								<f:selectItem itemValue="AM" itemLabel="AM" />
+								<f:selectItem itemValue="BA" itemLabel="BA" />
+								<f:selectItem itemValue="CE" itemLabel="CE" />
+								<f:selectItem itemValue="DF" itemLabel="DF" />
+								<f:selectItem itemValue="ES" itemLabel="ES" />
+								<f:selectItem itemValue="GO" itemLabel="GO" />
+								<f:selectItem itemValue="MA" itemLabel="MA" />
+								<f:selectItem itemValue="MT" itemLabel="MT" />
+								<f:selectItem itemValue="MS" itemLabel="MS" />
+								<f:selectItem itemValue="MG" itemLabel="MG" />
+								<f:selectItem itemValue="PA" itemLabel="PA" />
+								<f:selectItem itemValue="PB" itemLabel="PB" />
+								<f:selectItem itemValue="PR" itemLabel="PR" />
+								<f:selectItem itemValue="PE" itemLabel="PE" />
+								<f:selectItem itemValue="PI" itemLabel="PI" />
+								<f:selectItem itemValue="RJ" itemLabel="RF" />
+								<f:selectItem itemValue="RN" itemLabel="RN" />
+								<f:selectItem itemValue="RS" itemLabel="RS" />
+								<f:selectItem itemValue="RO" itemLabel="RO" />
+								<f:selectItem itemValue="RR" itemLabel="RR" />
+								<f:selectItem itemValue="SC" itemLabel="SC" />
+								<f:selectItem itemValue="SP" itemLabel="SP" />
+								<f:selectItem itemValue="SE" itemLabel="SE" />
+								<f:selectItem itemValue="TO" itemLabel="TO" />
+								<f:selectItems />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="cep" value="Cep" />
+							<p:inputMask id="cep" value="#{colaboradorBean.colaborador.cep}"
+								size="9" mask="99999-999" />
+
+							<p:outputLabel for="telefone1" value="Telefone 1" />
+							<p:inputMask id="telefone1"
+								value="#{colaboradorBean.colaborador.telefone_1}"
+								required="true" requiredMessage="Campo 'Telefone' Obrigatório"
+								size="14" mask="(99)99999-9999" />
+
+							<p:outputLabel for="telefone2" value="Telefone 2" />
+							<p:inputMask id="telefone2"
+								value="#{colaboradorBean.colaborador.telefone_2}" size="14"
+								mask="(99)99999-9999" />
+
+							<p:outputLabel for="telefone3" value="Telefone 3" />
+							<p:inputMask id="telefone3"
+								value="#{colaboradorBean.colaborador.telefone_3}" size="14"
+								mask="(99)99999-9999" />
+
+							<p:outputLabel for="email" value="E-mail" />
+							<p:inputText id="email" maxlength="100" size="40"
+								value="#{colaboradorBean.colaborador.email}" />
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Documentação">
+						<h:panelGrid id="painelDocumentacao" columns="2"
+							class="ui-noborder">
+
+							<p:outputLabel for="cpf" value="CPF" />
+							<p:inputMask id="cpf" value="#{colaboradorBean.colaborador.cpf}"
+								required="true" requiredMessage="Campo Obrigatório" size="14"
+								mask="999.999.999-99" />
+
+							<p:outputLabel for="rg" value="Rg" />
+							<p:inputText id="rg" maxlength="80" size="22" required="true"
+								requiredMessage="Campo 'Rg' Obrigatório"
+								value="#{colaboradorBean.colaborador.rg}" />
+
+							<p:outputLabel for="orgaoEmissor" value="Orgão Emissor" />
+							<p:inputText id="orgaoEmissor" maxlength="10" size="10"
+								value="#{colaboradorBean.colaborador.orgaoEmissor}" />
+
+							<p:outputLabel for="dataEmissao" value="Data Emissão Rg" />
+							<p:calendar id="dataEmissao" mask="99/99/99" showOn="button"
+								yearRange="1900:2222"
+								value="#{colaboradorBean.colaborador.emissaoRg}" size="9"
+								locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="pis" value="PIS" />
+							<p:inputText id="pis" maxlength="80" size="22" required="true"
+								requiredMessage="Campo 'PIS' Obrigatório"
+								value="#{colaboradorBean.colaborador.pis}" />
+
+							<p:outputLabel for="ctps" value="CTPS" />
+							<p:inputText id="ctps" maxlength="80" size="22" required="true"
+								requiredMessage="Campo 'CTPS' Obrigatório"
+								value="#{colaboradorBean.colaborador.ctps}" />
+
+							<p:outputLabel for="dataEmissaoCtps" value="Data Emissão CTPS" />
+							<p:calendar id="dataEmissaoCtps" mask="99/99/99" showOn="button"
+								yearRange="1900:2222"
+								value="#{colaboradorBean.colaborador.emissaoCtps}" size="9"
+								locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="titulo" value="Título" />
+							<p:inputText id="titulo" maxlength="80" size="22"
+								value="#{colaboradorBean.colaborador.tituloEleitoral}" />
+
+							<p:outputLabel for="zona" value="Zona" />
+							<p:inputText id="zona" maxlength="10" size="10"
+								value="#{colaboradorBean.colaborador.zona}" />
+
+							<p:outputLabel for="secao" value="Seção" />
+							<p:inputText id="secao" maxlength="10" size="10"
+								value="#{colaboradorBean.colaborador.secao}" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Bancários">
+						<h:panelGrid id="painelBancario" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="banco" value="Banco" />
+							<p:inputText id="banco" maxlength="80" size="30"
+								value="#{colaboradorBean.colaborador.banco}" />
+
+							<p:outputLabel for="agencia" value="Agência" />
+							<p:inputText id="agencia" maxlength="10" size="10"
+								value="#{colaboradorBean.colaborador.agencia}" />
+
+							<p:outputLabel for="operacaoConta" value="Operação" />
+							<p:inputText id="operacaoConta" maxlength="10" size="10"
+								value="#{colaboradorBean.colaborador.operacaoConta}" />
+
+							<p:outputLabel for="conta" value="Nº Conta" />
+							<p:inputText id="conta" maxlength="10" size="10"
+								value="#{colaboradorBean.colaborador.conta}" />
+
+							<p:outputLabel for="tipoConta" value="Tipo" />
+							<p:selectOneMenu id="tipoConta" filter="true"
+								value="#{colaboradorBean.colaborador.tipoConta}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="Corrente" itemLabel="Corrente" />
+								<f:selectItem itemValue="Poupança" itemLabel="Poupança" />
+								<f:selectItem itemValue="Salário" itemLabel="Salário" />
+							</p:selectOneMenu>
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Contrato">
+						<h:panelGrid id="painelContrato" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="unidade" value="Unidade " />
+							<h:panelGroup>
+								<p:selectOneMenu id="unidade" filter="true"
+									value="#{colaboradorBean.colaborador.unidade}" required="true"
+									requiredMessage="O campo 'Unidade' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.unidades}"
+										var="unidade" itemValue="#{unidade}"
+										itemLabel="#{unidade.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Unidade" update="formCadastroUnidade:painel"
+									oncomplete="PF('dialogoUnidade').show();" />
+							</h:panelGroup>
+
+							<p:outputLabel for="departamento" value="Departamento " />
+							<h:panelGroup>
+								<p:selectOneMenu id="departamento" filter="true"
+									value="#{colaboradorBean.colaborador.departamento}"
+									required="true"
+									requiredMessage="O campo 'Departamento' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.departamentos}"
+										var="departamento" itemValue="#{departamento}"
+										itemLabel="#{departamento.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Departamento"
+									update="formCadastroDepartamento:painelDepartamento"
+									oncomplete="PF('dialogoDepartamento').show();" />
+							</h:panelGroup>
+
+							<p:outputLabel for="admissao" value="Admissão" />
+							<p:calendar id="admissao" mask="99/99/99" required="true"
+								showOn="button" requiredMessage="Campo 'Admissão' Obrigatório!"
+								yearRange="1900:2222"
+								value="#{colaboradorBean.colaborador.dataAdmissao}" size="8"
+								locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="cargo" value="Cargo" />
+							<h:panelGroup>
+								<p:selectOneMenu id="cargo" filter="true"
+									value="#{colaboradorBean.colaborador.cargo}" required="true"
+									requiredMessage="O campo 'Cargo' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.cargos}" var="cargo"
+										itemValue="#{cargo}" itemLabel="#{cargo.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Cargo" update="formCadastroCargo:nome"
+									oncomplete="PF('dialogoCargo').show();" />
+							</h:panelGroup>
+
+							<p:outputLabel for="salario" value="Salário" />
+							<h:panelGroup>
+								<p:selectOneMenu id="salario" filter="true"
+									value="#{colaboradorBean.colaborador.salario}" required="true"
+									requiredMessage="O campo 'Salário' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.salarios}"
+										var="salario" itemValue="#{salario}"
+										itemLabel="#{salario.nome} / #{salario.classe} / #{salario.salarioFormatado}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Salario" update="formCadastroSalario:nome"
+									oncomplete="PF('dialogoSalario').show();" />
+							</h:panelGroup>
+
+							<p:outputLabel for="tipoSalario" value="Tipo de Salário" />
+							<p:selectOneMenu id="tipoSalario" filter="true"
+								value="#{colaboradorBean.colaborador.tipoSalario}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="MENSALISTA" itemLabel="Mensalista" />
+								<f:selectItem itemValue="HORISTA" itemLabel="Horista" />
+								<f:selectItem itemValue="HORA/AULA" itemLabel="Hora/Aula" />
+								<f:selectItem itemValue="TEMPO PARCIAL"
+									itemLabel="Tempo Parcial" />
+								<f:selectItem itemValue="TEMPO INTEGRAL"
+									itemLabel="Tempo Integral" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="situacao" value="Situação " />
+							<h:panelGroup>
+								<p:selectOneMenu id="situacao" filter="true"
+									value="#{colaboradorBean.colaborador.situacao}" required="true"
+									requiredMessage="O campo 'Situação' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.situacoes}"
+										var="situacao" itemValue="#{situacao}"
+										itemLabel="#{situacao.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Situacao" update="formCadastroSituacao:painel"
+									oncomplete="PF('dialogoSituacao').show();" />
+							</h:panelGroup>
+
+							<p:outputLabel for="horario" value="Horário " />
+							<h:panelGroup>
+								<p:selectOneMenu id="horario" filter="true"
+									value="#{colaboradorBean.colaborador.horario}" required="true"
+									requiredMessage="O campo 'Horário' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.horarios}"
+										var="horario" itemValue="#{horario}"
+										itemLabel="#{horario.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Horário" update="formCadastroHorario:painel"
+									oncomplete="PF('dialogoHorario').show();" />
+							</h:panelGroup>
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Adicionais/Extra">
+						<h:panelGrid id="painelAdicionais" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="estabilidade" value="Estabilidade " />
+							<h:panelGroup>
+								<p:selectOneMenu id="estabilidade" filter="true"
+									value="#{colaboradorBean.colaborador.estabilidade}"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.estabilidades}"
+										var="estabilidade" itemValue="#{estabilidade}"
+										itemLabel="#{estabilidade.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Estabilidade"
+									update="formCadastroEstabilidade:painel"
+									oncomplete="PF('dialogoEstabilidade').show();" />
+							</h:panelGroup>
+
+							<p:outputLabel for="adicionalNoturno" value="Adicional Noturno" />
+							<p:selectOneMenu id="adicionalNoturno" filter="true"
+								value="#{colaboradorBean.colaborador.adicionalNoturno}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="Adiantamento" value="Adiantamento" />
+							<p:selectOneMenu id="Adiantamento" filter="true"
+								value="#{colaboradorBean.colaborador.adiantamentoSalarial}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="salariaFamilia" value="Salária Família" />
+							<p:selectOneMenu id="salariaFamilia" filter="true"
+								value="#{colaboradorBean.colaborador.salarioFamilia}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="qtdeSalariaFamilia"
+								value="Quantidade Salário Família" />
+							<p:inputText id="qtdeSalariaFamilia" maxlength="50" size="8"
+								value="#{colaboradorBean.colaborador.quantidadeSalarioFamilia}"
+								converterMessage="Informe um valor válido para o campo 'Quantidade Salário Família'"
+								validatorMessage="Informe um valor entre 1 e 999999 para o campo 'Quantidade Salário Família'">
+								<f:validateLongRange minimum="1" maximum="999999" />
+							</p:inputText>
+
+							<p:outputLabel for="insalubridade" value="Insalubridade" />
+							<p:selectOneMenu id="insalubridade" filter="true"
+								value="#{colaboradorBean.colaborador.insalubridade}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Insalubridade %" for="insalubridadePorc" />
+							<p:inputNumber id="insalubridadePorc" symbol="% " size="8"
+								decimalSeparator="," thousandSeparator="."
+								value="#{colaboradorBean.colaborador.insalubridadePorc}">
+							</p:inputNumber>
+
+							<p:outputLabel for="periculosidade" value="Periculosidade" />
+							<p:selectOneMenu id="periculosidade" filter="true"
+								value="#{colaboradorBean.colaborador.periculosidade}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Periculosidade %" for="periculosidadePorc" />
+							<p:inputNumber id="periculosidadePorc" symbol="% " size="8"
+								decimalSeparator="," thousandSeparator="."
+								value="#{colaboradorBean.colaborador.periculosidadePorc}">
+							</p:inputNumber>
+
+							<p:outputLabel for="tempoServico" value="Tempo de Serviço" />
+							<p:selectOneMenu id="tempoServico" filter="true"
+								value="#{colaboradorBean.colaborador.adicionalTempoServico}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="bolsaEstudo" value="Bolsa de Estudo" />
+							<p:selectOneMenu id="bolsaEstudo" filter="true"
+								value="#{colaboradorBean.colaborador.descontoBolsaEstudo}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="gratificacaoFuncao"
+								value="Gratificação Função" />
+							<p:selectOneMenu id="gratificacaoFuncao" filter="true"
+								value="#{colaboradorBean.colaborador.gratificacaoFuncao}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel value="Valor Gratificação R$"
+								for="valorGratificacao" />
+							<p:inputNumber id="valorGratificacao" symbol="R$ " size="13"
+								decimalSeparator="," thousandSeparator="."
+								value="#{colaboradorBean.colaborador.valorGratificacao}">
+							</p:inputNumber>
+
+						</h:panelGrid>
+					</p:tab>
+
+				</p:tabView>
+
+				<div class="footerColaborador">
+					<p:separator />
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{colaboradorBean.salvar}"
+							update=":formCadastro :formCadastro:tabView :formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogo').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Profissão" widgetVar="dialogoProfissao"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroProfissao">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.profissao.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarProfissao}"
+						update=":formCadastroProfissao:painel :formCadastro:tabView:profissao :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoProfissao').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Cargo" widgetVar="dialogoCargo"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroCargo">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.cargo.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarCargo}"
+						update=":formCadastroCargo:painel :formListagem:tabela :formCadastro:tabView:cargo :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoCargo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Salário" widgetVar="dialogoSalario"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroSalario">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="50" required="true"
+						requiredMessage="Campo 'Nome' Obrigatório"
+						value="#{colaboradorBean.salario.nome}" />
+
+					<p:outputLabel for="classe" value="Classe" />
+					<p:selectOneMenu id="classe" filter="true" required="true"
+						requiredMessage="Campo 'Classe' Obrigatório!"
+						converter="omnifaces.SelectItemsConverter"
+						value="#{colaboradorBean.salario.classe}">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Selecione a Classe" />
+						<f:selectItem itemValue="Única" itemLabel="Única" />
+						<f:selectItem itemValue="1" itemLabel="1" />
+						<f:selectItem itemValue="2" itemLabel="2" />
+						<f:selectItem itemValue="3" itemLabel="3" />
+						<f:selectItem itemValue="4" itemLabel="4" />
+						<f:selectItem itemValue="5" itemLabel="5" />
+						<f:selectItem itemValue="6" itemLabel="6" />
+						<f:selectItem itemValue="7" itemLabel="7" />
+						<f:selectItem itemValue="8" itemLabel="8" />
+						<f:selectItem itemValue="9" itemLabel="9" />
+						<f:selectItem itemValue="10" itemLabel="10" />
+						<f:selectItem itemValue="11" itemLabel="11" />
+						<f:selectItem itemValue="12" itemLabel="12" />
+						<f:selectItem itemValue="13" itemLabel="13" />
+						<f:selectItem itemValue="14" itemLabel="14" />
+						<f:selectItem itemValue="15" itemLabel="15" />
+						<f:selectItem itemValue="16" itemLabel="16" />
+						<f:selectItem itemValue="17" itemLabel="17" />
+						<f:selectItem itemValue="18" itemLabel="18" />
+						<f:selectItem itemValue="19" itemLabel="19" />
+						<f:selectItem itemValue="20" itemLabel="20" />
+						<f:selectItem itemValue="21" itemLabel="21" />
+						<f:selectItem itemValue="22" itemLabel="22" />
+						<f:selectItem itemValue="23" itemLabel="23" />
+						<f:selectItem itemValue="24" itemLabel="24" />
+						<f:selectItem itemValue="25" itemLabel="25" />
+						<f:selectItem itemValue="26" itemLabel="26" />
+						<f:selectItem itemValue="27" itemLabel="27" />
+						<f:selectItem itemValue="28" itemLabel="28" />
+						<f:selectItem itemValue="29" itemLabel="29" />
+						<f:selectItem itemValue="30" itemLabel="30" />
+						<f:selectItems />
+					</p:selectOneMenu>
+
+					<p:outputLabel value="Salário" for="salario" />
+					<p:inputNumber id="salario" symbol="R$ " decimalSeparator=","
+						thousandSeparator="." value="#{colaboradorBean.salario.salario}"
+						required="true" requiredMessage="O Campo 'Salário' é Obrigatório">
+					</p:inputNumber>
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarSalario}"
+						update=":formCadastroSalario:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoSalario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Departamento" appendTo="@(body)"
+			modal="true" widgetVar="dialogoDepartamento" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formCadastroDepartamento">
+				<h:panelGrid id="painelDepartamento" columns="3" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.departamento.nome}" />
+					<p:message for="nome" display="Nome" />
+
+					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:selectBooleanCheckbox id="atendimento"
+						value="#{colaboradorBean.departamento.atendimento}"
+						required="true"
+						requiredMessage="O campo 'Atendimento' é obrigatório" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarDepartamento}"
+						update=":formCadastroDepartamento:painelDepartamento :formCadastro:tabView:departamento"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoDepartamento').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Situação" widgetVar="dialogoSituacao"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroSituacao">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.situacao.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvar}"
+						update=":formCadastroSituacao:painel :formListagem:tabela :formCadastro:tabView:situacao :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoSituacao').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Horário" widgetVar="dialogoHorario"
+			width="800" height="500" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroHorario">
+				<h:panelGrid id="painel" columns="4" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome" />
+					<p:inputText id="nome" maxlength="100" size="35" required="true"
+						requiredMessage="Campo 'Nome' Obrigatório"
+						value="#{colaboradorBean.horario.nome}" />
+
+					<p:outputLabel for="tipoHorario" value="Tipo" />
+					<p:selectOneMenu id="tipoHorario" filter="true"
+						value="#{colaboradorBean.horario.tipoHorario}" required="true"
+						requiredMessage="O campo 'Tipo Horário' é obrigatório"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Não Selecionado" />
+						<f:selectItem itemValue="Horário Normal"
+							itemLabel="Horário Normal" />
+						<f:selectItem itemValue="Horário Flexível"
+							itemLabel="Horário Flexível" />
+						<f:selectItem itemValue="Horária Livre" itemLabel="Horária Livre" />
+						<f:selectItem itemValue="Intra Jornada" itemLabel="Intra Jornada" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="horaDiaria" value="Horas Diárias" />
+					<p:inputMask id="horaDiaria" required="true"
+						style="text-align: center;"
+						requiredMessage="Campo 'Horas Diárias' Obrigatório"
+						value="#{colaboradorBean.horario.horaDiaria}" size="5"
+						mask="99:99" />
+
+					<p:outputLabel for="horaSabado" value="Horas Sábado" />
+					<p:inputMask id="horaSabado" required="true"
+						style="text-align: center;"
+						requiredMessage="Campo 'Horário Sábado' Obrigatório"
+						value="#{colaboradorBean.horario.horaSabado}" size="5"
+						mask="99:99" />
+
+				</h:panelGrid>
+
+				<br></br>
+
+				<p:tabView id="tabView" style="border:none;">
+					<p:tab title="Horário Normal">
+
+						<h:panelGrid id="painelNormal" columns="5" class="ui-noborder">
+
+							<p:outputLabel value="  " />
+							<p:outputLabel value="Entrada" />
+							<p:outputLabel value="Saída" />
+							<p:outputLabel value="Entrada" />
+							<p:outputLabel value="Saída" />
+
+
+							<p:outputLabel value="Segunda-Feira" />
+							<p:inputMask value="#{colaboradorBean.horario.segEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.segSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.segEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.segSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Terça-Feira" />
+							<p:inputMask value="#{colaboradorBean.horario.terEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.terSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.terEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.terSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Quarta-Feira" />
+							<p:inputMask value="#{colaboradorBean.horario.quaEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.quaSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.quaEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.quaSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Quinta-Feira" />
+							<p:inputMask value="#{colaboradorBean.horario.quiEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.quiSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.quiEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.quiSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Sexta-Feira" />
+							<p:inputMask value="#{colaboradorBean.horario.sexEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.sexSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.sexEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.sexSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Sábado" />
+							<p:inputMask value="#{colaboradorBean.horario.sabEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.sabSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.sabEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.sabSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+
+							<p:outputLabel value="Domingo" />
+							<p:inputMask value="#{colaboradorBean.horario.domEntrada}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.domSaidaIntervalo}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:inputMask
+								value="#{colaboradorBean.horario.domEntradaIntervalo}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+							<p:inputMask value="#{colaboradorBean.horario.domSaida}" size="8"
+								style="text-align: center;" mask="99:99" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Intra Jornada">
+
+						<h:panelGrid id="painelIntra" columns="2" class="ui-noborder">
+
+							<p:outputLabel value="Entrada" />
+							<p:inputMask value="#{colaboradorBean.horario.horarioEntradaIj}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+							<p:outputLabel value="Saída" />
+							<p:inputMask value="#{colaboradorBean.horario.horarioSaidaIj}"
+								size="8" style="text-align: center;" mask="99:99" />
+
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+
+
+				<div class="footerColaborador">
+					<p:separator />
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{colaboradorBean.salvarHorario}"
+							update=":formCadastroHorario:painel :formCadastro:tabView:painelContrato :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoHorario').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Cadastro de Unidade" widgetVar="dialogoUnidade"
+			draggable="false" resizable="false" appendTo="@(body)" modal="true"
+			closable="true">
+			<h:form id="formCadastroUnidade">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.unidade.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarUnidade}"
+						update=":formCadastroUnidade:painel :formCadastro:tabView:painelContrato :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoUnidade').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Estabilidade"
+			widgetVar="dialogoEstabilidade" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroEstabilidade">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.estabilidade.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarEstabilidade}"
+						update=":formCadastroEstabilidade:painel :formCadastro:tabView:painelAdicionais :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoEstabilidade').hide();" />
+				</h:panelGrid>
 			</h:form>
 		</p:dialog>
 
 	</ui:define>
 </ui:composition>
+
