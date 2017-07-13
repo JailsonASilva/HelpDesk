@@ -27,10 +27,16 @@ footer {
 	margin-bottom: 10px
 }
 
-.footerColaborador {
+.footerCodastro {
 	position: absolute;
 	bottom: 0;
 	width: 785px;
+}
+
+.fotoColaborador {
+	position: relative;
+	top: -323px;
+	left: 550px;
 }
 
 h1 {
@@ -47,6 +53,11 @@ h1 {
 	right: 10px;
 	width: 35px;
 	height: 35px
+}
+
+.rpaPendente {
+	position: relative;
+	top: 2.5px;
 }
 
 #login-dialog {

@@ -11,6 +11,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "usuario")
 public class Usuario extends GenericDomain {
+
 	@Column(length = 100, nullable = false)
 	private String nome;
 
@@ -39,6 +40,9 @@ public class Usuario extends GenericDomain {
 
 	@Column(nullable = false)
 	private Boolean administrador;
+
+	@Column(nullable = false)
+	private Boolean gestor;
 
 	public String getSenha() {
 		return senha;
@@ -142,4 +146,13 @@ public class Usuario extends GenericDomain {
 	public void setAdministrador(Boolean administrador) {
 		this.administrador = administrador;
 	}
+
+	public Boolean getGestor() {
+		return gestor;
+	}
+
+	public void setGestor(Boolean gestor) {
+		this.gestor = gestor;
+	}
+
 }

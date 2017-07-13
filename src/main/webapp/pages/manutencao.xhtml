@@ -212,7 +212,8 @@
 			</h:form>
 		</p:panel>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"

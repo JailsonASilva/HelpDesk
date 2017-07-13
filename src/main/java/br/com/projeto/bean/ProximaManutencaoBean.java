@@ -255,6 +255,7 @@ public class ProximaManutencaoBean implements Serializable {
 	public void imprimir() {
 		try {
 			DataTable tabela = (DataTable) Faces.getViewRoot().findComponent("formListagem:tabela");
+			
 			Map<String, Object> filtros = tabela.getFilters();
 
 			String caminho = Faces.getRealPath("/relatórios/proximaManutencao.jasper");

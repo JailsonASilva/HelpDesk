@@ -140,7 +140,9 @@
 
 						<p:submenu label="RH" icon="fa fa fw fa-group"
 							rendered="#{autenticacaoBean.usuarioLogado.acesso.rhMenu}">
-							<p:submenu label="Portal RH"
+
+							<p:submenu label="Portal do RH"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.portalRh}"
 								icon="fa fa fw fa-angle-double-right">
 
 								<p:submenu label="Cadastros"
@@ -151,6 +153,9 @@
 
 									<p:menuitem value="Unidade" url="/pages/unidade.xhtml"
 										rendered="#{autenticacaoBean.usuarioLogado.acesso.unidade}" />
+
+									<p:menuitem value="Fornecedor" url="/pages/fornecedor.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.fornecedor}" />
 
 									<p:menuitem value="Cargos" url="/pages/cargo.xhtml"
 										rendered="#{autenticacaoBean.usuarioLogado.acesso.cargo}" />
@@ -170,7 +175,52 @@
 									<p:menuitem value="Estabilidade"
 										url="/pages/estabilidade.xhtml"
 										rendered="#{autenticacaoBean.usuarioLogado.acesso.estabilidade}" />
+
+									<p:menuitem value="Ocorrência"
+										url="/pages/ocorrenciaProntuario.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.ocorrenciaProntuario}" />
+
+									<p:menuitem value="Parentesco" url="/pages/parentesco.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.parentesco}" />
+
 								</p:submenu>
+
+								<p:submenu label="Movimento"
+									icon="fa fa fw fa-angle-double-right">
+
+									<p:menuitem value="Férias" url="/pages/ferias.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.ferias}" />
+
+									<p:menuitem value="Prontuário" url="/pages/prontuario.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.prontuario}" />
+
+									<p:menuitem value="Dependentes" url="/pages/dependente.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.dependente}" />
+
+									<p:menuitem value="RPA's Pendentes"
+										url="/pages/rpaPendente.xhtml"
+										rendered="#{autenticacaoBean.usuarioLogado.acesso.rpaPendente}" />
+
+								</p:submenu>
+
+							</p:submenu>
+
+							<p:submenu label="Portal do Gestor"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.portalGestor}"
+								icon="fa fa fw fa-angle-double-right">
+
+								<p:menuitem value="Solicitação de RPA" url="/pages/rpa.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.solicitacaoRPA}" />
+
+								<p:menuitem value="Programação de Férias"
+									url="/pages/programacaoFerias.xhtml"
+									rendered="#{autenticacaoBean.usuarioLogado.acesso.programacaoFerias}" />
+
+							</p:submenu>
+
+							<p:submenu label="Portal do Colaborador"
+								rendered="#{autenticacaoBean.usuarioLogado.acesso.portalColaborador}"
+								icon="fa fa fw fa-angle-double-right">
 
 							</p:submenu>
 						</p:submenu>
@@ -274,7 +324,7 @@
 
 					<h:outputText value="Grupo Educa - Tecnologia da Informação" />
 					<br></br>
-					<h:outputText value="Versão 1.4.3.13" />
+					<h:outputText value="Versão 1.4.3.14" />
 
 				</p:layoutUnit>
 			</div>

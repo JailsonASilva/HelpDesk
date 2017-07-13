@@ -20,7 +20,9 @@ public class TicketDAO extends GenericDAO<Ticket> {
 
 	@SuppressWarnings({ "deprecation", "unchecked" })
 	public List<Ticket> pesquisarDepartamento(String departamento, String status) {
+		
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+		
 		try {
 			Criteria consulta = sessao.createCriteria(Ticket.class);
 

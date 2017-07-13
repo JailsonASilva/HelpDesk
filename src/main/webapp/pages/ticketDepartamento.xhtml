@@ -350,7 +350,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -1342,7 +1343,6 @@
 							itemLabel="#{usuario.nome}" />
 					</p:selectOneMenu>
 
-
 					<p:outputLabel for="atendente" value="Atendentes" />
 					<p:selectOneMenu id="atendente" filter="true"
 						value="#{ticketDepartamentoBean.atendenteBusca}"
@@ -1353,7 +1353,6 @@
 							var="atendente" itemValue="#{atendente.codigo}"
 							itemLabel="#{atendente.nome}" />
 					</p:selectOneMenu>
-
 
 					<p:outputLabel for="status" value="Status" />
 					<p:selectOneMenu id="status" filter="true"
@@ -1388,7 +1387,6 @@
 					<p:outputLabel for="assunto" value="Assunto" />
 					<p:inputText id="assunto" maxlength="100" size="57"
 						value="#{ticketDepartamentoBean.assuntoBusca}" />
-
 
 					<p:outputLabel for="solicitacao" value="Solicitação" />
 					<p:inputTextarea id="solicitacao" rows="4" cols="55"

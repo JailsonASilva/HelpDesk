@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cadastro de Prontuários">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{prontuarioBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{prontuarioBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document" actionListener="#{prontuarioBean.novo}"
+							update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{prontuarioBean.prontuario == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{prontuarioBean.excluir}"
+							disabled="#{prontuarioBean.prontuario == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="prontuarioSelecionado" value="#{prontuario}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="prontuario" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="prontuario" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="prontuario" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{prontuarioBean.prontuario}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{prontuario.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{prontuarioBean.prontuarios}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="prontuario" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{prontuarioBean.duploClique}"
+						update="formCadastro:painel" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{prontuarioBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{prontuarioBean.onRowSelect}" />
+
+					<p:column headerText="Nome" sortBy="#{prontuario.colaborador.nome}"
+						width="130">
+						<h:outputText value="#{prontuario.colaborador.nome}" />
+					</p:column>
+
+					<p:column headerText="Ocorrência"
+						sortBy="#{prontuario.ocorrenciaProntuario.nome}" width="100">
+						<h:outputText value="#{prontuario.ocorrenciaProntuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Inicial" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{prontuario.dataInicial}">
+						<h:outputText value="#{prontuario.dataInicial}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Data Final" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{prontuario.dataFinal}">
+						<h:outputText value="#{prontuario.dataFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{prontuarioBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{prontuario}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{prontuarioBean.excluirAtalho}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{prontuario}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Prontuários" widgetVar="dialogo"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="colaborador" value="Colaborador " />
+					<p:selectOneMenu id="colaborador" filter="true"
+						value="#{prontuarioBean.prontuario.colaborador}" required="true"
+						requiredMessage="O campo 'Colaborador' é obrigatório"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{prontuarioBean.colaboradores}"
+							var="colaborador" itemValue="#{colaborador}"
+							itemLabel="#{colaborador.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="ocorrenciaProntuario" value="Ocorrência " />
+					<h:panelGroup>
+						<p:selectOneMenu id="ocorrenciaProntuario" filter="true"
+							value="#{prontuarioBean.prontuario.ocorrenciaProntuario}"
+							required="true"
+							requiredMessage="O campo 'Ocorrência' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{prontuarioBean.ocorrenciaProntuarios}"
+								var="ocorrenciaProntuario" itemValue="#{ocorrenciaProntuario}"
+								itemLabel="#{ocorrenciaProntuario.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Nova Ocorrência" update="formCadastroOcorrencia:painel"
+							oncomplete="PF('dialogoOcorrencia').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="dataInicial" value="Data Inicial" />
+					<p:calendar id="dataInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Data Inicial' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{prontuarioBean.prontuario.dataInicial}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataFinal" value="Data Final" />
+					<p:calendar id="dataFinal" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Data Final' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{prontuarioBean.prontuario.dataFinal}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="observacao" value="Observação" />
+					<p:inputTextarea id="observacao" rows="4" cols="55"
+						counter="display" maxlength="2000"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{prontuarioBean.prontuario.observacao}" />
+
+					<br></br>
+					<h:outputText id="display" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{prontuarioBean.salvar}"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Ocorrência"
+			widgetVar="dialogoOcorrencia" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroOcorrencia">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{prontuarioBean.ocorrenciaProntuario.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{prontuarioBean.salvarOcorrencia}"
+						update=":formCadastroOcorrencia:painel :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoOcorrencia').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

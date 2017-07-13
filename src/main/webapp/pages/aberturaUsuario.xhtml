@@ -17,16 +17,14 @@
 						<p:outputLabel for="dataInicial" value="Data Inicial" />
 						<p:calendar id="dataInicial" mask="99/99/99" required="true"
 							showOn="button" requiredMessage="Campo Obrigatório!"
-							yearRange="1900:2222"
-							value="#{aberturaUsuarioBean.dataInicial}" size="6"
-							locale="pt_BR" showButtonPanel="true" navigator="true" />
+							yearRange="1900:2222" value="#{aberturaUsuarioBean.dataInicial}"
+							size="6" locale="pt_BR" showButtonPanel="true" navigator="true" />
 
 						<p:outputLabel for="dataFinal" value="Data Final" />
 						<p:calendar id="dataFinal" mask="99/99/99" required="true"
 							showOn="button" requiredMessage="Campo Obrigatório!"
-							yearRange="1900:2222"
-							value="#{aberturaUsuarioBean.dataFinal}" size="6"
-							locale="pt_BR" showButtonPanel="true" navigator="true" />
+							yearRange="1900:2222" value="#{aberturaUsuarioBean.dataFinal}"
+							size="6" locale="pt_BR" showButtonPanel="true" navigator="true" />
 					</h:panelGrid>
 
 					<p:commandButton id="bitPesquisar" value="Pesquisar"
@@ -81,8 +79,7 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="ticket" rows="10" paginatorPosition="bottom">
 
-					<p:column headerText="Usuário" sortBy="#{ticket[0]}"
-						width="90">
+					<p:column headerText="Usuário" sortBy="#{ticket[0]}" width="90">
 						<h:outputText value="#{ticket[0]}" />
 					</p:column>
 
@@ -96,7 +93,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"

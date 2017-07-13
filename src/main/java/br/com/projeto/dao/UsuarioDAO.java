@@ -75,17 +75,17 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 			sessao.close();
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "deprecation", "unused" })
 	public List<Usuario> pesquisarUsuarioDepartamento(Long departamento) {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 
 		try {
-			Criteria consulta = sessao.createCriteria(Usuario.class);			
+			Criteria consulta = sessao.createCriteria(Usuario.class);
 
 			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
 					Restrictions.like("departamento.codigo", departamento));
-			
+
 			consulta.addOrder(Order.asc("nome"));
 
 			List<Usuario> resultado = consulta.list();
@@ -96,18 +96,18 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 		} finally {
 			sessao.close();
 		}
-	}	
-	
+	}
+
 	@SuppressWarnings({ "unchecked", "deprecation", "unused" })
 	public List<Usuario> listarTodosAtendente() {
 		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
 
 		try {
-			Criteria consulta = sessao.createCriteria(Usuario.class);			
+			Criteria consulta = sessao.createCriteria(Usuario.class);
 
 			Criteria consultaDepartamento = consulta.createCriteria("departamento", "departamento", Criteria.INNER_JOIN,
 					Restrictions.eq("departamento.atendimento", true));
-			
+
 			consulta.addOrder(Order.asc("nome"));
 
 			List<Usuario> resultado = consulta.list();
@@ -118,5 +118,26 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 		} finally {
 			sessao.close();
 		}
-	}	
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	public List<Usuario> listarGestores() {
+		Session sessao = HibernateUtil.getFabricaDeSessoes().openSession();
+
+		try {
+			Criteria consulta = sessao.createCriteria(Usuario.class);
+
+			consulta.add(Restrictions.eq("gestor", true));
+
+			consulta.addOrder(Order.asc("nome"));
+
+			List<Usuario> resultado = consulta.list();
+			return resultado;
+
+		} catch (RuntimeException erro) {
+			throw erro;
+		} finally {
+			sessao.close();
+		}
+	}
 }

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cadastro de Programação de Férias">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{programacaoFeriasBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{programacaoFeriasBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document"
+							actionListener="#{programacaoFeriasBean.novo}"
+							update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{programacaoFeriasBean.programacaoFerias == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{programacaoFeriasBean.excluir}"
+							disabled="#{programacaoFeriasBean.programacaoFerias == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="programacaoFeriasSelecionado"
+								value="#{programacaoFerias}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela"
+									fileName="programacaoFerias" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela"
+									fileName="programacaoFerias" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela"
+									fileName="programacaoFerias" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single"
+					selection="#{programacaoFeriasBean.programacaoFerias}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{programacaoFerias.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{programacaoFeriasBean.programacaoFeriasLista}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="programacaoFerias" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{programacaoFeriasBean.duploClique}"
+						update="formCadastro:painel" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{programacaoFeriasBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{programacaoFeriasBean.onRowSelect}" />
+
+					<p:column headerText="Colaborador"
+						sortBy="#{programacaoFerias.colaborador.nome}">
+						<h:outputText value="#{programacaoFerias.colaborador.nome}" />
+					</p:column>
+
+					<p:column headerText="Mês" sortBy="#{programacaoFerias.mes}"
+						style="text-align:center" width="100">
+						<h:outputText value="#{programacaoFerias.mes}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="70"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{programacaoFeriasBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado"
+								value="#{programacaoFerias}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{programacaoFeriasBean.excluirAtalho}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado"
+								value="#{programacaoFerias}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Programação de Férias"
+			widgetVar="dialogo" appendTo="@(body)" modal="true" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="colaborador" value="Colaborador" />
+					<p:selectOneMenu id="colaborador" filter="true"
+						value="#{programacaoFeriasBean.programacaoFerias.colaborador}"
+						required="true"
+						requiredMessage="O campo 'Colaborador' é obrigatório"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{programacaoFeriasBean.colaboradores}"
+							var="colaborador" itemValue="#{colaborador}"
+							itemLabel="#{colaborador.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="mes" value="Mês" />
+					<p:selectOneMenu id="mes" filter="true"
+						value="#{programacaoFeriasBean.programacaoFerias.mes}"
+						required="true" requiredMessage="O campo 'Mês' é obrigatório"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true" itemLabel="Não Selecionado" />
+						<f:selectItem itemValue="Janeiro" itemLabel="Janeiro" />
+						<f:selectItem itemValue="Fevereiro" itemLabel="Fevereiro" />
+						<f:selectItem itemValue="Março" itemLabel="Março" />
+						<f:selectItem itemValue="Abril" itemLabel="Abril" />
+						<f:selectItem itemValue="Maio" itemLabel="Maio" />
+						<f:selectItem itemValue="Junho" itemLabel="Junho" />
+						<f:selectItem itemValue="Julho" itemLabel="Julho" />
+						<f:selectItem itemValue="Agosto" itemLabel="Agosto" />
+						<f:selectItem itemValue="Setembro" itemLabel="Setembro" />
+						<f:selectItem itemValue="Outubro" itemLabel="Outubro" />
+						<f:selectItem itemValue="Novembro" itemLabel="Novembro" />
+						<f:selectItem itemValue="Dezembro" itemLabel="Dezembro" />
+					</p:selectOneMenu>
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{programacaoFeriasBean.salvar}"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

@@ -30,7 +30,8 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{tipoEquipamentoBean.novo}"
+							icon="ui-icon-document"
+							actionListener="#{tipoEquipamentoBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -56,7 +57,8 @@
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="tipoEquipamentoSelecionado" value="#{tipoEquipamento}" />
+							<f:attribute name="tipoEquipamentoSelecionado"
+								value="#{tipoEquipamento}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -68,17 +70,20 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="tipoEquipamento" />
+								<p:dataExporter type="xls" target="tabela"
+									fileName="tipoEquipamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="tipoEquipamento" />
+								<p:dataExporter type="pdf" target="tabela"
+									fileName="tipoEquipamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="tipoEquipamento" />
+								<p:dataExporter type="xml" target="tabela"
+									fileName="tipoEquipamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -92,7 +97,8 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{tipoEquipamentoBean.tipoEquipamento}"
+					selectionMode="single"
+					selection="#{tipoEquipamentoBean.tipoEquipamento}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{tipoEquipamento.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
@@ -123,7 +129,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -132,7 +139,7 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Tipo de Equipamento" widgetVar="dialogo"
-			draggable="false" resizable="false"  closable="true">
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="3" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />

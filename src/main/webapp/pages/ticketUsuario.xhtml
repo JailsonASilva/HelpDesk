@@ -342,7 +342,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -514,10 +515,10 @@
 
 					<p:commandButton id="eventoBotao" value="Evento"
 						icon="fa fa fw fa-university"
-						disabled="#{ticketUsuarioBean.ticket.evento}"
-						style="margin:0 3px" onstart="PF('iconeDeProcessamento').show()"
+						disabled="#{ticketUsuarioBean.ticket.evento}" style="margin:0 3px"
+						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()"
-						actionListener="#{ticketUsuarioBean.novoEvento}" 
+						actionListener="#{ticketUsuarioBean.novoEvento}"
 						update=":formListagem:messages :formCadastroEvento:painel">
 						<f:actionListener
 							type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -1332,7 +1333,7 @@
 
 				<h:panelGrid columns="3">
 					<p:commandButton value="Salvar" icon="ui-icon-disk"
-						actionListener="#{ticketUsuarioBean.salvarEvento}" 
+						actionListener="#{ticketUsuarioBean.salvarEvento}"
 						update=":formCadastroEvento:painel :formListagem:messages :formCadastro:eventoBotao"
 						onstart="PF('iconeDeProcessamento').show()"
 						onsuccess="PF('iconeDeProcessamento').hide()" />

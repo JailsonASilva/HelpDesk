@@ -122,7 +122,7 @@
 						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{profissaoBean.editar}" 
+							actionListener="#{profissaoBean.editar}"
 							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
 							<f:attribute name="registroSelecionado" value="#{profissao}" />
 						</p:commandButton>
@@ -149,7 +149,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"

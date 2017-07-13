@@ -571,6 +571,9 @@ public class TicketUsuarioBean implements Serializable {
 
 			UsuarioDAO usuarioDAO = new UsuarioDAO();
 			usuarios = usuarioDAO.pesquisarUsuarioDepartamento(usuario.getDepartamento().getCodigo());
+			
+			atendentesBusca = usuarios;
+			usuariosAberturaBusca = usuarioDAO.listar("nome");
 
 		} catch (
 

@@ -127,7 +127,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -226,7 +227,18 @@
 					</p:tab>
 
 					<p:tab title="RH">
-						<h:panelGrid id="painelRh" columns="2" class="ui-noborder">
+						<h:panelGrid id="painelRh" columns="6" class="ui-noborder">
+
+							<p:outputLabel value="Portal RH" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.portalRh}" />
+
+							<p:outputLabel value="Portal Gestor" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.portalGestor}" />
+
+							<p:outputLabel value="Portal Colaborador" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.portalColaborador}" />
 
 							<p:outputLabel value="Colaborador" />
 							<p:selectBooleanCheckbox value="#{acessoBean.acesso.colaborador}" />
@@ -252,6 +264,36 @@
 							<p:outputLabel value="Esabilidade" />
 							<p:selectBooleanCheckbox
 								value="#{acessoBean.acesso.estabilidade}" />
+
+							<p:outputLabel value="Férias" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.ferias}" />
+
+							<p:outputLabel value="Ocorrências" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.ocorrenciaProntuario}" />
+
+							<p:outputLabel value="Prontuário" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.prontuario}" />
+
+							<p:outputLabel value="Parentesco" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.parentesco}" />
+
+							<p:outputLabel value="Dependentes" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.dependente}" />
+
+							<p:outputLabel value="Fornecedor" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.fornecedor}" />
+
+							<p:outputLabel value="Solicitação RPA" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.solicitacaoRPA}" />
+
+							<p:outputLabel value="RPA Pendente" />
+							<p:selectBooleanCheckbox value="#{acessoBean.acesso.rpaPendente}" />
+
+							<p:outputLabel value="Programação Férias" />
+							<p:selectBooleanCheckbox
+								value="#{acessoBean.acesso.programacaoFerias}" />
 
 						</h:panelGrid>
 					</p:tab>

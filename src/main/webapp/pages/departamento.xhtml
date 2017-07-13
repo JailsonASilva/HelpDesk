@@ -104,6 +104,10 @@
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="departamento" rows="10" paginatorPosition="bottom">
 
+					<p:ajax event="rowDblselect"
+						listener="#{departamentoBean.duploClique}"
+						update="formCadastro:painel" />
+
 					<p:ajax event="rowUnselect"
 						update=":formListagem:messages :formListagem:tool"
 						listener="#{departamentoBean.onRowUnselect}" />
@@ -155,7 +159,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -168,12 +173,29 @@
 			closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
 					<p:outputLabel for="nome" value="Nome: " />
 					<p:inputText id="nome" maxlength="100" size="60" required="true"
 						requiredMessage="Campo Obrigatório"
 						value="#{departamentoBean.departamento.nome}" />
 
-					<p:outputLabel for="atendimento" value="Permite Abertura de Ticket" />
+					<p:outputLabel for="gestor" value="Gestor" />
+					<h:panelGroup>
+						<p:selectOneMenu id="gestor" filter="true"
+							value="#{departamentoBean.departamento.gestor}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{departamentoBean.gestores}" var="gestor"
+								itemValue="#{gestor}" itemLabel="#{gestor.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Gestor" oncomplete="PF('dialogoUsuario').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="atendimento" value="Recebe Chamado" />
 					<p:selectBooleanCheckbox id="atendimento"
 						value="#{departamentoBean.departamento.atendimento}"
 						required="true"
@@ -193,6 +215,85 @@
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Usuário" widgetVar="dialogoUsuario"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroUsuario">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome " />
+					<p:inputText id="nome" maxlength="100" size="43" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{departamentoBean.gestor.nome}" />
+
+					<p:outputLabel for="email" value="E-mail " />
+					<p:inputText id="email" maxlength="100" size="43" required="true"
+						value="#{departamentoBean.gestor.email}" />
+
+					<p:outputLabel for="departamento" value="Departamento " />
+					<h:panelGroup>
+						<p:selectOneMenu id="departamento" filter="true"
+							value="#{departamentoBean.gestor.departamento}" required="true"
+							requiredMessage="O campo 'Departamento' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{departamentoBean.departamentosGestor}"
+								var="departamento" itemValue="#{departamento}"
+								itemLabel="#{departamento.nome}" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+
+
+					<p:outputLabel for="acesso" value="Acesso " />
+					<h:panelGroup>
+						<p:selectOneMenu id="acesso" filter="true"
+							value="#{departamentoBean.gestor.acesso}" required="true"
+							requiredMessage="O campo 'Acesso' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{departamentoBean.acessos}" var="acesso"
+								itemValue="#{acesso}" itemLabel="#{acesso.nome}" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+
+					<p:outputLabel for="ramal" value="Ramal" />
+					<p:inputText id="ramal" maxlength="10" size="15"
+						value="#{departamentoBean.gestor.ramal}" />
+
+					<p:outputLabel for="ativo" value="Ativo" />
+					<p:selectBooleanCheckbox id="ativo"
+						value="#{departamentoBean.gestor.ativo}" required="true"
+						requiredMessage="O campo 'Ativo' é obrigatório" />
+
+					<p:outputLabel for="gestor" value="Gestor" />
+					<p:selectBooleanCheckbox id="gestor"
+						value="#{departamentoBean.gestor.gestor}" required="true"
+						requiredMessage="O campo 'Gestor' é obrigatório" />
+
+					<p:outputLabel for="administrador" value="Administrador" />
+					<p:selectBooleanCheckbox id="administrador"
+						value="#{departamentoBean.gestor.administrador}" required="true"
+						requiredMessage="O campo 'Administrador' é obrigatório" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{departamentoBean.salvarUsuario}"
+						update=":formCadastroUsuario:painel :formCadastro:gestor"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoUsuario').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

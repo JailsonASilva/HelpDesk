@@ -11,143 +11,170 @@ public class Acesso extends GenericDomain {
 	@Column(length = 100, nullable = false)
 	private String nome;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean acesso;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean categoria;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean cliente;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean departamento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean equipamento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean manutencao;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean marca;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean nivel;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean proximaManutencao;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean ticketExterno;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean ticketInterno;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean tipoEquipamento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean usuario;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean local;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean classificacao;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean artigo;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean baseConhecimento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean ticketDepartamento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean ticketUsuario;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean tipoEvento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean material;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean evento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean localEquipamento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean tecnico;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean aberturaEmail;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean aberturaDepartamento;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean aberturaUsuario;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean auditoria;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean mensagem;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean sistemaMenu;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean ticketMenu;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean eventoMenu;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean equipamentoMenu;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean baseConhecimentoMenu;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean rhMenu;
 
-	@Column(nullable = true)
-	private Boolean rh;
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean portalRh;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean portalGestor;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean portalColaborador;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean cargo;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean salarios;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean unidade;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean colaborador;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean profissao;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean situacao;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean horario;
 
-	@Column(nullable = true)
+	@Column(nullable = false, columnDefinition = "boolean default False")
 	private Boolean estabilidade;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean ferias;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean ocorrenciaProntuario;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean prontuario;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean parentesco;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean dependente;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean fornecedor;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean solicitacaoRPA;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean rpaPendente;
+
+	@Column(nullable = false, columnDefinition = "boolean default False")
+	private Boolean programacaoFerias;
 
 	public String getNome() {
 		return nome;
@@ -437,14 +464,6 @@ public class Acesso extends GenericDomain {
 		this.rhMenu = rhMenu;
 	}
 
-	public Boolean getRh() {
-		return rh;
-	}
-
-	public void setRh(Boolean rh) {
-		this.rh = rh;
-	}
-
 	public Boolean getPortalGestor() {
 		return portalGestor;
 	}
@@ -523,6 +542,86 @@ public class Acesso extends GenericDomain {
 
 	public void setEstabilidade(Boolean estabilidade) {
 		this.estabilidade = estabilidade;
+	}
+
+	public Boolean getFerias() {
+		return ferias;
+	}
+
+	public void setFerias(Boolean ferias) {
+		this.ferias = ferias;
+	}
+
+	public Boolean getPortalRh() {
+		return portalRh;
+	}
+
+	public void setPortalRh(Boolean portalRh) {
+		this.portalRh = portalRh;
+	}
+
+	public Boolean getOcorrenciaProntuario() {
+		return ocorrenciaProntuario;
+	}
+
+	public void setOcorrenciaProntuario(Boolean ocorrenciaProntuario) {
+		this.ocorrenciaProntuario = ocorrenciaProntuario;
+	}
+
+	public Boolean getProntuario() {
+		return prontuario;
+	}
+
+	public void setProntuario(Boolean prontuario) {
+		this.prontuario = prontuario;
+	}
+
+	public Boolean getParentesco() {
+		return parentesco;
+	}
+
+	public void setParentesco(Boolean parentesco) {
+		this.parentesco = parentesco;
+	}
+
+	public Boolean getDependente() {
+		return dependente;
+	}
+
+	public void setDependente(Boolean dependente) {
+		this.dependente = dependente;
+	}
+
+	public Boolean getFornecedor() {
+		return fornecedor;
+	}
+
+	public void setFornecedor(Boolean fornecedor) {
+		this.fornecedor = fornecedor;
+	}
+
+	public Boolean getSolicitacaoRPA() {
+		return solicitacaoRPA;
+	}
+
+	public void setSolicitacaoRPA(Boolean solicitacaoRPA) {
+		this.solicitacaoRPA = solicitacaoRPA;
+	}
+
+	public Boolean getRpaPendente() {
+		return rpaPendente;
+	}
+
+	public void setRpaPendente(Boolean rpaPendente) {
+		this.rpaPendente = rpaPendente;
+	}
+
+	public Boolean getProgramacaoFerias() {
+		return programacaoFerias;
+	}
+
+	public void setProgramacaoFerias(Boolean programacaoFerias) {
+		this.programacaoFerias = programacaoFerias;
 	}
 
 }

@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Solicitações de RPA's">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{rpaBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{rpaBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document" actionListener="#{rpaBean.novo}"
+							update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{rpaBean.rpa == null}" update=":formCadastro:painel"
+							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{rpaBean.excluir}"
+							disabled="#{rpaBean.rpa == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="rpaSelecionado" value="#{rpa}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:commandButton value="Busca Avançada" icon="fa fa fw fa-search"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							oncomplete="PF('dialogoBusca').show()">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="rpa" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="rpa" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="rpa" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{rpaBean.rpa}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{rpa.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{rpaBean.rpas}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="rpa" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect" listener="#{rpaBean.duploClique}"
+						update="formCadastro:painel" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{rpaBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{rpaBean.onRowSelect}" />
+
+					<p:column headerText="Fornecedor" sortBy="#{rpa.fornecedor.nome}"
+						width="130">
+						<h:outputText value="#{rpa.fornecedor.nome}" />
+					</p:column>
+
+					<p:column headerText="Referente" sortBy="#{rpa.referente}"
+						width="130">
+						<h:outputText value="#{rpa.referente}" />
+					</p:column>
+
+					<p:column headerText="Data Início" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.dataInicio}">
+						<h:outputText value="#{rpa.dataInicio}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Data Prevista Fim" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.dataPrevistaFim}">
+						<h:outputText value="#{rpa.dataPrevistaFim}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Recebido RH"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.recebidoRHFormatado}" width="45">
+						<h:outputText value="#{rpa.recebidoRHFormatado}" />
+					</p:column>
+
+					<p:column headerText="Aprovado"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.aprovado}" width="45">
+						<h:outputText value="#{rpa.aprovado}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="50"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{rpaBean.editar}" update=":formCadastro:painel"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{rpa}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{rpaBean.excluirAtalho}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{rpa}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Solicitação de RPA" widgetVar="dialogo"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastro">
+
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="fornecedor" value="Fornecedor " />
+					<h:panelGroup>
+						<p:selectOneMenu id="fornecedor" filter="true"
+							value="#{rpaBean.rpa.fornecedor}" required="true"
+							requiredMessage="O campo 'Fornecedor' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{rpaBean.fornecedores}" var="fornecedor"
+								itemValue="#{fornecedor}" itemLabel="#{fornecedor.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Fornecedor"
+							update="formCadastroFornecedor:tabView:painelDadosPessoais :formCadastroFornecedor:tabView:painelBancario :formCadastroFornecedor:tabView:painelEndereco :formCadastroFornecedor:tabView:painelDocumentacao"
+							oncomplete="PF('dialogoFornecedor').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="dataInicio" value="Data Início" />
+					<p:calendar id="dataInicio" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Data Início' Obrigatório!"
+						yearRange="1900:2222" value="#{rpaBean.rpa.dataInicio}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataPrevistaFim" value="Data Prevista Fim" />
+					<p:calendar id="dataPrevistaFim" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Data Prevista Fim' Obrigatório!"
+						yearRange="1900:2222" value="#{rpaBean.rpa.dataPrevistaFim}"
+						size="8" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="valor" value="Valor" />
+					<p:inputNumber id="valor" symbol="R$ " decimalSeparator=","
+						thousandSeparator="." value="#{rpaBean.rpa.valor}" required="true"
+						requiredMessage="O Campo 'Valor' é Obrigatório">
+					</p:inputNumber>
+
+					<p:outputLabel for="referente" value="Referente" />
+					<p:inputTextarea id="referente" rows="4" cols="60" required="true"
+						requiredMessage="Campo 'Referente' Obrigatório!" counter="display"
+						maxlength="1000" counterTemplate="{0} caracteres restantes."
+						autoResize="false" value="#{rpaBean.rpa.referente}" />
+					<br></br>
+					<h:outputText id="display" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="3">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{rpaBean.salvar}"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Salvar e Enviar E-mail" icon="ui-icon-disk"
+						actionListener="#{rpaBean.salvarEnviarEmail}"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Fornecedor"
+			widgetVar="dialogoFornecedor" width="830" height="540"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroFornecedor">
+
+				<p:tabView id="tabView" style="border:none;">
+					<p:tab title="Dados Pessoais">
+
+						<h:panelGrid id="painelDadosPessoais" columns="2"
+							class="ui-noborder">
+
+							<p:outputLabel for="nome" value="Nome" />
+							<p:inputText id="nome" maxlength="100" size="50" required="true"
+								requiredMessage="Campo 'Nome' Obrigatório"
+								value="#{rpaBean.fornecedor.nome}" />
+
+							<p:outputLabel for="dataNascimento" value="Data Nasc" />
+							<p:calendar id="dataNascimento" mask="99/99/99" required="true"
+								showOn="button"
+								requiredMessage="Campo 'Data Nascimento' Obrigatório!"
+								yearRange="1900:2222"
+								value="#{rpaBean.fornecedor.dataNascimento}" size="8"
+								locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="localNascimento" value="Naturalidade" />
+							<p:inputText id="localNascimento" maxlength="80" size="23"
+								value="#{rpaBean.fornecedor.naturalidade}" />
+
+							<p:outputLabel for="estadoCivil" value="Estado Civil" />
+							<p:selectOneMenu id="estadoCivil" filter="true"
+								value="#{rpaBean.fornecedor.estadoCivil}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="SOLTEIRO(A)" itemLabel="Solteiro(a)" />
+								<f:selectItem itemValue="CASADO(A)" itemLabel="Casado(a)" />
+								<f:selectItem itemValue="VIÚVO(a)" itemLabel="Viúvo(a)" />
+								<f:selectItem itemValue="DOVORCIADO(A)"
+									itemLabel="Divorciado(a)" />
+								<f:selectItem itemValue="UNIÃO ESTÁVEL"
+									itemLabel="União Estável" />
+								<f:selectItem itemValue="OUTROS" itemLabel="Outros" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="sexo" value="Sexo" />
+							<p:selectOneMenu id="sexo" filter="true"
+								value="#{rpaBean.fornecedor.sexo}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="M" itemLabel="Masculino" />
+								<f:selectItem itemValue="F" itemLabel="Feminino" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="pai" value="Pai" />
+							<p:inputText id="pai" maxlength="100" size="50"
+								value="#{rpaBean.fornecedor.pai}" />
+
+							<p:outputLabel for="mae" value="Mãe" />
+							<p:inputText id="mae" maxlength="100" size="50"
+								value="#{rpaBean.fornecedor.mae}" />
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Endereço/Contato">
+						<h:panelGrid id="painelEndereco" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="endereco" value="Endereço" />
+							<p:inputText id="endereco" maxlength="100" size="55"
+								required="true" requiredMessage="Campo 'Endereço' Obrigatório"
+								value="#{rpaBean.fornecedor.endereco}" />
+
+							<p:outputLabel for="numero" value="Número" />
+							<p:inputText id="numero" maxlength="10" size="10" required="true"
+								requiredMessage="Campo 'Número' Obrigatório"
+								value="#{rpaBean.fornecedor.numero}" />
+
+							<p:outputLabel for="complemento" value="Complemento" />
+							<p:inputText id="complemento" maxlength="100" size="40"
+								value="#{rpaBean.fornecedor.complemento}" />
+
+							<p:outputLabel for="bairro" value="Bairro" />
+							<p:inputText id="bairro" maxlength="80" size="30" required="true"
+								requiredMessage="Campo 'Bairro' Obrigatório"
+								value="#{rpaBean.fornecedor.bairro}" />
+
+							<p:outputLabel for="cidade" value="Cidade" />
+							<p:inputText id="cidade" maxlength="80" size="30" required="true"
+								requiredMessage="Campo 'Cidade' Obrigatório"
+								value="#{rpaBean.fornecedor.cidade}" />
+
+							<p:outputLabel for="estado" value="UF" />
+							<p:selectOneMenu id="estado" filter="true" required="true"
+								requiredMessage="Campo 'UF' Obrigatório"
+								converter="omnifaces.SelectItemsConverter"
+								value="#{rpaBean.fornecedor.uf}">
+								<f:selectItem noSelectionOption="true" itemLabel=" " />
+								<f:selectItem itemValue="AC" itemLabel="AC" />
+								<f:selectItem itemValue="AL" itemLabel="AL" />
+								<f:selectItem itemValue="AP" itemLabel="AP" />
+								<f:selectItem itemValue="AM" itemLabel="AM" />
+								<f:selectItem itemValue="BA" itemLabel="BA" />
+								<f:selectItem itemValue="CE" itemLabel="CE" />
+								<f:selectItem itemValue="DF" itemLabel="DF" />
+								<f:selectItem itemValue="ES" itemLabel="ES" />
+								<f:selectItem itemValue="GO" itemLabel="GO" />
+								<f:selectItem itemValue="MA" itemLabel="MA" />
+								<f:selectItem itemValue="MT" itemLabel="MT" />
+								<f:selectItem itemValue="MS" itemLabel="MS" />
+								<f:selectItem itemValue="MG" itemLabel="MG" />
+								<f:selectItem itemValue="PA" itemLabel="PA" />
+								<f:selectItem itemValue="PB" itemLabel="PB" />
+								<f:selectItem itemValue="PR" itemLabel="PR" />
+								<f:selectItem itemValue="PE" itemLabel="PE" />
+								<f:selectItem itemValue="PI" itemLabel="PI" />
+								<f:selectItem itemValue="RJ" itemLabel="RF" />
+								<f:selectItem itemValue="RN" itemLabel="RN" />
+								<f:selectItem itemValue="RS" itemLabel="RS" />
+								<f:selectItem itemValue="RO" itemLabel="RO" />
+								<f:selectItem itemValue="RR" itemLabel="RR" />
+								<f:selectItem itemValue="SC" itemLabel="SC" />
+								<f:selectItem itemValue="SP" itemLabel="SP" />
+								<f:selectItem itemValue="SE" itemLabel="SE" />
+								<f:selectItem itemValue="TO" itemLabel="TO" />
+								<f:selectItems />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="cep" value="Cep" />
+							<p:inputMask id="cep" value="#{rpaBean.fornecedor.cep}" size="9"
+								mask="99999-999" />
+
+							<p:outputLabel for="telefone1" value="Telefone 1" />
+							<p:inputMask id="telefone1"
+								value="#{rpaBean.fornecedor.telefone_1}" required="true"
+								requiredMessage="Campo 'Telefone' Obrigatório" size="14"
+								mask="(99)99999-9999" />
+
+							<p:outputLabel for="telefone2" value="Telefone 2" />
+							<p:inputMask id="telefone2"
+								value="#{rpaBean.fornecedor.telefone_2}" size="14"
+								mask="(99)99999-9999" />
+
+							<p:outputLabel for="email" value="E-mail" />
+							<p:inputText id="email" maxlength="100" size="40"
+								value="#{rpaBean.fornecedor.email}" />
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Documentação">
+						<h:panelGrid id="painelDocumentacao" columns="2"
+							class="ui-noborder">
+
+							<p:outputLabel for="cpf" value="CPF" />
+							<p:inputMask id="cpf" value="#{rpaBean.fornecedor.cpf}" size="14"
+								mask="999.999.999-99" />
+
+							<p:outputLabel for="rg" value="Rg" />
+							<p:inputText id="rg" maxlength="80" size="22"
+								value="#{rpaBean.fornecedor.rg}" />
+
+							<p:outputLabel for="orgaoEmissor" value="Orgão Emissor" />
+							<p:inputText id="orgaoEmissor" maxlength="10" size="10"
+								value="#{rpaBean.fornecedor.orgaoEmissor}" />
+
+							<p:outputLabel for="dataEmissao" value="Data Emissão Rg" />
+							<p:calendar id="dataEmissao" mask="99/99/99" showOn="button"
+								yearRange="1900:2222" value="#{rpaBean.fornecedor.emissaoRg}"
+								size="9" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="pis" value="PIS" />
+							<p:inputText id="pis" maxlength="80" size="22"
+								value="#{rpaBean.fornecedor.pis}" />
+
+							<p:outputLabel for="titulo" value="Título" />
+							<p:inputText id="titulo" maxlength="80" size="22"
+								value="#{rpaBean.fornecedor.tituloEleitoral}" />
+
+							<p:outputLabel for="zona" value="Zona" />
+							<p:inputText id="zona" maxlength="10" size="10"
+								value="#{rpaBean.fornecedor.zona}" />
+
+							<p:outputLabel for="secao" value="Seção" />
+							<p:inputText id="secao" maxlength="10" size="10"
+								value="#{rpaBean.fornecedor.secao}" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Bancários">
+						<h:panelGrid id="painelBancario" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="banco" value="Banco" />
+							<p:inputText id="banco" maxlength="80" size="30" required="true"
+								requiredMessage="Campo 'Banco' Obrigatório"
+								value="#{rpaBean.fornecedor.banco}" />
+
+							<p:outputLabel for="agencia" value="Agência" />
+							<p:inputText id="agencia" maxlength="10" size="10"
+								required="true" requiredMessage="Campo 'Agência' Obrigatório"
+								value="#{rpaBean.fornecedor.agencia}" />
+
+							<p:outputLabel for="operacaoConta" value="Operação" />
+							<p:inputText id="operacaoConta" maxlength="10" size="10"
+								value="#{rpaBean.fornecedor.operacaoConta}" />
+
+							<p:outputLabel for="conta" value="Nº Conta" />
+							<p:inputText id="conta" maxlength="10" size="10" required="true"
+								requiredMessage="Campo 'Nº Conta' Obrigatório"
+								value="#{rpaBean.fornecedor.numeroConta}" />
+
+							<p:outputLabel for="tipoConta" value="Tipo" />
+							<p:selectOneMenu id="tipoConta" filter="true" required="true"
+								requiredMessage="Campo 'Tipo Conta' Obrigatório"
+								value="#{rpaBean.fornecedor.tipoConta}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true"
+									itemLabel="Não Selecionado" />
+								<f:selectItem itemValue="Corrente" itemLabel="Corrente" />
+								<f:selectItem itemValue="Poupança" itemLabel="Poupança" />
+								<f:selectItem itemValue="Salário" itemLabel="Salário" />
+							</p:selectOneMenu>
+
+						</h:panelGrid>
+					</p:tab>
+				</p:tabView>
+
+				<div class="footerCodastro">
+					<p:separator />
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{rpaBean.salvarFornecedor}"
+							update=":formCadastroFornecedor :formCadastroFornecedor:tabView :formCadastro:fornecedor :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoFornecedor').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Busca Avançada" widgetVar="dialogoBusca"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formBuscaAvancada">
+
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="dataInicial" value="Data Inicial" />
+					<p:calendar id="dataInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Data Inicial' Obrigatório!"
+						yearRange="1900:2222" value="#{rpaBean.dataInicial}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataFinal" value="Data Final" />
+					<p:calendar id="dataFinal" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Data Final' Obrigatório!"
+						yearRange="1900:2222" value="#{rpaBean.dataFinal}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="fornecedor" value="Fornecedor " />
+					<p:selectOneMenu id="fornecedor" filter="true"
+						value="#{rpaBean.fornecedorBusca}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{rpaBean.fornecedoresBusca}"
+							var="fornecedor" itemValue="#{fornecedor}"
+							itemLabel="#{fornecedor.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="referente" value="Referente" />
+					<p:inputTextarea id="referente" rows="3" cols="45"
+						counter="display" maxlength="1000"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{rpaBean.referenteBusca}" />
+					<br></br>
+					<h:outputText id="display" />
+
+				</h:panelGrid>
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Pesquisar" icon="fa fa fw fa-search"
+						actionListener="#{rpaBean.pesquisarAvancada}"
+						update="formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoBusca').hide();" />
+				</h:panelGrid>
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

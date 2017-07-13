@@ -30,7 +30,8 @@
 				<p:toolbar id="tool">
 					<f:facet name="left">
 						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
-							icon="ui-icon-document" actionListener="#{localEquipamentoBean.novo}"
+							icon="ui-icon-document"
+							actionListener="#{localEquipamentoBean.novo}"
 							update=":formCadastro:painel">
 							<f:actionListener
 								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
@@ -56,7 +57,8 @@
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="localEquipamentoSelecionado" value="#{localEquipamento}" />
+							<f:attribute name="localEquipamentoSelecionado"
+								value="#{localEquipamento}" />
 						</p:commandButton>
 
 						<p:commandButton title="Imprimir" icon="ui-icon-print">
@@ -68,17 +70,20 @@
 						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
 							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xls" target="tabela" fileName="localEquipamento" />
+								<p:dataExporter type="xls" target="tabela"
+									fileName="localEquipamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="pdf" target="tabela" fileName="localEquipamento" />
+								<p:dataExporter type="pdf" target="tabela"
+									fileName="localEquipamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
 								ajax="false">
-								<p:dataExporter type="xml" target="tabela" fileName="localEquipamento" />
+								<p:dataExporter type="xml" target="tabela"
+									fileName="localEquipamento" />
 							</p:menuitem>
 
 							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
@@ -92,7 +97,8 @@
 				</p:toolbar>
 
 				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
-					selectionMode="single" selection="#{localEquipamentoBean.localEquipamento}"
+					selectionMode="single"
+					selection="#{localEquipamentoBean.localEquipamento}"
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{localEquipamento.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
@@ -106,7 +112,7 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{localEquipamentoBean.onRowSelect}" /> 							
+						listener="#{localEquipamentoBean.onRowSelect}" />
 
 					<p:column headerText="Nome" sortBy="#{localEquipamento.nome}">
 						<h:outputText value="#{localEquipamento.nome}" />
@@ -123,7 +129,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -131,8 +138,8 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Local" widgetVar="dialogo" 
-			draggable="false" resizable="false"  closable="true">
+		<p:dialog header="Cadastro de Local" widgetVar="dialogo"
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />

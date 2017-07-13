@@ -114,15 +114,16 @@
 					<p:column headerText="Nome" sortBy="#{horario.nome}">
 						<h:outputText value="#{horario.nome}" />
 					</p:column>
-					
+
 					<p:column headerText="Opções" width="75"
 						style="text-align:center;white-space:normal !important;">
 
 						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{horarioBean.editar}" 
-							update=":formCadastro:painel :formCadastro:tabView:painelNormal :formCadastro:tabView:painelNormal" oncomplete="PF('dialogo').show();">
+							actionListener="#{horarioBean.editar}"
+							update=":formCadastro:painel :formCadastro:tabView:painelNormal :formCadastro:tabView:painelNormal"
+							oncomplete="PF('dialogo').show();">
 							<f:attribute name="registroSelecionado" value="#{horario}" />
 						</p:commandButton>
 
@@ -133,7 +134,7 @@
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
-							<f:attribute name="registroSelecionado" value="#{horario}" /> 
+							<f:attribute name="registroSelecionado" value="#{horario}" />
 						</p:commandButton>
 					</p:column>
 				</p:dataTable>
@@ -148,7 +149,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"

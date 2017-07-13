@@ -189,7 +189,7 @@ public class Colaborador extends GenericDomain {
 	@Column(nullable = true, precision = 6, scale = 2)
 	private BigDecimal periculosidadePorc;
 
-	@Column(length = 30, nullable = true)
+	@Column(length = 3, nullable = true)
 	private String gratificacaoFuncao;
 
 	@Column(nullable = true, precision = 6, scale = 2)
@@ -200,6 +200,9 @@ public class Colaborador extends GenericDomain {
 
 	@Column(length = 3, nullable = true)
 	private String descontoBolsaEstudo;
+
+	@Transient
+	private String caminho;
 
 	public String getNome() {
 		return nome;
@@ -662,6 +665,14 @@ public class Colaborador extends GenericDomain {
 
 	public void setOperacaoConta(String operacaoConta) {
 		this.operacaoConta = operacaoConta;
+	}
+
+	public String getCaminho() {
+		return caminho;
+	}
+
+	public void setCaminho(String caminho) {
+		this.caminho = caminho;
 	}
 
 }

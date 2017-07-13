@@ -1,6 +1,13 @@
 package br.com.projeto.bean;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,25 +18,38 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import br.com.projeto.dao.AuditoriaDAO;
 import br.com.projeto.dao.CargoDAO;
 import br.com.projeto.dao.ColaboradorDAO;
 import br.com.projeto.dao.DepartamentoDAO;
+import br.com.projeto.dao.DependenteDAO;
 import br.com.projeto.dao.EstabilidadeDAO;
+import br.com.projeto.dao.FeriasDAO;
 import br.com.projeto.dao.HorarioDAO;
+import br.com.projeto.dao.OcorrenciaProntuarioDAO;
+import br.com.projeto.dao.ParentescoDAO;
 import br.com.projeto.dao.ProfissaoDAO;
+import br.com.projeto.dao.ProntuarioDAO;
 import br.com.projeto.dao.SalarioDAO;
 import br.com.projeto.dao.SituacaoDAO;
 import br.com.projeto.dao.UnidadeDAO;
 import br.com.projeto.domain.Cargo;
 import br.com.projeto.domain.Colaborador;
 import br.com.projeto.domain.Departamento;
+import br.com.projeto.domain.Dependente;
 import br.com.projeto.domain.Estabilidade;
+import br.com.projeto.domain.Ferias;
 import br.com.projeto.domain.Horario;
+import br.com.projeto.domain.OcorrenciaProntuario;
+import br.com.projeto.domain.Parentesco;
 import br.com.projeto.domain.Profissao;
+import br.com.projeto.domain.Prontuario;
 import br.com.projeto.domain.Salario;
 import br.com.projeto.domain.Situacao;
 import br.com.projeto.domain.Unidade;
@@ -65,6 +85,24 @@ public class ColaboradorBean implements Serializable {
 
 	private Estabilidade estabilidade;
 	private List<Estabilidade> estabilidades;
+
+	private Ferias ferias;
+	private List<Ferias> feriasLista;
+
+	private Prontuario prontuario;
+	private List<Prontuario> prontuarios;
+
+	private StreamedContent foto;
+	private String tipoArquivo;
+
+	private Dependente dependente;
+	private List<Dependente> dependentes;
+
+	private OcorrenciaProntuario ocorrenciaProntuario;
+	private List<OcorrenciaProntuario> ocorrenciaProntuarios;
+
+	private Parentesco parentesco;
+	private List<Parentesco> parentescos;
 
 	private FacesMessage message;
 	private String busca;
@@ -229,6 +267,102 @@ public class ColaboradorBean implements Serializable {
 		this.estabilidades = estabilidades;
 	}
 
+	public List<Ferias> getFeriasLista() {
+		return feriasLista;
+	}
+
+	public void setFeriasLista(List<Ferias> feriasLista) {
+		this.feriasLista = feriasLista;
+	}
+
+	public Ferias getFerias() {
+		return ferias;
+	}
+
+	public void setFerias(Ferias ferias) {
+		this.ferias = ferias;
+	}
+
+	public StreamedContent getFoto() {
+		return foto;
+	}
+
+	public void setFoto(StreamedContent foto) {
+		this.foto = foto;
+	}
+
+	public String getTipoArquivo() {
+		return tipoArquivo;
+	}
+
+	public void setTipoArquivo(String tipoArquivo) {
+		this.tipoArquivo = tipoArquivo;
+	}
+
+	public Prontuario getProntuario() {
+		return prontuario;
+	}
+
+	public void setProntuario(Prontuario prontuario) {
+		this.prontuario = prontuario;
+	}
+
+	public List<Prontuario> getProntuarios() {
+		return prontuarios;
+	}
+
+	public void setProntuarios(List<Prontuario> prontuarios) {
+		this.prontuarios = prontuarios;
+	}
+
+	public OcorrenciaProntuario getOcorrenciaProntuario() {
+		return ocorrenciaProntuario;
+	}
+
+	public void setOcorrenciaProntuario(OcorrenciaProntuario ocorrenciaProntuario) {
+		this.ocorrenciaProntuario = ocorrenciaProntuario;
+	}
+
+	public List<OcorrenciaProntuario> getOcorrenciaProntuarios() {
+		return ocorrenciaProntuarios;
+	}
+
+	public void setOcorrenciaProntuarios(List<OcorrenciaProntuario> ocorrenciaProntuarios) {
+		this.ocorrenciaProntuarios = ocorrenciaProntuarios;
+	}
+
+	public Dependente getDependente() {
+		return dependente;
+	}
+
+	public void setDependente(Dependente dependente) {
+		this.dependente = dependente;
+	}
+
+	public List<Dependente> getDependentes() {
+		return dependentes;
+	}
+
+	public void setDependentes(List<Dependente> dependentes) {
+		this.dependentes = dependentes;
+	}
+
+	public Parentesco getParentesco() {
+		return parentesco;
+	}
+
+	public void setParentesco(Parentesco parentesco) {
+		this.parentesco = parentesco;
+	}
+
+	public List<Parentesco> getParentescos() {
+		return parentescos;
+	}
+
+	public void setParentescos(List<Parentesco> parentescos) {
+		this.parentescos = parentescos;
+	}
+
 	@PostConstruct
 	public void inicializarTabelas() {
 		try {
@@ -252,9 +386,15 @@ public class ColaboradorBean implements Serializable {
 
 			UnidadeDAO unidadeDAO = new UnidadeDAO();
 			unidades = unidadeDAO.listar("nome");
-			
+
 			EstabilidadeDAO estabilidadeDAO = new EstabilidadeDAO();
 			estabilidades = estabilidadeDAO.listar("nome");
+
+			OcorrenciaProntuarioDAO ocorrenciaProntuarioDAO = new OcorrenciaProntuarioDAO();
+			ocorrenciaProntuarios = ocorrenciaProntuarioDAO.listar("nome");
+
+			ParentescoDAO parentescoDAO = new ParentescoDAO();
+			parentescos = parentescoDAO.listar("nome");
 
 		} catch (
 
@@ -285,10 +425,10 @@ public class ColaboradorBean implements Serializable {
 			estabilidade = new Estabilidade();
 
 			if (colaboradores.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
 
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
+				FacesContext context = FacesContext.getCurrentInstance();
+				context.addMessage(null, new FacesMessage("Registro não Encontrado!",
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente."));
 			}
 
 		} catch (
@@ -306,6 +446,20 @@ public class ColaboradorBean implements Serializable {
 	public void novo() {
 		colaborador = new Colaborador();
 
+		colaborador.setCaminho("C:/Fotos/branco.png");
+		colaborador.setAdicionalNoturno("NÃO");
+		colaborador.setAdiantamentoSalarial("NÃO");
+		colaborador.setSalarioFamilia("NÃO");
+		colaborador.setInsalubridade("NÃO");
+		colaborador.setPericulosidade("NÃO");
+		colaborador.setGratificacaoFuncao("NÃO");
+		colaborador.setAdicionalTempoServico("NÃO");
+		colaborador.setDescontoBolsaEstudo("NÃO");
+		colaborador.setQuantidadeSalarioFamilia(0L);
+		colaborador.setInsalubridadePorc(BigDecimal.ZERO);
+		colaborador.setPericulosidadePorc(BigDecimal.ZERO);
+		colaborador.setValorGratificacao(BigDecimal.ZERO);
+
 		profissao = new Profissao();
 		cargo = new Cargo();
 		salario = new Salario();
@@ -314,6 +468,32 @@ public class ColaboradorBean implements Serializable {
 		horario = new Horario();
 		unidade = new Unidade();
 		estabilidade = new Estabilidade();
+		ocorrenciaProntuario = new OcorrenciaProntuario();
+		parentesco = new Parentesco();
+
+	}
+
+	public void novoFerias() {
+		ferias = new Ferias();
+		ferias.setColaborador(colaborador);
+	}
+
+	public void novoProntuario() {
+		prontuario = new Prontuario();
+		prontuario.setColaborador(colaborador);
+
+		ocorrenciaProntuario = new OcorrenciaProntuario();
+	}
+
+	public void novoDependente() {
+		dependente = new Dependente();
+
+		dependente.setColaborador(colaborador);
+		dependente.setSalarioEducacao(BigDecimal.ZERO);
+		dependente.setSalarioFamilia(BigDecimal.ZERO);
+		dependente.setImpostoRenda(BigDecimal.ZERO);
+
+		parentesco = new Parentesco();
 	}
 
 	public void salvar() {
@@ -325,13 +505,16 @@ public class ColaboradorBean implements Serializable {
 
 			colaboradores = colaboradorDAO.listar("nome");
 
-			FacesContext context = FacesContext.getCurrentInstance();
+			Path origem = Paths.get(colaborador.getCaminho());
+			Path destino = Paths.get("C:/Fotos/" + colaborador.getCpf() + ".png");
+			Files.copy(origem, destino, StandardCopyOption.REPLACE_EXISTING);
 
+			FacesContext context = FacesContext.getCurrentInstance();
 			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
 
 			colaborador = null;
 
-		} catch (RuntimeException erro) {
+		} catch (RuntimeException | IOException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
 					"Erro: " + erro.getMessage());
 
@@ -400,6 +583,8 @@ public class ColaboradorBean implements Serializable {
 		try {
 			colaborador = (Colaborador) evento.getComponent().getAttributes().get("registroSelecionado");
 
+			carregarFoto();
+
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
@@ -411,8 +596,9 @@ public class ColaboradorBean implements Serializable {
 
 	public void duploClique(SelectEvent evento) {
 		try {
-
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').show();");
+
+			carregarFoto();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
@@ -612,6 +798,323 @@ public class ColaboradorBean implements Serializable {
 			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
 
 			estabilidade = new Estabilidade();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void exibirFerias(ActionEvent evento) {
+		try {
+			colaborador = (Colaborador) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			FeriasDAO feriasDAO = new FeriasDAO();
+			feriasLista = feriasDAO.exibirFerias(colaborador.getCodigo());
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoFeriasLista').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Exibir Férias.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void editarFerias(ActionEvent evento) {
+		try {
+			ferias = (Ferias) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirFeriasAtalho(ActionEvent evento) {
+		try {
+			ferias = (Ferias) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			FeriasDAO feriasDAO = new FeriasDAO();
+			feriasDAO.excluir(ferias);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Registro: " + ferias.getColaborador().getNome());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			feriasLista = feriasDAO.pesquisarFerias("");
+
+			ferias = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarFerias() {
+		try {
+			FeriasDAO feriasDAO = new FeriasDAO();
+			feriasDAO.merge(ferias);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoFerias').hide();");
+
+			feriasLista = feriasDAO.pesquisarFerias("");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
+
+			ferias = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void exibirProntuario(ActionEvent evento) {
+		try {
+			colaborador = (Colaborador) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			ProntuarioDAO prontuarioDAO = new ProntuarioDAO();
+			prontuarios = prontuarioDAO.exibirProntuario(colaborador.getCodigo());
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoProntuarioLista').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Exibir Prontuário.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void editarProntuario(ActionEvent evento) {
+		try {
+			prontuario = (Prontuario) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirProntuarioAtalho(ActionEvent evento) {
+		try {
+			prontuario = (Prontuario) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			ProntuarioDAO prontuarioDAO = new ProntuarioDAO();
+			prontuarioDAO.excluir(prontuario);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Registro: " + prontuario.getColaborador().getNome());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			prontuarios = prontuarioDAO.pesquisarProntuario("");
+
+			prontuario = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarProntuario() {
+		try {
+			ProntuarioDAO prontuarioDAO = new ProntuarioDAO();
+			prontuarioDAO.merge(prontuario);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoProntuario').hide();");
+
+			prontuarios = prontuarioDAO.pesquisarProntuario("");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
+
+			prontuario = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void exibirDependente(ActionEvent evento) {
+		try {
+			colaborador = (Colaborador) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			DependenteDAO dependenteDAO = new DependenteDAO();
+			dependentes = dependenteDAO.exibirDependente(colaborador.getCodigo());
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDependenteLista').show();");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Exibir Prontuário.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void editarDependente(ActionEvent evento) {
+		try {
+			dependente = (Dependente) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirDependenteAtalho(ActionEvent evento) {
+		try {
+			dependente = (Dependente) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			DependenteDAO dependenteDAO = new DependenteDAO();
+			dependenteDAO.excluir(dependente);
+
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
+					"Registro: " + dependente.getColaborador().getNome());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+
+			dependentes = dependenteDAO.listar("nome");
+
+			dependente = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarDependente() {
+		try {
+			DependenteDAO dependenteDAO = new DependenteDAO();
+			dependenteDAO.merge(dependente);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoDependente').hide();");
+
+			dependentes = dependenteDAO.listar("nome");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
+
+			dependente = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void upload(FileUploadEvent evento) {
+		try {
+
+			UploadedFile arquivoUpload = evento.getFile();
+			Path arquivoTemp = Files.createTempFile(null, null);
+			Files.copy(arquivoUpload.getInputstream(), arquivoTemp, StandardCopyOption.REPLACE_EXISTING);
+			colaborador.setCaminho(arquivoTemp.toString());
+
+		} catch (IOException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Realizar Upload da Foto.", "Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void carregarFoto() {
+
+		File file = new File("C:/Fotos/" + colaborador.getCpf() + ".png");
+
+		if (file.exists()) {
+			colaborador.setCaminho("C:/Fotos/" + colaborador.getCpf() + ".png");
+
+		} else {
+			colaborador.setCaminho("C:/Fotos/branco.png");
+		}
+	}
+
+	public void salvarOcorrencia() {
+		try {
+			OcorrenciaProntuarioDAO ocorrenciaProntuarioDAO = new OcorrenciaProntuarioDAO();
+			ocorrenciaProntuarioDAO.merge(ocorrenciaProntuario);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoOcorrencia').hide();");
+
+			ocorrenciaProntuarios = ocorrenciaProntuarioDAO.listar("nome");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
+
+			ocorrenciaProntuario = new OcorrenciaProntuario();
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void salvarParentesco() {
+		try {
+			ParentescoDAO parentescoDAO = new ParentescoDAO();
+			parentescoDAO.merge(parentesco);
+
+			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogoParentesco').hide();");
+
+			parentescos = parentescoDAO.listar("nome");
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
+
+			parentesco = new Parentesco();
 
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Salvar este Registro.",

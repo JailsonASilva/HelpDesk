@@ -1,4 +1,3 @@
-
 package br.com.projeto.bean;
 
 import java.io.Serializable;
@@ -67,10 +66,10 @@ public class CargoBean implements Serializable {
 			cargo = null;
 
 			if (cargos.isEmpty() == true) {
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"Nenhum Registro foi Encontrado! Por favor Tente Novamente.", "Registro não Encontrado!");
+				FacesContext context = FacesContext.getCurrentInstance();
 
-				RequestContext.getCurrentInstance().showMessageInDialog(message);
+				context.addMessage(null, new FacesMessage("Registro não Encontrado!",
+						"Nenhum Registro foi Encontrado! Por favor Tente Novamente."));
 			}
 
 		} catch (
@@ -97,7 +96,7 @@ public class CargoBean implements Serializable {
 			org.primefaces.context.RequestContext.getCurrentInstance().execute("PF('dialogo').hide();");
 
 			cargos = cargoDAO.listar("nome");
-			
+
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Aviso!", "Registro Salvo com Sucesso"));
@@ -118,10 +117,9 @@ public class CargoBean implements Serializable {
 			CargoDAO cargoDAO = new CargoDAO();
 			cargoDAO.excluir(cargo);
 
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Registro Excluído com Sucesso!",
-					"Registro: " + cargo.getNome());
+			FacesContext context = FacesContext.getCurrentInstance();
 
-			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			context.addMessage(null, new FacesMessage("Aviso!", "Registro Excluído com Sucesso"));
 
 			cargos = cargoDAO.listar("nome");
 
@@ -151,6 +149,44 @@ public class CargoBean implements Serializable {
 		} catch (RuntimeException erro) {
 			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Selecionar Registro.",
 					"Erro Inesperado!");
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void excluirAtalho(ActionEvent evento) {
+		try {
+			cargo = (Cargo) evento.getComponent().getAttributes().get("registroSelecionado");
+
+			CargoDAO cargoDAO = new CargoDAO();
+			cargoDAO.excluir(cargo);
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null,
+					new FacesMessage("Registro Excluído com Sucesso!", "Registro: " + cargo.getNome()));
+
+			cargos = cargoDAO.listar("nome");
+
+			cargo = null;
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ocorreu um Erro ao Tentar Excluir este Registro.",
+					"Erro: " + erro.getMessage());
+
+			RequestContext.getCurrentInstance().showMessageInDialog(message);
+			erro.printStackTrace();
+		}
+	}
+
+	public void editar(ActionEvent evento) {
+		try {
+			cargo = (Cargo) evento.getComponent().getAttributes().get("registroSelecionado");
+
+		} catch (RuntimeException erro) {
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Ocorreu um Erro ao Tentar Selecionar este Registro.", "Erro: " + erro.getMessage());
 
 			RequestContext.getCurrentInstance().showMessageInDialog(message);
 			erro.printStackTrace();

@@ -38,6 +38,7 @@
 
 						<p:commandButton value="Editar" process=":formListagem:tabela"
 							disabled="#{colaboradorBean.colaborador == null}"
+							actionListener="#{colaboradorBean.carregarFoto}"
 							update=":formCadastro:tabView:painelDadosPessoais :formCadastro:tabView:painelAdicionais :formCadastro:tabView:painelContrato :formCadastro:tabView:painelEndereco :formCadastro:tabView:painelBancario :formCadastro:tabView:painelDocumentacao"
 							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
 							<f:actionListener
@@ -139,7 +140,7 @@
 						<h:outputText value="#{colaborador.cargo.nome}" />
 					</p:column>
 
-					<p:column headerText="Opções" width="40"
+					<p:column headerText="Opções" width="93"
 						style="text-align:center;white-space:normal !important;">
 
 						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
@@ -155,11 +156,35 @@
 
 						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
 							actionListener="#{colaboradorBean.excluirAtalho}"
-							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							update=":formListagem:tabela :formListagem:messages"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()">
 							<p:confirm header="Confirmação"
 								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{colaborador}" />
+						</p:commandButton>
+
+						<p:commandButton title="Férias" icon="fa fa fw fa-plane"
+							actionListener="#{colaboradorBean.exibirFerias}"
+							update=":formFeriasLista:tabela  :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="registroSelecionado" value="#{colaborador}" />
+						</p:commandButton>
+
+						<p:commandButton title="Prontuário" icon="fa fa fw fa-list-ul"
+							actionListener="#{colaboradorBean.exibirProntuario}"
+							update=":formProntuarioLista:tabela  :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="registroSelecionado" value="#{colaborador}" />
+						</p:commandButton>
+
+						<p:commandButton title="Dependentes" icon="fa fa fw fa-users"
+							actionListener="#{colaboradorBean.exibirDependente}"
+							update=":formDependenteLista:tabela  :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
 							<f:attribute name="registroSelecionado" value="#{colaborador}" />
 						</p:commandButton>
 					</p:column>
@@ -185,7 +210,7 @@
 		</p:dialog>
 
 		<p:dialog header="Cadastro de Colaborador" widgetVar="dialogo"
-			width="810" height="520" appendTo="@(body)" modal="true"
+			width="830" height="540" appendTo="@(body)" modal="true"
 			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 
@@ -286,37 +311,20 @@
 									itemLabel="Doutorado Completo" />
 							</p:selectOneMenu>
 
-							<p:outputLabel for="profissao" value="Profissão " />
-							<h:panelGroup>
-								<p:selectOneMenu id="profissao" filter="true"
-									value="#{colaboradorBean.colaborador.profissao}"
-									required="true"
-									requiredMessage="O campo 'Profissão' é obrigatório"
-									converter="omnifaces.SelectItemsConverter">
-									<f:selectItem noSelectionOption="true"
-										itemLabel="Nenhum Registro Selecionado" />
-									<f:selectItems value="#{colaboradorBean.profissoes}"
-										var="profissao" itemValue="#{profissao}"
-										itemLabel="#{profissao.nome}" />
-								</p:selectOneMenu>
+							<p:outputLabel for="upload" value="Carregar Foto" />
+							<p:fileUpload id="upload" mode="advanced" style="border:none;"
+								fileUploadListener="#{colaboradorBean.upload}"
+								update="formListagem:messages :formCadastro:tabView:foto"
+								auto="true" />
 
-								<p:commandButton icon="ui-icon-document"
-									style="display: inline-block; vertical-align: top;"
-									title="Novo Profissao" update="formCadastroProfissao:painel"
-									oncomplete="PF('dialogoProfissao').show();" />
-							</h:panelGroup>
-
-							<p:outputLabel for="numeroRegistro" value="Nº Registro" />
-							<p:inputText id="numeroRegistro" maxlength="50" size="20"
-								value="#{colaboradorBean.colaborador.numeroRegistro}"
-								required="true"
-								requiredMessage="O campo 'Nº Registro' é obrigatório"
-								converterMessage="Informe um valor válido para o campo 'Nº Registro'"
-								validatorMessage="Informe um valor entre 1 e 999999 para o campo 'Nº Registro'">
-								<f:validateLongRange minimum="1" maximum="999999" />
-							</p:inputText>
-
+							<p:graphicImage id="foto" value="#{imagemBean.foto}" width="140"
+								class="fotoColaborador" height="150">
+								<f:param name="caminho"
+									value="#{colaboradorBean.colaborador.caminho}" />
+							</p:graphicImage>
 						</h:panelGrid>
+
+
 					</p:tab>
 
 					<p:tab title="Endereço/Contato">
@@ -539,12 +547,42 @@
 									oncomplete="PF('dialogoDepartamento').show();" />
 							</h:panelGroup>
 
+							<p:outputLabel for="numeroRegistro" value="Nº Registro" />
+							<p:inputText id="numeroRegistro" maxlength="50" size="20"
+								value="#{colaboradorBean.colaborador.numeroRegistro}"
+								required="true"
+								requiredMessage="O campo 'Nº Registro' é obrigatório"
+								converterMessage="Informe um valor válido para o campo 'Nº Registro'"
+								validatorMessage="Informe um valor entre 0 e 999999 para o campo 'Nº Registro'">
+								<f:validateLongRange minimum="0" maximum="999999" />
+							</p:inputText>
+
 							<p:outputLabel for="admissao" value="Admissão" />
 							<p:calendar id="admissao" mask="99/99/99" required="true"
 								showOn="button" requiredMessage="Campo 'Admissão' Obrigatório!"
 								yearRange="1900:2222"
 								value="#{colaboradorBean.colaborador.dataAdmissao}" size="8"
 								locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="profissao" value="Profissão " />
+							<h:panelGroup>
+								<p:selectOneMenu id="profissao" filter="true"
+									value="#{colaboradorBean.colaborador.profissao}"
+									required="true"
+									requiredMessage="O campo 'Profissão' é obrigatório"
+									converter="omnifaces.SelectItemsConverter">
+									<f:selectItem noSelectionOption="true"
+										itemLabel="Nenhum Registro Selecionado" />
+									<f:selectItems value="#{colaboradorBean.profissoes}"
+										var="profissao" itemValue="#{profissao}"
+										itemLabel="#{profissao.nome}" />
+								</p:selectOneMenu>
+
+								<p:commandButton icon="ui-icon-document"
+									style="display: inline-block; vertical-align: top;"
+									title="Novo Profissao" update="formCadastroProfissao:painel"
+									oncomplete="PF('dialogoProfissao').show();" />
+							</h:panelGroup>
 
 							<p:outputLabel for="cargo" value="Cargo" />
 							<h:panelGroup>
@@ -693,8 +731,8 @@
 							<p:inputText id="qtdeSalariaFamilia" maxlength="50" size="8"
 								value="#{colaboradorBean.colaborador.quantidadeSalarioFamilia}"
 								converterMessage="Informe um valor válido para o campo 'Quantidade Salário Família'"
-								validatorMessage="Informe um valor entre 1 e 999999 para o campo 'Quantidade Salário Família'">
-								<f:validateLongRange minimum="1" maximum="999999" />
+								validatorMessage="Informe um valor entre 0 e 999999 para o campo 'Quantidade Salário Família'">
+								<f:validateLongRange minimum="0" maximum="999999" />
 							</p:inputText>
 
 							<p:outputLabel for="insalubridade" value="Insalubridade" />
@@ -763,11 +801,11 @@
 							</p:inputNumber>
 
 						</h:panelGrid>
-					</p:tab>
+					</p:tab> 
 
 				</p:tabView>
 
-				<div class="footerColaborador">
+				<div class="footerCodastro">
 					<p:separator />
 					<h:panelGrid columns="2">
 						<p:commandButton value="Salvar" icon="ui-icon-disk"
@@ -1223,6 +1261,523 @@
 
 					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
 						oncomplete="PF('dialogoEstabilidade').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Férias" widgetVar="dialogoFeriasLista" width="800"
+			height="400" appendTo="@(body)" modal="true" draggable="false"
+			resizable="false" closable="true">
+			<h:form id="formFeriasLista">
+
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo"
+							oncomplete="PF('dialogoFerias').show();" icon="ui-icon-document"
+							actionListener="#{colaboradorBean.novoFerias}"
+							update=":formCadastroFerias:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{colaboradorBean.ferias}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{ferias.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{colaboradorBean.feriasLista}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="ferias" rows="10" paginatorPosition="bottom">
+
+					<p:column headerText="Aquisitivo Início" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataAquisitivoInicio}">
+						<h:outputText value="#{ferias.dataAquisitivoInicio}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Aquisitivo Final" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataAquisitivoFinal}">
+						<h:outputText value="#{ferias.dataAquisitivoFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gozo Início" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataGozoInicio}">
+						<h:outputText value="#{ferias.dataGozoInicio}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gozo Final" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataGozoFinal}">
+						<h:outputText value="#{ferias.dataGozoFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{colaboradorBean.editarFerias}"
+							update=":formCadastroFerias:painel"
+							oncomplete="PF('dialogoFerias').show();">
+							<f:attribute name="registroSelecionado" value="#{ferias}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{colaboradorBean.excluirFeriasAtalho}"
+							update=":formFeriasLista:tabela :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{ferias}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoFeriasLista').hide();" />
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Cadastro de Férias" widgetVar="dialogoFerias"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastroFerias">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="aquisicaoInicial" value="Aquisição Inicial" />
+					<p:calendar id="aquisicaoInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Aquisição Inicial' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.ferias.dataAquisitivoInicio}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="aquisicaoFinal" value="Aquisição Final" />
+					<p:calendar id="aquisicaoFinal" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Aquisição Final' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.ferias.dataAquisitivoFinal}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="gozoInicial" value="Gozo Inicial" />
+					<p:calendar id="gozoInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Gozo Inicial' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.ferias.dataGozoInicio}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="gozoFinal" value="Gozo Final" />
+					<p:calendar id="gozoFinal" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Gozo Final' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.ferias.dataGozoFinal}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataLimite" value="Data Limite" />
+					<p:calendar id="dataLimite" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Data Limite' Obrigatório!"
+						yearRange="1900:2222" value="#{colaboradorBean.ferias.dataLimite}"
+						size="8" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarFerias}"
+						update=":formCadastroFerias:painel :formFeriasLista:tabela :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoFerias').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Prontuários" widgetVar="dialogoProntuarioLista"
+			width="800" height="400" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formProntuarioLista">
+
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo"
+							oncomplete="PF('dialogoProntuario').show();"
+							icon="ui-icon-document"
+							actionListener="#{colaboradorBean.novoProntuario}"
+							update=":formCadastroProntuario:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{colaboradorBean.prontuario}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{prontuario.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{colaboradorBean.prontuarios}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="prontuario" rows="10" paginatorPosition="bottom">
+
+					<p:column headerText="Nome" sortBy="#{prontuario.colaborador.nome}"
+						width="110">
+						<h:outputText value="#{prontuario.colaborador.nome}" />
+					</p:column>
+
+					<p:column headerText="Ocorrência"
+						sortBy="#{prontuario.ocorrenciaProntuario.nome}" width="80">
+						<h:outputText value="#{prontuario.ocorrenciaProntuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Inicial" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{prontuario.dataInicial}">
+						<h:outputText value="#{prontuario.dataInicial}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Data Final" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{prontuario.dataFinal}">
+						<h:outputText value="#{prontuario.dataFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{colaboradorBean.editarProntuario}"
+							update=":formCadastroProntuario:painel"
+							oncomplete="PF('dialogoProntuario').show();">
+							<f:attribute name="registroSelecionado" value="#{prontuario}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{colaboradorBean.excluirProntuarioAtalho}"
+							update=":formProntuarioLista:tabela :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{prontuario}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+					oncomplete="PF('dialogoProntuarioLista').hide();" />
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Prontuário"
+			widgetVar="dialogoProntuario" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroProntuario">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="ocorrenciaProntuario" value="Ocorrência " />
+					<h:panelGroup>
+						<p:selectOneMenu id="ocorrenciaProntuario" filter="true"
+							value="#{colaboradorBean.prontuario.ocorrenciaProntuario}"
+							required="true"
+							requiredMessage="O campo 'Ocorrência' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{colaboradorBean.ocorrenciaProntuarios}"
+								var="ocorrenciaProntuario" itemValue="#{ocorrenciaProntuario}"
+								itemLabel="#{ocorrenciaProntuario.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Nova Ocorrência" update="formCadastroOcorrencia:painel"
+							oncomplete="PF('dialogoOcorrencia').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="dataInicial" value="Data Inicial" />
+					<p:calendar id="dataInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Data Inicial' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.prontuario.dataInicial}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataFinal" value="Data Final" />
+					<p:calendar id="dataFinal" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Data Final' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.prontuario.dataFinal}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="observacao" value="Observação" />
+					<p:inputTextarea id="observacao" rows="4" cols="55"
+						counter="display" maxlength="2000"
+						counterTemplate="{0} caracteres restantes." autoResize="false"
+						value="#{colaboradorBean.prontuario.observacao}" />
+
+					<br></br>
+					<h:outputText id="display" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarProntuario}"
+						update=":formCadastroProntuario:painel :formProntuarioLista:tabela :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoProntuario').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Ocorrência"
+			widgetVar="dialogoOcorrencia" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroOcorrencia">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.ocorrenciaProntuario.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarOcorrencia}"
+						update=":formCadastroOcorrencia:painel :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoOcorrencia').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Dependentes" widgetVar="dialogoDependenteLista"
+			width="800" height="400" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formDependenteLista">
+
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo"
+							oncomplete="PF('dialogoDependente').show();"
+							icon="ui-icon-document"
+							actionListener="#{colaboradorBean.novoDependente}"
+							update=":formCadastroDependente:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{colaboradorBean.dependente}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{dependente.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{colaboradorBean.dependentes}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="dependente" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{colaboradorBean.duploClique}"
+						update="formCadastroDependente:painel" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{colaboradorBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{colaboradorBean.onRowSelect}" />
+
+					<p:column headerText="Nome" sortBy="#{dependente.nome}" width="110">
+						<h:outputText value="#{dependente.nome}" />
+					</p:column>
+
+					<p:column headerText="Parentesco"
+						sortBy="#{dependente.parentesco.nome}" width="60">
+						<h:outputText value="#{dependente.parentesco.nome}" />
+					</p:column>
+
+					<p:column headerText="Data Nascimento" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{dependente.dataNascimento}">
+						<h:outputText value="#{dependente.dataNascimento}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{colaboradorBean.editarDependente}"
+							update=":formCadastroDependente:painel"
+							oncomplete="PF('dialogoDependente').show();">
+							<f:attribute name="registroSelecionado" value="#{dependente}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{colaboradorBean.excluirDependenteAtalho}"
+							update=":formDependenteLista:tabela :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{dependente}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Dependentes"
+			widgetVar="dialogoDependente" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroDependente">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="nome" value="Nome" />
+					<p:inputText id="nome" maxlength="100" size="40" required="true"
+						requiredMessage="Campo 'Nome' Obrigatório"
+						value="#{colaboradorBean.dependente.nome}" />
+
+					<p:outputLabel for="parentesco" value="Parentesco" />
+					<h:panelGroup>
+						<p:selectOneMenu id="parentesco" filter="true"
+							value="#{colaboradorBean.dependente.parentesco}" required="true"
+							requiredMessage="O campo 'Parentesco' é obrigatório"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem noSelectionOption="true"
+								itemLabel="Nenhum Registro Selecionado" />
+							<f:selectItems value="#{colaboradorBean.parentescos}"
+								var="parentesco" itemValue="#{parentesco}"
+								itemLabel="#{parentesco.nome}" />
+						</p:selectOneMenu>
+
+						<p:commandButton icon="ui-icon-document"
+							style="display: inline-block; vertical-align: top;"
+							title="Novo Parentesco" update="formCadastroParentesco:painel"
+							oncomplete="PF('dialogoParentesco').show();" />
+					</h:panelGroup>
+
+					<p:outputLabel for="dataNascimento" value="Data Nascimento" />
+					<p:calendar id="dataNascimento" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Data Inicial' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{colaboradorBean.dependente.dataNascimento}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="salarioFamilia" value="Salário Família" />
+					<p:inputNumber id="salarioFamilia" symbol="R$ "
+						decimalSeparator="," thousandSeparator="."
+						value="#{colaboradorBean.dependente.salarioFamilia}">
+					</p:inputNumber>
+
+					<p:outputLabel for="salarioEducacao" value="Salário Educação" />
+					<p:inputNumber id="salarioEducacao" symbol="R$ "
+						decimalSeparator="," thousandSeparator="."
+						value="#{colaboradorBean.dependente.salarioEducacao}">
+					</p:inputNumber>
+
+					<p:outputLabel for="impostoRenda" value="Imposto de Renda" />
+					<p:inputNumber id="impostoRenda" symbol="R$ " decimalSeparator=","
+						thousandSeparator="."
+						value="#{colaboradorBean.dependente.impostoRenda}">
+					</p:inputNumber>
+
+					<br></br>
+					<p:separator />
+
+					<h:panelGrid columns="2">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{colaboradorBean.salvarDependente}"
+							update=":formCadastroDependente:painel :formDependenteLista:tabela :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoDependente').hide();" />
+					</h:panelGrid>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+
+		<p:dialog header="Cadastro de Parentesco"
+			widgetVar="dialogoParentesco" appendTo="@(body)" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastroParentesco">
+				<h:panelGrid id="painel" columns="3" class="ui-noborder">
+					<p:outputLabel for="nome" value="Nome: " />
+					<p:inputText id="nome" maxlength="100" size="60" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{colaboradorBean.parentesco.nome}" />
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{colaboradorBean.salvarParentesco}"
+						update=":formCadastroParentesco:painel :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoParentesco').hide();" />
 				</h:panelGrid>
 			</h:form>
 		</p:dialog>

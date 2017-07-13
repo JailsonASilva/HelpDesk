@@ -114,6 +114,31 @@
 					<p:column headerText="Nome" sortBy="#{cargo.nome}">
 						<h:outputText value="#{cargo.nome}" />
 					</p:column>
+
+					<p:column headerText="Opções" width="70"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{cargoBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{cargo}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{cargoBean.excluirAtalho}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{cargo}" />
+						</p:commandButton>
+					</p:column>
+
 				</p:dataTable>
 
 				<p:confirmDialog global="true">
@@ -126,7 +151,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"

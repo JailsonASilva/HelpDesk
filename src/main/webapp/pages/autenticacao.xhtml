@@ -41,7 +41,7 @@
 			</div>
 
 			<p:layoutUnit position="center" style="border:none;" size="400">
-				<p:dialog header="Autenticação" closable="false" draggable="false"  
+				<p:dialog header="Autenticação" closable="false" draggable="false"
 					height="160" width="310" resizable="false" modal="false"
 					visible="true">
 					<h:form>
@@ -66,7 +66,8 @@
 								onsuccess="PF('iconeDeProcessamento').hide()" />
 						</h:panelGrid>
 
-						<p:dialog widgetVar="iconeDeProcessamento">
+						<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+							modal="true">
 							<f:facet name="header">
 								<h:graphicImage value="/imagens/ampulheta.png" />
 								<h:outputText id="dialogHeader"

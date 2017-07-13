@@ -175,7 +175,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -240,10 +241,17 @@
 						value="#{usuarioBean.usuario.ativo}" required="true"
 						requiredMessage="O campo 'Ativo' é obrigatório" />
 
+					<p:outputLabel for="gestor" value="Gestor" />
+					<p:selectBooleanCheckbox id="gestor"
+						value="#{usuarioBean.usuario.gestor}" required="true"
+						requiredMessage="O campo 'Gestor' é obrigatório" />
+
 					<p:outputLabel for="administrador" value="Administrador" />
 					<p:selectBooleanCheckbox id="administrador"
 						value="#{usuarioBean.usuario.administrador}" required="true"
 						requiredMessage="O campo 'Administrador' é obrigatório" />
+
+
 				</h:panelGrid>
 
 				<br></br>

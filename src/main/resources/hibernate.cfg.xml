@@ -75,7 +75,14 @@
 		<mapping class="br.com.projeto.domain.Situacao" />
 		<mapping class="br.com.projeto.domain.Horario" />
 		<mapping class="br.com.projeto.domain.Estabilidade" />
-
+		<mapping class="br.com.projeto.domain.Ferias" />
+		<mapping class="br.com.projeto.domain.OcorrenciaProntuario" />
+		<mapping class="br.com.projeto.domain.Prontuario" />
+		<mapping class="br.com.projeto.domain.Parentesco" />
+		<mapping class="br.com.projeto.domain.Dependente" />
+		<mapping class="br.com.projeto.domain.Fornecedor" />
+		<mapping class="br.com.projeto.domain.Rpa" />
+		<mapping class="br.com.projeto.domain.ProgramacaoFerias" />
 	</session-factory>
 
 </hibernate-configuration>

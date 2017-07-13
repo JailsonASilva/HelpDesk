@@ -106,7 +106,7 @@
 
 					<p:ajax event="rowSelect"
 						update=":formListagem:messages :formListagem:tool"
-						listener="#{localBean.onRowSelect}" /> 							
+						listener="#{localBean.onRowSelect}" />
 
 					<p:column headerText="Nome" sortBy="#{local.nome}">
 						<h:outputText value="#{local.nome}" />
@@ -123,7 +123,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"
@@ -131,8 +132,8 @@
 			</f:facet>
 		</p:dialog>
 
-		<p:dialog header="Cadastro de Local" widgetVar="dialogo" 
-			draggable="false" resizable="false"  closable="true">
+		<p:dialog header="Cadastro de Local" widgetVar="dialogo"
+			draggable="false" resizable="false" closable="true">
 			<h:form id="formCadastro">
 				<h:panelGrid id="painel" columns="2" class="ui-noborder">
 					<p:outputLabel for="nome" value="Nome: " />

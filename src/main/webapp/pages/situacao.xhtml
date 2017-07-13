@@ -96,12 +96,11 @@
 					draggableColumns="true" resizableColumns="true"
 					rowKey="#{situacao.codigo}" paginator="true"
 					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
-					value="#{situacaoBean.situacoes}" 
+					value="#{situacaoBean.situacoes}"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					var="situacao" rows="10" paginatorPosition="bottom">
 
-					<p:ajax event="rowDblselect"
-						listener="#{situacaoBean.duploClique}"
+					<p:ajax event="rowDblselect" listener="#{situacaoBean.duploClique}"
 						update="formCadastro:painel" />
 
 					<p:ajax event="rowUnselect"
@@ -122,7 +121,7 @@
 						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
 							onstart="PF('iconeDeProcessamento').show()"
 							onsuccess="PF('iconeDeProcessamento').hide()"
-							actionListener="#{situacaoBean.editar}" 
+							actionListener="#{situacaoBean.editar}"
 							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
 							<f:attribute name="registroSelecionado" value="#{situacao}" />
 						</p:commandButton>
@@ -149,7 +148,8 @@
 
 		</h:form>
 
-		<p:dialog widgetVar="iconeDeProcessamento">
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
 			<f:facet name="header">
 				<h:graphicImage value="/imagens/ampulheta.png" />
 				<h:outputText id="dialogHeader"

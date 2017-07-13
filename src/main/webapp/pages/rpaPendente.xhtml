@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Rpa's Pendentes">
+				<br></br>
+
+				<p:selectBooleanCheckbox value="#{rpaPendenteBean.pendente}"
+					class="rpaPendente" />
+				<p:outputLabel value=" Somente Rpa's Pendentes" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+
+						<p:commandButton id="bitPesquisar" value="Pesquisar"
+							icon="fa fa fw fa-search"
+							actionListener="#{rpaPendenteBean.pesquisar}"
+							update="formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Visualizar" process=":formListagem:tabela"
+							disabled="#{rpaPendenteBean.rpa == null}"
+							update=":formCadastro:tabView:painel :formCadastro:tabView:painelRh :formCadastro:tabView:painelDocumentacao"
+							icon="fa fa-fw fa-edit" oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">					
+
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="rpa" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="rpa" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="rpa" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{rpaPendenteBean.rpa}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{rpa.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{rpaPendenteBean.rpas}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="rpa" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect"
+						listener="#{rpaPendenteBean.duploClique}"
+						update=":formCadastro:tabView:painel :formCadastro:tabView:painelRh :formCadastro:tabView:painelDocumentacao" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{rpaPendenteBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{rpaPendenteBean.onRowSelect}" />
+
+					<p:column headerText="Solicitante" width="140"
+						sortBy="#{rpa.usuario.nome}">
+						<h:outputText value="#{rpa.usuario.nome}" />
+					</p:column>
+
+					<p:column headerText="Fornecedor" sortBy="#{rpa.fornecedor.nome}"
+						width="120">
+						<h:outputText value="#{rpa.fornecedor.nome}" />
+					</p:column>
+
+					<p:column headerText="Data" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.data}">
+						<h:outputText value="#{rpa.data}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Valor" width="65" style="text-align:right"
+						sortBy="#{rpa.valor}">
+						<h:outputText value="#{rpa.valor}">
+							<f:convertNumber currencyCode="BRL" type="currency" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Pendente"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.pendenteFormatado}" width="45">
+						<h:outputText value="#{rpa.pendenteFormatado}" />
+					</p:column>
+
+					<p:column headerText="Aprovado"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{rpa.aprovado}" width="45">
+						<h:outputText value="#{rpa.aprovado}" />
+					</p:column>
+
+					<p:column headerText="Opções" width="75"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{rpaPendenteBean.visualizar}"
+							update=":formCadastro:tabView:painel :formCadastro:tabView:painelRh :formCadastro:tabView:painelDocumentacao"
+							oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{rpa}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Aprovar Rpa"
+							icon="fa fa-fw fa-check-circle"
+							actionListener="#{rpaPendenteBean.aprovarAtalho}"
+							update=":formListagem:tabela :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Aprovar esta Rpa?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{rpa}" />
+						</p:commandButton>
+
+						<p:commandButton title="Reprovar Rpa" icon="fa fa-fw fa-close"
+							actionListener="#{rpaPendenteBean.exibirReprovacao}"
+							update=":formListagem:tabela :formReprovar:painel :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<f:attribute name="registroSelecionado" value="#{rpa}" />
+						</p:commandButton>
+
+						<p:commandButton icon="ui-icon-print" title="Imprimir Rpa"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{rpaPendenteBean.imprimirRpaAtalho}">
+							<f:attribute name="registroSelecionado" value="#{rpa}" />
+						</p:commandButton>
+
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Solicitação de Rpa" widgetVar="dialogo"
+			appendTo="@(body)" width="830" height="500" modal="true"
+			draggable="false" resizable="false" closable="true">
+			<h:form id="formCadastro">
+
+				<p:tabView id="tabView" style="border:none;">
+					<p:tab title="Dados Solicitação">
+
+						<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="usuario" value="Solicitante" />
+							<p:inputText id="usuario" maxlength="100" size="45"
+								readonly="true" value="#{rpaPendenteBean.rpa.usuario.nome}" />
+
+							<p:outputLabel for="fornecedor" value="Fornecedor" />
+							<p:inputText id="fornecedor" maxlength="100" size="45"
+								readonly="true" value="#{rpaPendenteBean.rpa.fornecedor.nome}" />
+
+							<p:outputLabel for="dataInicio" value="Data Início" />
+							<p:inputText id="dataInicio" size="10" readonly="true"
+								value="#{rpaPendenteBean.rpa.dataInicioFortamada}" />
+
+							<p:outputLabel for="dataPrevistaFim" value="Data Prevista Fim" />
+							<p:inputText id="dataPrevistaFim" size="10" readonly="true"
+								value="#{rpaPendenteBean.rpa.dataPrevistaFimFortamada}" />
+
+							<p:outputLabel for="referente" value="Referente" />
+							<p:inputTextarea id="referente" rows="4" cols="60"
+								readonly="true" autoResize="false"
+								value="#{rpaPendenteBean.rpa.referente}" />
+
+							<p:outputLabel for="valorFixo" value="Valor" />
+							<p:inputText id="valorFixo" size="14" readonly="true"
+								value="#{rpaPendenteBean.rpa.valorFormatado}" />
+
+						</h:panelGrid>
+					</p:tab>
+
+					<p:tab title="Dados RH">
+						<h:panelGrid id="painelRh" columns="2" class="ui-noborder">
+
+							<p:outputLabel for="valor" value="Valor" />
+							<p:inputNumber id="valor" symbol="R$ " decimalSeparator=","
+								thousandSeparator="." value="#{rpaPendenteBean.rpa.valor}"
+								required="true" requiredMessage="O Campo 'Valor' é Obrigatório">
+							</p:inputNumber>
+
+							<p:outputLabel for="valorLiquido" value="Valor Líquido" />
+							<p:selectOneMenu id="valorLiquido" filter="true"
+								value="#{rpaPendenteBean.rpa.valorLiquido}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="pagouISS" value="Pagou ISS" />
+							<p:selectOneMenu id="pagouISS" filter="true"
+								value="#{rpaPendenteBean.rpa.pagouISS}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem noSelectionOption="true" itemLabel="  " />
+								<f:selectItem itemValue="SIM" itemLabel="SIM" />
+								<f:selectItem itemValue="NÃO" itemLabel="NÃO" />
+							</p:selectOneMenu>
+
+							<p:outputLabel for="dataPrevistaPag" value="Previsão Pagamento" />
+							<p:calendar id="dataPrevistaPag" mask="99/99/99" required="true"
+								showOn="button"
+								requiredMessage="Campo 'Previsão Pagamento' Obrigatório!"
+								yearRange="1900:2222"
+								value="#{rpaPendenteBean.rpa.dataPrevistaPagamento}" size="8"
+								locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+							<p:outputLabel for="observacao" value="Observação" />
+							<p:inputTextarea id="observacao" rows="4" cols="60"
+								counter="display" maxlength="1000"
+								counterTemplate="{0} caracteres restantes." autoResize="false"
+								value="#{rpaPendenteBean.rpa.observacao}" />
+							<br></br>
+							<h:outputText id="display" />
+
+						</h:panelGrid>
+					</p:tab>
+
+
+					<p:tab title="Documentação">
+						<h:panelGrid id="painelDocumentacao" columns="2"
+							class="ui-noborder">
+
+							<p:selectBooleanCheckbox
+								value="#{rpaPendenteBean.rpa.carteiraIdentidade}"
+								class="rpaPendente" />
+							<p:outputLabel value=" Carteira de Identidade" />
+
+							<p:selectBooleanCheckbox value="#{rpaPendenteBean.rpa.cpf}"
+								class="rpaPendente" />
+							<p:outputLabel value=" CPF" />
+
+							<p:selectBooleanCheckbox
+								value="#{rpaPendenteBean.rpa.tituloEleitor}" class="rpaPendente" />
+							<p:outputLabel value=" Título Eleitor" />
+
+							<p:selectBooleanCheckbox
+								value="#{rpaPendenteBean.rpa.comprovanteResidencia}"
+								class="rpaPendente" />
+							<p:outputLabel value=" Comprovante de Residência" />
+
+							<p:selectBooleanCheckbox value="#{rpaPendenteBean.rpa.cartaoPIS}"
+								class="rpaPendente" />
+							<p:outputLabel value=" Cartão PIS" />
+
+						</h:panelGrid>
+					</p:tab>
+
+				</p:tabView>
+
+				<div class="footerCodastro">
+					<p:separator />
+
+					<h:panelGrid columns="5">
+						<p:commandButton value="Salvar" icon="ui-icon-disk"
+							actionListener="#{rpaPendenteBean.salvar}"
+							update=":formCadastro :formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Aprovar" icon="fa fa-fw fa-check-circle"
+							actionListener="#{rpaPendenteBean.aprovar}"
+							update=":formCadastro :formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Reprovar" update=":formReprovar:painel"
+							icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogoReprovar').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Imprimir" icon="ui-icon-print"
+							actionListener="#{rpaPendenteBean.imprimirRpa}"
+							update=":formCadastro :formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()" />
+
+						<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+							oncomplete="PF('dialogo').hide();" />
+					</h:panelGrid>
+				</div>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="Reprovar RPA" widgetVar="dialogoReprovar"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formReprovar">
+
+				<h:panelGrid id="painel" columns="1" class="ui-noborder">
+					<p:outputLabel for="motivo" value="Motivo Reprovação" />
+					<p:inputTextarea id="motivo" rows="4" cols="60" required="true"
+						requiredMessage="O campo 'Motivo Reprovação' é obrigatório"
+						autoResize="false" value="#{rpaPendenteBean.rpa.motivoReprovacao}" />
+				</h:panelGrid>
+
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Reprovar" icon="fa fa-fw fa-close"
+						actionListener="#{rpaPendenteBean.reprovar}"
+						update=":formListagem:tabela :formReprovar:painel :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogoReprovar').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

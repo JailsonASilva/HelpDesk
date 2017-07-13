@@ -1,5 +1,4 @@
 
-
 package br.com.projeto.util;
 
 import javax.faces.event.PhaseEvent;
@@ -17,24 +16,35 @@ public class AutenticacaoListener implements PhaseListener {
 	@Override
 	public void afterPhase(PhaseEvent event) {
 		String paginaAtual = Faces.getViewId();
-	
-		boolean ehPaginaDeAutenticacao = paginaAtual.contains("autenticacao.xhtml");
-		boolean ehPaginaBaseConhecimento = paginaAtual.contains("baseConhecimento.xhtml");
-	
-		if(!ehPaginaDeAutenticacao & !ehPaginaBaseConhecimento)  {
+
+		boolean paginaDeAutenticacao = paginaAtual.contains("autenticacao.xhtml");
+		boolean paginaBaseConhecimento = paginaAtual.contains("baseConhecimento.xhtml");
+		boolean paginaFerias = paginaAtual.contains("ferias.xhtml");
+
+		if (!paginaDeAutenticacao & !paginaBaseConhecimento) {
 			AutenticacaoBean autenticacaoBean = Faces.getSessionAttribute("autenticacaoBean");
 
-			if(autenticacaoBean == null){
+			if (autenticacaoBean == null) {
 				Faces.navigate("/pages/autenticacao.xhtml");
 				return;
 			}
-			
+
 			Usuario usuario = autenticacaoBean.getUsuarioLogado();
-			if(usuario == null){
+
+			if (usuario == null) {
 				Faces.navigate("/pages/autenticacao.xhtml");
 				return;
+			} else {
+				
+				if (paginaFerias & !usuario.getAcesso().getFerias()) {
+					Faces.navigate("/pages/autenticacao.xhtml");
+					return;
+				}
+				
 			}
-		}		
+
+		}
+
 	}
 
 	@Override

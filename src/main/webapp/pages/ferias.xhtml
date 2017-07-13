@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="/pages/modelo.xhtml">
+
+	<ui:define name="conteudo">
+		<h:form id="formListagem">
+			<p:panel header="Cadastro de Férias">
+				<br></br>
+				<p:outputLabel value="Digite sua Pesquisa: " />
+				<p:inputText id="textoPesquisa" maxlength="65" size="65"
+					value="#{feriasBean.busca}" />
+
+				<p:commandButton id="bitPesquisar" style="margin:10px"
+					value="Pesquisar" icon="fa fa fw fa-search"
+					actionListener="#{feriasBean.pesquisar}"
+					update="formListagem:tabela :formListagem:tool :formListagem:messages"
+					onstart="PF('iconeDeProcessamento').show()"
+					onsuccess="PF('iconeDeProcessamento').hide()" />
+
+				<br></br>
+				<br></br>
+
+				<p:growl id="messages" showDetail="true" />
+				<p:toolbar id="tool">
+					<f:facet name="left">
+						<p:commandButton value="Novo" oncomplete="PF('dialogo').show();"
+							icon="ui-icon-document" actionListener="#{feriasBean.novo}"
+							update=":formCadastro:painel">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton value="Editar" process=":formListagem:tabela"
+							disabled="#{feriasBean.ferias == null}"
+							update=":formCadastro:painel" icon="fa fa-fw fa-edit"
+							oncomplete="PF('dialogo').show();">
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<span class="ui-separator"> <span
+							class="ui-icon ui-icon-grip-dotted-vertical" />
+						</span>
+
+						<p:commandButton title="Excluir" icon="ui-icon-trash"
+							actionListener="#{feriasBean.excluir}"
+							disabled="#{feriasBean.ferias == null}"
+							update=":formListagem:tabela :formListagem:tool"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="feriasSelecionado" value="#{ferias}" />
+						</p:commandButton>
+
+						<p:commandButton title="Imprimir" icon="ui-icon-print">
+							<p:printer target=":formListagem:tabela" />
+						</p:commandButton>
+					</f:facet>
+
+					<f:facet name="right">
+						<p:menuButton value="Opções" style="margin:0 10px 0 10px">
+							<p:menuitem value="Exportar Excel" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xls" target="tabela" fileName="ferias" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar PDF" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="pdf" target="tabela" fileName="ferias" />
+							</p:menuitem>
+
+							<p:menuitem value="Exportar XML" icon="fa fa-fw fa-download"
+								ajax="false">
+								<p:dataExporter type="xml" target="tabela" fileName="ferias" />
+							</p:menuitem>
+
+							<p:menuitem value="Página Inicial" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+
+						<p:commandButton id="coluna" type="button" value="Colunas"
+							style="float:right" icon="ui-icon-calculator" />
+						<p:columnToggler datasource=":formListagem:tabela"
+							trigger="coluna" />
+					</f:facet>
+				</p:toolbar>
+
+				<p:dataTable id="tabela" emptyMessage="Nenhum registro encontrado."
+					selectionMode="single" selection="#{feriasBean.ferias}"
+					draggableColumns="true" resizableColumns="true"
+					rowKey="#{ferias.codigo}" paginator="true"
+					rowsPerPageTemplate="5,10,20,30,40,50,100,150,200,250,300,350,400,450,500,1000"
+					value="#{feriasBean.feriasLista}"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					var="ferias" rows="10" paginatorPosition="bottom">
+
+					<p:ajax event="rowDblselect" listener="#{feriasBean.duploClique}"
+						update="formCadastro:painel" />
+
+					<p:ajax event="rowUnselect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{feriasBean.onRowUnselect}" />
+
+					<p:ajax event="rowSelect"
+						update=":formListagem:messages :formListagem:tool"
+						listener="#{feriasBean.onRowSelect}" />
+
+					<p:column headerText="Nome" sortBy="#{ferias.colaborador.nome}"
+						width="130">
+						<h:outputText value="#{ferias.colaborador.nome}" />
+					</p:column>
+
+					<p:column headerText="Aquisitivo Início" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataAquisitivoInicio}">
+						<h:outputText value="#{ferias.dataAquisitivoInicio}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Aquisitivo Final" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataAquisitivoFinal}">
+						<h:outputText value="#{ferias.dataAquisitivoFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gozo Início" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataGozoInicio}">
+						<h:outputText value="#{ferias.dataGozoInicio}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Gozo Final" width="55"
+						style="text-align:center;white-space:normal !important;"
+						sortBy="#{ferias.dataGozoFinal}">
+						<h:outputText value="#{ferias.dataGozoFinal}">
+							<f:convertDateTime locale="pt_BR" pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Opções" width="40"
+						style="text-align:center;white-space:normal !important;">
+
+						<p:commandButton icon="ui-icon-pencil" title="Editar Registro"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()"
+							actionListener="#{feriasBean.editar}"
+							update=":formCadastro:painel" oncomplete="PF('dialogo').show();">
+							<f:attribute name="registroSelecionado" value="#{ferias}" />
+							<f:actionListener
+								type="org.omnifaces.eventlistener.ResetInputAjaxActionListener" />
+						</p:commandButton>
+
+						<p:commandButton title="Excluir Registro" icon="ui-icon-trash"
+							actionListener="#{feriasBean.excluirAtalho}"
+							update=":formListagem:tabela :formListagem:tool :formListagem:messages"
+							onstart="PF('iconeDeProcessamento').show()"
+							onsuccess="PF('iconeDeProcessamento').hide()">
+							<p:confirm header="Confirmação"
+								message="Deseja Excluir este Registro?" icon="ui-icon-alert" />
+							<f:attribute name="registroSelecionado" value="#{ferias}" />
+						</p:commandButton>
+					</p:column>
+
+				</p:dataTable>
+
+				<p:confirmDialog global="true">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
+			</p:panel>
+
+		</h:form>
+
+		<p:dialog widgetVar="iconeDeProcessamento" appendTo="@(body)"
+			modal="true">
+			<f:facet name="header">
+				<h:graphicImage value="/imagens/ampulheta.png" />
+				<h:outputText id="dialogHeader"
+					value="Aguarde... Estamos Processando sua Informação..." />
+			</f:facet>
+		</p:dialog>
+
+		<p:dialog header="Cadastro de Férias" widgetVar="dialogo"
+			appendTo="@(body)" modal="true" draggable="false" resizable="false"
+			closable="true">
+			<h:form id="formCadastro">
+				<h:panelGrid id="painel" columns="2" class="ui-noborder">
+
+					<p:outputLabel for="colaborador" value="Colaborador " />
+					<p:selectOneMenu id="colaborador" filter="true"
+						value="#{feriasBean.ferias.colaborador}" required="true"
+						requiredMessage="O campo 'Colaborador' é obrigatório"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem noSelectionOption="true"
+							itemLabel="Nenhum Registro Selecionado" />
+						<f:selectItems value="#{feriasBean.colaboradores}"
+							var="colaborador" itemValue="#{colaborador}"
+							itemLabel="#{colaborador.nome}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="aquisicaoInicial" value="Aquisição Inicial" />
+					<p:calendar id="aquisicaoInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Aquisição Inicial' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{feriasBean.ferias.dataAquisitivoInicio}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="aquisicaoFinal" value="Aquisição Final" />
+					<p:calendar id="aquisicaoFinal" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Aquisição Final' Obrigatório!"
+						yearRange="1900:2222"
+						value="#{feriasBean.ferias.dataAquisitivoFinal}" size="8"
+						locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="gozoInicial" value="Gozo Inicial" />
+					<p:calendar id="gozoInicial" mask="99/99/99" required="true"
+						showOn="button"
+						requiredMessage="Campo 'Gozo Inicial' Obrigatório!"
+						yearRange="1900:2222" value="#{feriasBean.ferias.dataGozoInicio}"
+						size="8" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="gozoFinal" value="Gozo Final" />
+					<p:calendar id="gozoFinal" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Gozo Final' Obrigatório!"
+						yearRange="1900:2222" value="#{feriasBean.ferias.dataGozoFinal}"
+						size="8" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+					<p:outputLabel for="dataLimite" value="Data Limite" />
+					<p:calendar id="dataLimite" mask="99/99/99" required="true"
+						showOn="button" requiredMessage="Campo 'Data Limite' Obrigatório!"
+						yearRange="1900:2222" value="#{feriasBean.ferias.dataLimite}"
+						size="8" locale="pt_BR" showButtonPanel="true" navigator="true" />
+
+				</h:panelGrid>
+
+				<br></br>
+				<p:separator />
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Salvar" icon="ui-icon-disk"
+						actionListener="#{feriasBean.salvar}"
+						update=":formCadastro:painel :formListagem:tabela :formListagem:tool :formListagem:messages"
+						onstart="PF('iconeDeProcessamento').show()"
+						onsuccess="PF('iconeDeProcessamento').hide()" />
+
+					<p:commandButton value="Fechar" icon="fa fa-fw fa-close"
+						oncomplete="PF('dialogo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
